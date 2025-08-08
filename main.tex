@@ -1,0 +1,502 @@
+ \documentclass[12pt]{article}
+
+\pdfoutput=1
+
+
+\usepackage{latexsym,amsfonts,bm,epsfig,amsmath,natbib,authblk,amsthm,thmtools,amssymb}
+%\usepackage{latexsym,amssymb,amsthm,amsfonts,graphicx,epsfig}
+
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=.5cm]{caption}
+\captionsetup[figure]{font=footnotesize,labelfont=footnotesize}
+\captionsetup[table]{font=footnotesize,labelfont=footnotesize}
+\usepackage{xr-hyper}
+\usepackage{color}
+\usepackage[colorlinks,linkcolor=black,citecolor=black,filecolor=black,bookmarks=false,pagebackref]{hyperref}
+\usepackage[algoruled, noend]{algorithm2e}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+%\pgfplotsset{compat=newest}
+%\pgfplotsset{plot coordinates/math parser=false}
+\newlength\figureheight
+\newlength\figurewidth
+
+%\externaldocument{miss-synthetic-likelihood-supp-JASA-blind-R3}be
+%\usepackage[displaymath, mathlines]{lineno}
+%\linenumbers
+
+\floatstyle{plain}
+%\newfloat{Algorithm}{thp}{lop}
+%\floatname{Algorithm}{Algorithm}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{5pt}}{\endenumerate}
+
+% DON'T change margins - should be 1 inch all around.
+
+%\addtolength{\oddsidemargin}{-.5in}%
+%\addtolength{\evensidemargin}{-1in}%
+%\addtolength{\textwidth}{1in}%
+%\addtolength{\textheight}{1.7in}%
+%\addtolength{\topmargin}{-1in}%
+
+
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-.5in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.7in}%
+\addtolength{\topmargin}{-1in}%
+
+
+
+
+%% Please use the following statements for
+%% managing the text and math fonts for your papers:
+%\usepackage{times}
+%\usepackage[cmbold]{mathtime}
+
+%\usepackage[plain]{algorithm2e}
+
+\makeatletter
+\renewcommand{\algocf@captiontext}[2]{#1\algocf@typo. \AlCapFnt{}#2} % text of caption
+\renewcommand{\AlTitleFnt}[1]{#1\unskip}% default definition
+\def\@algocf@capt@plain{top}
+\renewcommand{\algocf@makecaption}[2]{%
+	\addtolength{\hsize}{\algomargin}%
+	\sbox\@tempboxa{\algocf@captiontext{#1}{#2}}%
+	\ifdim\wd\@tempboxa >\hsize%     % if caption is longer than a line
+	\hskip .5\algomargin%
+	\parbox[t]{\hsize}{\algocf@captiontext{#1}{#2}}% then caption is not centered
+	\else%
+	\global\@minipagefalse%
+	\hbox to\hsize{\box\@tempboxa}% else caption is centered
+	\fi%
+	\addtolength{\hsize}{-\algomargin}%
+}
+\makeatother
+
+%%% User-defined macros should be placed here, but keep them to a minimum.
+\def\mub{\widetilde{\mu}}
+\def\Sigmab{\widetilde{\Sigma}}
+\def\Cb{\widetilde{C}}
+\def\tr{\text{\rm tr}}
+\def\T{{\mathrm{\scriptscriptstyle T} }}
+\newcommand{\ignore}[1]{}
+\newcommand{\expec}{\mathbb{E}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+\newcommand{\prob}{\mathbb{P}}
+\newcommand{\Keywords}[1]{\par\noindent{{\em \large{Keywords}\/}: #1}}
+\newcommand{\JEL}[1]{\par\noindent{{\em \large{JEL Classification}\/}: #1}}
+\newcommand{\Var}{{\bf Var}}
+\newcommand{\Cov}{{\bf Cov}}
+\newcommand{\Inf}{\mathrm{Inf}}
+\newcommand{\I}{\mathrm{I}}
+\newcommand{\J}{\mathrm{J}}
+\newcommand{\y}{{y}}
+\newcommand{\x}{{x}}
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+
+\newcommand{\z}{z}
+\newcommand{\dt}{\mathrm{d}}
+\newcommand{\plim}{\operatornamewithlimits{plim}} 
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\KL}{\mathrm{KL}}
+
+\newcommand{\argmin}{\operatornamewithlimits{argmin}} 
+\newcommand{\argmax}{\operatornamewithlimits{argmax}} 
+
+\def\BSL{Bayesian synthetic likelihood}
+\def\MCMC{Markov chain Monte Carlo}
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{defn}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+%\addtolength\topmargin{35pt}
+\DeclareMathOperator{\Thetabb}{\mathcal{C}}
+
+\begin{document}
+	\def\spacingset#1{\renewcommand{\baselinestretch}%
+		{#1}\small\normalsize} \spacingset{1}
+	
+	\title{Surprisals notes}
+	\date{\empty}
+	\author{}
+\maketitle
+\section{Setup}
+We want to work out conditions so that 
+$$
+s_i=-\log f(y_i)
+$$will satisfy some form of EVT. That is, we seek conditions such that 
+$$
+\operatorname{Pr}\left\{\frac{M_n-b_n}{a_n} \leq t\right\}=F^{(n)}\left(a_n t+b_n\right) \rightarrow H(x)
+$$where  $a_n\ge0, \;a_n\rightarrow\infty$, $b_n$ is a centering sequence, and 
+$$
+M_n=\max\{s_1,\dots,s_n\}
+$$
+
+However, this result isn't really that strong given the strength of the logarithmic transformation that defines the surprisals  and the fact that you are working with densities/mass functions, which are exceptionally well-behaved objects. I think it may instead be better to derive an upper bound on the probability directly. I have done this below. It turns out that in certain cases, the tail probability gives us a version of the FGK theorem, but in other cases it does not! 
+
+\section{Assumption and Preliminary Results}
+
+The first thing we will need here is iid data, without this we won't get anywhere tractable very quickly. At least not without a lot of heavy math/lifting. 
+\begin{assumption}\label{ass:iid}
+	The sequence $y_i$ is iid from $F$.  
+\end{assumption}
+\begin{remark}
+	Under this assumption, we have that $s_i$ is also iid, and it's distribution function is given by 
+	\begin{flalign*}
+	G(s)=\mathrm{Pr}\left(S\le s\right)&=\mathrm{Pr}\left(-\log f(Y)\le s\right)\\&=\mathrm{Pr}\left\{\log f(Y)\ge -s	\right\}\\&=\Pr\left\{ f(Y)\ge e^{-s}\right\}.
+	\end{flalign*}
+The above expression makes clear that the decay of the suprisisal probability is related to the tail behavior of the density:
+$$
+\Pr\left\{ f(Y)\ge e^{-s}\right\}=\int_{\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]f(y)^2\dt y.
+$$Now, if $Y_i$ is iid, then so is the random variable $S=\log f(Y)$. Hence, we have that 
+$$
+\mathrm{Pr}\left\{M_n\le s\right\}=\mathrm{Pr}\left\{S\le s\right\}^n=\begin{cases}
+	\left[\int_{\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]f(y)^2\dt y\right]^n&\text{ if }Y\sim F(y)\\	
+	\left[\sum_{y\in\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]p(y)^2\right]^n&\text{ if }Y\sim P(y)\end{cases}
+$$
+However, it's unclear to me that this has any meaningful solution without assuming something about the tail of the density itself. Therefore, it's probably best to work with $\mathrm{Pr}\left\{S\le s\right\}$ directly. 
+%If we can assume that $Z$ is sub-Gaussian, then we can directly obtain a bound on the 	
+\end{remark}
+\medskip 
+
+Let us first assume that the surprisal $S$ is well-behaved and has a sub-Gaussian tail. 
+\begin{assumption}\label{ass:bounded}
+The random variable $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$, 
+$$
+\E e^{\lambda (S-\E[S])}\le e^{\lambda^2 \nu^2/2}.
+$$
+% for all $y\in\mathcal{Y}$, $M\le1$, and has mean 	$\mu=\int f(y)^2 \dt y<1$.
+\end{assumption}
+\begin{remark}
+The above assumption will be satisfied in cases where the density is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the density has no lower bound. In such cases, we will need a more relaxed concept.
+\end{remark}
+\begin{example}
+	Consider that $Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)$, then 
+	$$
+	S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\}.
+	$$ Since $Y\in[a,b]$, $S$ is bounded for all $\sigma>0$ and $-\infty<a<b<\infty$. Hence, $S$ satisfies Assumption \ref{ass:bounded}. 
+\end{example}
+Under the above two assumptions we have the following result on the maximum of the surprisals $M_n$
+\begin{lemma}\label{lem:bounds}
+If Assumptions \ref{ass:iid}-\ref{ass:bounded} are satisfied, then, for $s\in\mathbb{R}_+$,
+$$
+\mathrm{Pr}\left(M_n-\E[S]\ge s\right)\le 1-\left\{1-e^{-\frac{1}{2}s^2/\nu^2}\right\}^n.
+$$
+\end{lemma}
+
+\begin{proof}
+For any $\lambda>0$, 
+	\begin{flalign*}
+	\Pr\left\{ S\ge s\right\}=	\Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda (s-\E[S])}\right\}&\le e^{-\lambda(s-\mu)}\E e^{\lambda (S-\mu)}\\&\le  e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
+	\end{flalign*}Now, we can maximize the RHS of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound 
+\begin{flalign*}
+	\Pr\left\{S\ge s\right\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.	
+\end{flalign*}
+The stated result now follows by noting that 
+\begin{flalign*}
+\mathrm{Pr}\left(M_n-\E[S]\ge s\right)=1-\mathrm{Pr}\left\{M_n\le s\right\}&=1-\mathrm{Pr}\left\{S\le s\right\}^n\\&=1-(1-\Pr\{S\ge s\})^n\\&\le 1-(1-e^{-\frac{1}{2}s^2/\nu^2})^n.	
+\end{flalign*}
+\end{proof}
+\begin{corollary}\label{cor:one}
+If Assumptions \ref{ass:iid}-\ref{ass:bounded} are satisfied, then, for all $s>0$,  
+\begin{flalign*}
+\mathrm{Pr}\left(|M_n-\E[S]|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(2n)}\right)\le e^{-s}.
+\end{flalign*}
+\end{corollary}
+\begin{proof}
+  This follows directly from the union bound: 
+\begin{flalign*}
+\mathrm{Pr}\left(|M_n|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}\right)&\le n \Pr\left\{|S|\ge \sqrt{2}\nu^2s+\sqrt{2\nu^2\log(n)}\right\}\\&\le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)}\\&= 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}}\\&\le e^{-\sqrt{\log(2n)s}-s}\\&\le e^{-s} 
+\end{flalign*}
+The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from re-organizing terms.
+\end{proof}
+\begin{remark}
+ Corollary \ref{cor:one} is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus in the EVT class. 
+\end{remark}
+\subsection{A Necessary Extension}
+In cases where the underlying density has full support on $\mathbb{R}$ and cannot be bounded from below, then the sub-Gaussianity condition in Assumption \ref{ass:bounded} may be violated, as the following example illustrates. 
+\begin{lemma}
+	If $Y\sim \phi(\cdot;\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular, 
+	$$
+	\E e^{\lambda(S-1/2)+(\lambda/2)\log(2\pi\sigma^2)}\le e^{\lambda^2/2+(\lambda/2)\log(2\pi\sigma^2)},\quad \forall |\lambda|<1/2.
+	$$
+\end{lemma}
+\begin{proof}
+Firstly, note that 
+$$
+S=-\log f(Y)= \frac{1}{2}\log (2\pi\sigma^2)+\frac{(Y-\mu)^2}{2\sigma^2}.
+$$
+and that 
+$$
+\mu_S=\E[S]=-\int f(y)\log f(y)\dt y=\frac{1}{2}\{1+\log (2\pi\sigma^2)\}.
+$$ Define 
+$$
+X=\frac{1}{2}\frac{(Y-\mu)^2}{\sigma^2}-\frac{1}{2},
+$$then $\E[X]=0$. Now, note that 
+\begin{flalign*}
+\E e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi\sigma^2}	}\int e^{\frac{\lambda}{2}\left[\frac{(y-\mu)^2}{\sigma^2}-1\right]}e^{-\frac{(y-\mu)^2}{2\sigma^2}}\dt y.
+\end{flalign*}
+Consider the change of variables $z=(y-\mu)/\sigma$ so that we have 
+\begin{flalign*}
+	\E e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi}	}\int e^{\frac{\lambda}{2}\left[z^2-1\right]}e^{-z^2/2}\dt y={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{e^{-2(\lambda/2)}}{\sqrt{1-2(\lambda/2)}}
+\end{flalign*}for all $\lambda<1$. Further, it can be verified that 
+$$
+\frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
+$$Hence, when we have $Y\sim \phi(y;\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$. 
+\end{proof}
+
+Therefore, to be able to use this machinery we need to a version of Lemma \ref{lem:bounds} that uses sub-exponentiality.
+\begin{assumption}\label{ass:subbounded}The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e., 
+	$$
+\mathbb{E}\left[e^{\lambda(S-\E[S])}\right] \leq e^{\frac{\nu^2 \lambda^2}{2}} \quad\text{ for all } \quad |\lambda|<\frac{1}{b}.
+	$$
+\end{assumption}
+Under the above assumption, we have a similar result to Lemma \ref{lem:bounds} with different behaviors. 
+
+
+\begin{lemma}\label{lem:bounds_sub}
+	If Assumptions \ref{ass:iid} and \ref{ass:subbounded} are satisfied, then, for $s\in\mathbb{R}_+$,
+	$$
+	\mathrm{Pr}\left(M_n-\E[S]\ge s\right)\le 1-
+	\begin{cases}
+		(1-e^{-\frac{1}{2}s^2/\nu^2})^n &\text{ if }0\le s\le \nu^2/b\\
+		(1-e^{-s/2b})^n&\text{ if }s>\nu^2/b
+	\end{cases}.
+	$$
+\end{lemma}
+\begin{remark}
+	Similar results also hold for $\mathrm{Pr}\left\{M_n-\E[S]\le s\right\}$, and for $\mathrm{Pr}\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e., 
+	$$
+	\mathrm{Pr}\left\{|M_n-\E[S]|\ge s\right\}\le 1-
+	\begin{cases}
+		(1-2e^{-\frac{1}{2}s^2/\nu^2})^n &\text{ if }0\le s\le \nu^2/b\\
+		(1-2e^{-s/2b})^n&\text{ if }s>\nu^2/b
+	\end{cases}.
+	$$
+\end{remark}
+\begin{proof}
+The result follows a similar argument up until we maximize the tail bound. In particular, for any $\lambda>0$, 
+	\begin{flalign*}
+		\Pr\left\{ S-\E[S]\ge s\right\}=	\Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}&\le e^{-\lambda s}\E e^{\lambda (S-\E[S])}\\&\le  e^{-\lambda s}e^{\lambda^2\nu^2/2} .
+	\end{flalign*}Now, we must consider a constrained optimization to ensure the RHS exists. In particular, we know that from the proof of Lemma \ref{lem:bounds} that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
+	\begin{flalign*}
+		\Pr\left\{S-\E[S]\ge s\right\}\le \begin{cases}
+			e^{-\frac{1}{2}s^2/\nu^2} &\text{ if }0\le s\le \nu^2/b\\
+			e^{-s/2b}&\text{ if } s>\nu^2/b
+		\end{cases}.
+	\end{flalign*}
+	The stated result again follows by noting that 
+	\begin{flalign*}
+		\mathrm{Pr}\left\{M_n-\E[S]\ge s\right\}&=1-\mathrm{Pr}\left\{M_n\le s\right\}\\&=1-\mathrm{Pr}\left\{S\le s\right\}^n\\&\le 1-\begin{cases}
+		(1-e^{-\frac{1}{2}s^2/\nu^2})^n &\text{ if }0\le s\le \nu^2/b\\
+		(1-e^{-s/2b})^n&\text{ if } s>\nu^2/b
+	\end{cases}.
+	\end{flalign*}
+\end{proof}
+\begin{corollary}\label{cor:two}
+Under Assumptions \ref{ass:iid} and \ref{ass:subbounded}, for $s>\nu^2/b$, as $n\rightarrow\infty$
+$$
+\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
+$$
+\end{corollary}
+\begin{proof}
+Apply Assumption \ref{ass:subbounded} to see that 
+\begin{flalign*}
+\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)&\le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n 
+\\& = 1-\left(1-\frac{e^{-s}}{n}\right)^n\\&=1-e^{e^{-s}}-\left[\left(1-\frac{e^{-s}}{n}\right)^n-e^{e^{-s}}\right]
+\end{flalign*}
+The result now follows by noting that, for all $s>0$, 
+$$
+\left[\left(1-\frac{e^{-s}}{n}\right)^n-e^{e^{-s}}\right]= o(1)\le 0.
+$$
+\end{proof}
+\begin{remark}
+ Corollary \ref{cor:two} is very interesting as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that Corollary \ref{cor:two} implies 
+  $$
+ \sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\ge [2bs+2b\log(2n)]\right\}-\left(1-e^{e^{-s}}\right)\right|=o(1).
+ $$ To see that this implies that $M_n-\E[S]$, appropriately standardized, converges to an extreme value distribution, we first recall that
+ $$   
+    \Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
+$$Hence, 
+\begin{flalign*}
+\sup_{x\in\mathcal{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathcal{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,    
+\end{flalign*}so that when $X_n$ and $X$ are both continuous we see that Corollary \ref{cor:two} implies that the CDF of $(M_n-\E[S]-2b\log(2n))/2b$ converges that of the  Type-1 extreme value distribution (i.e., Gumbel distribution); i.e., using Corollary \ref{cor:two} and the above we have that
+ $$
+ \sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\le [2bs+2b\log(2n)]\right\}-e^{e^{-s}}\right|=o(1).
+ $$The above is one notion of convergence in distirbution.
+\end{remark}
+
+
+\begin{example}
+Recall that, for  $f(y)=\phi(y,\mu,\sigma^2)$, we have that $S=-\log f(Y)$ is sub-exponential with $\nu=1$ and $b=2$. Further, 
+$$
+\mu=\E[S]=-\int f(y)\log f(y)\dt y=\frac{1}{2}\{1+\log (2\pi\sigma^2)\}.
+$$ Hence, Lemma \ref{lem:bounds_sub} immediately implies that, for $s>1/2$,  
+\begin{flalign*}
+	\Pr\left\{ M_n\ge \frac{1}{2}\{1+\log (2\pi\sigma^2)\}+4s+4\log(n)\right\}\le	1-
+	(1-e^{-s}/n)^n
+\end{flalign*}
+or 
+\begin{flalign*}
+	\Pr\left\{ \left|M_n-\frac{1}{2}\{1+\log (2\pi\sigma^2)\}\right|\ge 4s+4\log(2n)\right\}\le	1-
+	(1-e^{-s}/n)^n
+\end{flalign*}
+
+Consider that $\sigma^2=1$, then the mean surprisal is $\frac{1}{2}\{1+\log (2\pi\sigma^2)\}=.919$. Given $n$ observations, what is the probability that the absolute difference between the maximum surprisal and the mean is larger than four times the mean for various choices of $n$? 
+Using the above we have that 
+$$
+\Pr\left\{ |M_n-\frac{1}{2}\{1+\log (2\pi\sigma^2)\}|\ge 4*\frac{1}{2}\{1+\log (2\pi\sigma^2)\}+4\log(2n)\right\}\le 1-\left(1-\frac{e^{-n*.918}}{n}\right)^n
+$$ For $n=10,20,50,100$ the estimate of the probability is between .565 and .551. However, if we let $\sigma^2=10$, then the mean surprisal is about 3.74, and, for the same value of $n$,  the probabilities range from about .225 to .223. This illustrates that the surprisal probability actually decreases as $\sigma$ increases. 
+\end{example}
+
+\subsection{A Final Limit}
+
+
+\begin{assumption}\label{ass:polybounded}The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$, i.e., 
+$	\mathbb{E}[|S|^p\le C^p$ for some $C>0$ such that $C^p-1>0$.
+\end{assumption}
+Under the above assumption, we have a similar result to Lemma \ref{lem:bounds} with different behaviors. 
+
+\begin{lemma}\label{lem:bounds_poly}
+	If Assumptions \ref{ass:iid} and \ref{ass:polybounded} are satisfied, then, for $s>0$ and such that $s>C>0$,
+	$$
+	\mathrm{Pr}\left(|M_n-\E[S]|\ge s\right)\le 1-
+		\left(1-\frac{C^p}{s^p}\right)^n.
+	$$Hence, 	
+    $$
+ \sup_{s:s>C}  |\mathrm{Pr}\left(|M_n-\E[S]|\le (s\cdot n^{1/p})\right)-e^{-s^{-p}}|=o(1).
+        $$
+\end{lemma}
+\begin{proof}
+By Markov's inequality, 
+	\begin{flalign*}
+		\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
+	\end{flalign*}
+	To derive the first stated result, again note that 
+	\begin{flalign*}
+		\mathrm{Pr}\left\{|M_n-\E[S]|\ge s\right\}&=1-\mathrm{Pr}\left\{|M_n-\E[S]|\le s\right\}\\&=1-\mathrm{Pr}\left\{|S-\E[S]|\le s\right\}^n\\&=1-\left(1-\mathrm{Pr}\left\{|S-\E[S]|\ge s\right\}\right)^n\\&\le 1-\left(1-\frac{C^p}{s^p}\right)^n.
+	\end{flalign*}
+
+To derive the second stated result, apply the first result with $t=sn^{1/p}C>1$, which clearly holds for some $n$ large enough, to see that 
+\begin{flalign*}
+\mathrm{Pr}\left\{|M_n-\E[S]|\ge t\right\}&\le 1- \left(1-\frac{C^p}{(Csn^{1/p})^p}\right)^n\\&=1-\left(1-\frac{1}{s^pn}\right)^n\\&=1-\left(1-\frac{s^{-p}}{n}\right)^n.
+\end{flalign*}Now, recall that, for $x\ge0$, 
+$$
+\lim_{n\rightarrow\infty}\left(1-\frac{x}{n}\right)^n=e^{-x}.
+$$Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
+$$
+\sup_{s:s>C}|\mathrm{Pr}\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}|=o(1).
+$$  
+\end{proof}
+%\begin{remark}
+ Lemma \ref{lem:bounds_poly} gives us a result on the behavior of surprisals that only possess a polynomial tail, e.g., student-t random variables. Placing the three lemmas together gives the following ``three types'' Theorem.    
+
+\begin{theorem}\label{thm:three_types}
+Assumption \ref{ass:iid} is satisfied. 
+\begin{enumerate}
+    \item If the surprisal satisfies Assumption \ref{ass:bounded}, then 
+   $$
+    \sup_{s:s>0}|\mathrm{Pr}\left\{|M_n-\E[S]|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}|=o(1).
+    $$
+    \item If the surprisal satisfies Assumption \ref{ass:subbounded}, then 
+    $$
+    \sup_{s:s>1/b}|\mathrm{Pr}\left\{|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right\}-e^{-e^{-s}}|=o(1).
+    $$
+    \item If the surprisal satisfies Assumption \ref{ass:polybounded}, then 
+    $$
+    \sup_{s:s>C}|\mathrm{Pr}\left\{|M_n-\E[S]|\ge (Csn^{1/p})\right\}-e^{-s^{-p}}|=o(1).
+    $$
+\end{enumerate}
+\end{theorem}
+\begin{remark}
+Theorem \ref{thm:three_types} gives a corresponding `three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Frechet. To determine which of the three cases one is under, one must investigate the behavior of the log density for the parametric model. However, it is possible that     
+\end{remark}
+
+
+\section{Theorem \ref{thm:three_types} in Action}
+
+In this section, I have considered a few numerical experiments that illustrate the validity of Theorem \ref{thm:three_types}. The essence of Theorem \ref{thm:three_types} is that, as $n\rightarrow\infty$, the distribution of $M_n$ behaves like a generalized extreme value distribution, 
+$$
+\mathrm{Gev}(x;\mu,\sigma,\xi)=\exp \left\{-\left(1+\xi \frac{x-\mu}{\sigma}\right)^{-1 / \xi}\right\},
+$$
+defined when $1+\xi(x-\mu) / \sigma>0 ; \mu \in \Re, \sigma>0$ and $\xi \in \mathbb{R}$. This distribution takes specific forms depending on the particular value of the shape parameter $\xi$ and changes depending on this value.  
+\begin{enumerate}
+    \item The (reverse) Weibull distribution is obtained when $\xi<0$.
+    \item The Gumble distirbution is obtained when $\xi=0$.
+    \item The Frechet distribution is obtained when $\xi>0$.
+\end{enumerate}
+Thus, in order to validate the results of Theorem \ref{thm:three_types}, all we need to show is that: 
+\begin{enumerate}
+    \item when $S$ is sub-Gaussian, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi<0$;
+    \item when $S$ is sub-exponential, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi=0$;
+    \item  when $S$ only has a polynomial moment, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi>0$.
+\end{enumerate}
+
+\begin{example}
+Let us return to the truncated normal distribution example. Consider that we observe data generated according to
+$$
+Y_i\stackrel{iid}{\sim}
+\mathcal{TN}(a=1,b=5,\mu=2,\sigma=1)\;(i=1,\dots,n).
+$$ In this example, since $Y\in[1,5]$, it is simple to show that surprisal $S_i$ is bounded. Hence, we would expect that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi<0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the truncated normal distribution and for each $r=1,\dots,1000$ calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in Figure \ref{fig:one}. The distribution seems very close to the (reversed) Weibull distribution, and indeed the estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=-0.2002$, with a standard error of 0.0271, suggesting high confidence that the resulting estimated parameter is negative and that the distribution of $M_n$ is indeed Weibull. 
+
+
+\begin{figure}[H]%[t!]
+%\vskip -1cm %-0.1in
+\begin{center}
+\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip,  width=0.79\columnwidth]{weibull_plot.pdf}
+\caption{The estimated GEV parameters and standard errors are as follows:       location: 5.6839 (0.0314);  scale: 0.8676 (0.0229); shape: -0.20002 (0.0271).}
+\label{fig:one}
+\end{center}
+%
+\end{figure}
+\end{example}
+
+\begin{example}
+Now, let us return to the normal example, which, from our theoretical results, we know should give rise to surprisals that exhibit Gumbel like behavior. To see that this is indeed the case,  consider that we observe data generated according to
+$$
+Y_i\stackrel{iid}{\sim}
+\mathcal{N}(\mu=1,\sigma=1)\;(i=1,\dots,n).
+$$ In this example, we know that the surprisal $S_i$ will have a sub-exponential tail and that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi=0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the normal distribution with mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in Figure \ref{fig:two}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.0012$, with a standard error of 0.0209, suggesting high confidence that the actual shape parameter is either zero or very close to it, and that the distribution of $M_n$ is indeed Gumbel. 
+\begin{figure}[H]%[t!]
+%\vskip -1cm %-0.1in
+\begin{center}
+\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip,  width=0.79\columnwidth]{gumbel_plot.pdf}
+\caption{The estimated GEV parameters and standard errors are given by:       location: 6.30016 (0.0332);  scale: 0.945129961 (0.0239); shape: -0.0012 (0.0209).}
+\label{fig:two}
+\end{center}
+
+%
+\end{figure}
+
+\end{example}
+
+\begin{example}
+For the last example, we consider the situation where the assumed model is Gaussian with mean and variance equal to unity, but where the observed data is actually generated from a student-t distribution with five degrees of freedom. In this case, the tails of the student-t ensure that the surprisal does not have an exponential moment, and, as discussed in Theorem \ref{thm:three_types}, the distribution of the maximum surprisal, $M_n$, will be Frechet. 
+
+To show that this is the case we  generate $R=1000$ independent samples of size $n=1000$ from a student-t distribution with five degrees of freedom, but where the mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in Figure \ref{fig:two}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.4557$, with a standard error of 0.0294, suggesting high confidence that the actual shape parameter is positive, and that the distribution of $M_n$ is indeed Frechet. 
+\begin{figure}[H]%[t!]
+%\vskip -1cm %-0.1in
+\begin{center}
+\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip,  width=0.79\columnwidth]{frechet_plot.pdf}
+\caption{The estimated GEV parameters and standard errors are given by:       location: 24.0107 (0.3564);  scale: 9.9537 (0.3329); shape: 0.4557 (0.0293).}
+\label{fig:two}
+\end{center}
+\end{figure}
+    
+\end{example}
+
+\begin{remark}
+The most interesting thing from these examples from a methodological perspective is that if we get the assumed distribution of the data wrong, then this will have meaningful consequence for the behavior of the surprisal we are calculating. In particular, as the student-t example shows, when we model the data using a distribution which is assumed to have thinner tails than those of the actual data, the surprisal can have a very long/thick tail. This immediately suggests that if our goal is to check for anomalies, we should be using distributions that are somewhat robust to outliers, e.g., student-t, etc.  I've obtained similar results if you model the data with a Gaussian, but the actual data generation mechanism is exponential. In this case, the max surprisal is Frechet. However, if you had modeled the data with something like a heavy-tailed student-t, then the max surprisal is Gumble. This suggests that the model you specify is absolutely critical to understanding behavior of the max surprisal itself.     
+\end{remark}
+
+\end{document}
