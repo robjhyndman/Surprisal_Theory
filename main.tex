@@ -1,140 +1,60 @@
- \documentclass[12pt]{article}
+ \documentclass[a4paper,11pt]{article}
 
-\pdfoutput=1
-
-
-\usepackage{latexsym,amsfonts,bm,epsfig,amsmath,natbib,authblk,amsthm,thmtools,amssymb}
-%\usepackage{latexsym,amssymb,amsthm,amsfonts,graphicx,epsfig}
-
+\usepackage{bm,amsmath,amsfonts,amsthm}
+\usepackage{mathpazo,microtype}
+\usepackage[margin=2cm, bottom=2.5cm]{geometry}
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{natbib}
 \usepackage[margin=.5cm]{caption}
 \captionsetup[figure]{font=footnotesize,labelfont=footnotesize}
 \captionsetup[table]{font=footnotesize,labelfont=footnotesize}
-\usepackage{xr-hyper}
 \usepackage{color}
-\usepackage[colorlinks,linkcolor=black,citecolor=black,filecolor=black,bookmarks=false,pagebackref]{hyperref}
-\usepackage[algoruled, noend]{algorithm2e}
+\usepackage[colorlinks,linkcolor=black,citecolor=black,filecolor=black,bookmarks=false]{hyperref}
 
-\usepackage{pgfplots}
-\usepackage{tikz}
-%\pgfplotsset{compat=newest}
-%\pgfplotsset{plot coordinates/math parser=false}
-\newlength\figureheight
-\newlength\figurewidth
-
-%\externaldocument{miss-synthetic-likelihood-supp-JASA-blind-R3}be
-%\usepackage[displaymath, mathlines]{lineno}
-%\linenumbers
-
-\floatstyle{plain}
-%\newfloat{Algorithm}{thp}{lop}
-%\floatname{Algorithm}{Algorithm}
-\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{5pt}}{\endenumerate}
-
-% DON'T change margins - should be 1 inch all around.
-
-%\addtolength{\oddsidemargin}{-.5in}%
-%\addtolength{\evensidemargin}{-1in}%
-%\addtolength{\textwidth}{1in}%
-%\addtolength{\textheight}{1.7in}%
-%\addtolength{\topmargin}{-1in}%
-
-
-\addtolength{\oddsidemargin}{-.5in}%
-\addtolength{\evensidemargin}{-.5in}%
-\addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{1.7in}%
-\addtolength{\topmargin}{-1in}%
-
-
-
-
-%% Please use the following statements for
-%% managing the text and math fonts for your papers:
-%\usepackage{times}
-%\usepackage[cmbold]{mathtime}
-
-%\usepackage[plain]{algorithm2e}
-
-\makeatletter
-\renewcommand{\algocf@captiontext}[2]{#1\algocf@typo. \AlCapFnt{}#2} % text of caption
-\renewcommand{\AlTitleFnt}[1]{#1\unskip}% default definition
-\def\@algocf@capt@plain{top}
-\renewcommand{\algocf@makecaption}[2]{%
-	\addtolength{\hsize}{\algomargin}%
-	\sbox\@tempboxa{\algocf@captiontext{#1}{#2}}%
-	\ifdim\wd\@tempboxa >\hsize%     % if caption is longer than a line
-	\hskip .5\algomargin%
-	\parbox[t]{\hsize}{\algocf@captiontext{#1}{#2}}% then caption is not centered
-	\else%
-	\global\@minipagefalse%
-	\hbox to\hsize{\box\@tempboxa}% else caption is centered
-	\fi%
-	\addtolength{\hsize}{-\algomargin}%
-}
-\makeatother
-
-%%% User-defined macros should be placed here, but keep them to a minimum.
-\def\mub{\widetilde{\mu}}
-\def\Sigmab{\widetilde{\Sigma}}
-\def\Cb{\widetilde{C}}
-\def\tr{\text{\rm tr}}
-\def\T{{\mathrm{\scriptscriptstyle T} }}
-\newcommand{\ignore}[1]{}
-\newcommand{\expec}{\mathbb{E}}
-\newcommand*{\V}[1]{\mathbf{#1}}
-\newcommand{\prob}{\mathbb{P}}
-\newcommand{\Keywords}[1]{\par\noindent{{\em \large{Keywords}\/}: #1}}
-\newcommand{\JEL}[1]{\par\noindent{{\em \large{JEL Classification}\/}: #1}}
-\newcommand{\Var}{{\bf Var}}
-\newcommand{\Cov}{{\bf Cov}}
-\newcommand{\Inf}{\mathrm{Inf}}
-\newcommand{\I}{\mathrm{I}}
-\newcommand{\J}{\mathrm{J}}
-\newcommand{\y}{{y}}
-\newcommand{\x}{{x}}
-\newcommand{\wt}{\widetilde}
-\newcommand{\wh}{\widehat}
-
-\newcommand{\z}{z}
 \newcommand{\dt}{\mathrm{d}}
-\newcommand{\plim}{\operatornamewithlimits{plim}} 
 \newcommand{\E}{\mathbb{E}}
-\newcommand{\KL}{\mathrm{KL}}
 
-\newcommand{\argmin}{\operatornamewithlimits{argmin}} 
-\newcommand{\argmax}{\operatornamewithlimits{argmax}} 
-
-\def\BSL{Bayesian synthetic likelihood}
-\def\MCMC{Markov chain Monte Carlo}
 \newtheorem{assumption}{Assumption}
 \newtheorem{theorem}{Theorem}
-\newtheorem{proposition}{Proposition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{lemma}{Lemma}
-\newtheorem{defn}{Definition}
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
 \newtheorem{example}{Example}
 
-%\addtolength\topmargin{35pt}
-\DeclareMathOperator{\Thetabb}{\mathcal{C}}
 
 \begin{document}
-	\def\spacingset#1{\renewcommand{\baselinestretch}%
-		{#1}\small\normalsize} \spacingset{1}
-	
-	\title{Surprisals notes}
-	\date{\empty}
-	\author{}
+	\title{Anomaly detection using surprisals}
+	\author{Rob J Hyndman and David T Frazier}
+
+
 \maketitle
-\section{Setup}
-We want to work out conditions so that 
+
+\begin{abstract}
+TBC
+\end{abstract}
+
+\noindent\textbf{Keywords:} 
+Extreme value theory; 
+Generalized Pareto Distribution; 
+Outlier detection; 
+Tail bounds.
+
+\section{Introduction}
+
+Let $y_1,\dots,y_n$ be observations from a distribution $F$. The \emph{surprisal} of observation $y_i$ is defined as \citep{Stone2022} 
 $$
-s_i=-\log f(y_i)
-$$will satisfy some form of EVT. That is, we seek conditions such that 
+s_i=-\log f(y_i),
+$$
+where $f$ is the Radon-Nikodym derivative of $F$ with respect to a dominating measure. That is, $f$ is either the density or probability mass function of $F$. While these are better known as ``log scores'' in statistics \citep{Good1952-zw}, in this context we prefer the term ``surprisal'', coined by \citet{Tribus61},  as it captures the idea that observations with low density are more ``surprising'' (and therefore potentially anomalous) than those with high density.
+
+\citet{lookout} proposed using surprisals calculated from a leave-one-out kernel density estimate to detect anomalies, by fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. \citet{lookout2} provides some theoretical justification for this approach. 
+
+Here we extend that idea to allow $F$ to be any parametric distribution. Specifically, we fit a GPD to the largest $1-\beta$ of $\{-\log f_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation by applying the estimated GPD to the surprisal values, $p_i = P(-\log f_i \mid \hat\mu, \hat\sigma, \hat\xi)$, and flag observations with $p_i < (1-\beta)\alpha$ as anomalies. 
+
+To justify this approach, we seek conditions such that the surprisals will satisfy the Fisher-Tippett-Gnedenko (FTG) theorem \citep{coles2001introduction}, which requires that there exist sequences of constants $a_n>0$ and $b_n\in\mathbb{R}$ such that
 $$
 \operatorname{Pr}\left\{\frac{M_n-b_n}{a_n} \leq t\right\}=F^{(n)}\left(a_n t+b_n\right) \rightarrow H(x)
 $$where  $a_n\ge0, \;a_n\rightarrow\infty$, $b_n$ is a centering sequence, and 
@@ -142,7 +62,7 @@ $$
 M_n=\max\{s_1,\dots,s_n\}
 $$
 
-However, this result isn't really that strong given the strength of the logarithmic transformation that defines the surprisals  and the fact that you are working with densities/mass functions, which are exceptionally well-behaved objects. I think it may instead be better to derive an upper bound on the probability directly. I have done this below. It turns out that in certain cases, the tail probability gives us a version of the FGK theorem, but in other cases it does not! 
+However, this result isn't really that strong given the strength of the logarithmic transformation that defines the surprisals  and the fact that you are working with densities/mass functions, which are exceptionally well-behaved objects. I think it may instead be better to derive an upper bound on the probability directly. I have done this below. It turns out that in certain cases, the tail probability gives us a version of the FGT theorem, but in other cases it does not! 
 
 \section{Assumption and Preliminary Results}
 
@@ -498,5 +418,8 @@ To show that this is the case we  generate $R=1000$ independent samples of size 
 \begin{remark}
 The most interesting thing from these examples from a methodological perspective is that if we get the assumed distribution of the data wrong, then this will have meaningful consequence for the behavior of the surprisal we are calculating. In particular, as the student-t example shows, when we model the data using a distribution which is assumed to have thinner tails than those of the actual data, the surprisal can have a very long/thick tail. This immediately suggests that if our goal is to check for anomalies, we should be using distributions that are somewhat robust to outliers, e.g., student-t, etc.  I've obtained similar results if you model the data with a Gaussian, but the actual data generation mechanism is exponential. In this case, the max surprisal is Frechet. However, if you had modeled the data with something like a heavy-tailed student-t, then the max surprisal is Gumble. This suggests that the model you specify is absolutely critical to understanding behavior of the max surprisal itself.     
 \end{remark}
+
+\bibliographystyle{agsm}
+\bibliography{refs}
 
 \end{document}
