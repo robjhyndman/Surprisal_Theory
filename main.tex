@@ -48,67 +48,54 @@ Let $y_1,\dots,y_n$ be observations from a distribution $F$. The \emph{surprisal
 $$
 s_i=-\log f(y_i),
 $$
-where $f$ is the Radon-Nikodym derivative of $F$ with respect to a dominating measure. That is, $f$ is either the density or probability mass function of $F$. While these are better known as ``log scores'' in statistics \citep{Good1952-zw}, in this context we prefer the term ``surprisal'', coined by \citet{Tribus61},  as it captures the idea that observations with low density are more ``surprising'' (and therefore potentially anomalous) than those with high density.
+where $f$ is either the density or probability mass function of $F$. While these are better known as ``log scores'' in statistics \citep{Good1952-zw}, in this context we prefer the term ``surprisal'' \citep[coined by][]{Tribus61},  as it captures the idea that observations with low density are more ``surprising'' (and therefore potentially anomalous) than those with high density.
 
 \citet{lookout} proposed using surprisals calculated from a leave-one-out kernel density estimate to detect anomalies, by fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. \citet{lookout2} provides some theoretical justification for this approach. 
 
-Here we extend that idea to allow $F$ to be any parametric distribution. Specifically, we fit a GPD to the largest $1-\beta$ of $\{-\log f_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation by applying the estimated GPD to the surprisal values, $p_i = P(-\log f_i \mid \hat\mu, \hat\sigma, \hat\xi)$, and flag observations with $p_i < (1-\beta)\alpha$ as anomalies. 
+Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $1-\beta$ of $\{-\log f_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = 1-P(-\log f_i \mid \hat\mu, \hat\sigma, \hat\xi)$, where $P$ is the distribution function of the GPD. The values of $p_1,\dots,p_n$ can be used as anomaly scores, and observations with $p_i < (1-\beta)\alpha$ can be flagged as anomalies. This is preferred to directly computing the probabilities from $F$, as it allows for some model mis-specification, and allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$.
 
-To justify this approach, we seek conditions such that the surprisals will satisfy the Fisher-Tippett-Gnedenko (FTG) theorem \citep{coles2001introduction}, which requires that there exist sequences of constants $a_n>0$ and $b_n\in\mathbb{R}$ such that
-$$
-\operatorname{Pr}\left\{\frac{M_n-b_n}{a_n} \leq t\right\}=F^{(n)}\left(a_n t+b_n\right) \rightarrow H(x)
-$$where  $a_n\ge0, \;a_n\rightarrow\infty$, $b_n$ is a centering sequence, and 
-$$
-M_n=\max\{s_1,\dots,s_n\}
-$$
+To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(Y)$, where $Y\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem \citep{coles2001introduction}.
 
-However, this result isn't really that strong given the strength of the logarithmic transformation that defines the surprisals  and the fact that you are working with densities/mass functions, which are exceptionally well-behaved objects. I think it may instead be better to derive an upper bound on the probability directly. I have done this below. It turns out that in certain cases, the tail probability gives us a version of the FGT theorem, but in other cases it does not! 
+\section{Assumptions and preliminary results}
 
-\section{Assumption and Preliminary Results}
+Before establishing the main results, we need to place some assumptions on the data generating process. 
 
-The first thing we will need here is iid data, without this we won't get anywhere tractable very quickly. At least not without a lot of heavy math/lifting. 
 \begin{assumption}\label{ass:iid}
-	The sequence $y_i$ is iid from $F$.  
+The sequence $y_i$ is iid from $F$.  
 \end{assumption}
-\begin{remark}
-	Under this assumption, we have that $s_i$ is also iid, and it's distribution function is given by 
-	\begin{flalign*}
-	G(s)=\mathrm{Pr}\left(S\le s\right)&=\mathrm{Pr}\left(-\log f(Y)\le s\right)\\&=\mathrm{Pr}\left\{\log f(Y)\ge -s	\right\}\\&=\Pr\left\{ f(Y)\ge e^{-s}\right\}.
-	\end{flalign*}
-The above expression makes clear that the decay of the suprisisal probability is related to the tail behavior of the density:
-$$
-\Pr\left\{ f(Y)\ge e^{-s}\right\}=\int_{\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]f(y)^2\dt y.
-$$Now, if $Y_i$ is iid, then so is the random variable $S=\log f(Y)$. Hence, we have that 
-$$
-\mathrm{Pr}\left\{M_n\le s\right\}=\mathrm{Pr}\left\{S\le s\right\}^n=\begin{cases}
-	\left[\int_{\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]f(y)^2\dt y\right]^n&\text{ if }Y\sim F(y)\\	
-	\left[\sum_{y\in\mathcal{Y}}\mathbb{I}[f(y)\ge e^{-s}]p(y)^2\right]^n&\text{ if }Y\sim P(y)\end{cases}
-$$
-However, it's unclear to me that this has any meaningful solution without assuming something about the tail of the density itself. Therefore, it's probably best to work with $\mathrm{Pr}\left\{S\le s\right\}$ directly. 
-%If we can assume that $Z$ is sub-Gaussian, then we can directly obtain a bound on the 	
-\end{remark}
-\medskip 
 
-Let us first assume that the surprisal $S$ is well-behaved and has a sub-Gaussian tail. 
+Under Assumption \ref{ass:iid}, we have that $s_i=-\log f(y_i)$ is also iid, and its distribution function is given by 
+\begin{align*}
+G(s) =\mathrm{Pr}\left(S\le s\right)
+& = \mathrm{Pr}\left(-\log f(Y)\le s\right)\\
+& = \mathrm{Pr}\left\{\log f(Y)\ge -s	\right\}\\
+& = \Pr\left\{ f(Y)\ge e^{-s}\right\}.
+\end{align*}
+This makes clear that the decay of the surprisal probability is related to the highest density regions of the distribution \citep{HDR96}.
+
+Next we need to place some conditions on the surprisal distribution. We consider three possibilities: (1) where $S$ has sub-Gaussian tails (which occurs when $f$ is bounded above and below); (2) where $S$ has an exponential moment; and (3) where $S$ has a polynomial moment. In each case, we seek a result on the limiting distribution of the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$.
+
+\subsection{$S$ has sub-Gaussian tails}
+
 \begin{assumption}\label{ass:bounded}
 The random variable $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$, 
 $$
-\E e^{\lambda (S-\E[S])}\le e^{\lambda^2 \nu^2/2}.
+\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\}.
 $$
-% for all $y\in\mathcal{Y}$, $M\le1$, and has mean 	$\mu=\int f(y)^2 \dt y<1$.
 \end{assumption}
-\begin{remark}
-The above assumption will be satisfied in cases where the density is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the density has no lower bound. In such cases, we will need a more relaxed concept.
-\end{remark}
+
+Assumption \ref{ass:bounded} ensures that the surprisals are well-behaved and have a sub-Gaussian tail. This will be satisfied in cases where the density $f$ is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the density has no lower bound. 
+
 \begin{example}
-	Consider that $Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)$, then 
+	Consider the truncated normal distribution on $[a,b]$, where $Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)$, so that
 	$$
 	S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\}.
 	$$ Since $Y\in[a,b]$, $S$ is bounded for all $\sigma>0$ and $-\infty<a<b<\infty$. Hence, $S$ satisfies Assumption \ref{ass:bounded}. 
 \end{example}
-Under the above two assumptions we have the following result on the maximum of the surprisals $M_n$
+
+Under the above two assumptions we have the following result on the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$.
 \begin{lemma}\label{lem:bounds}
-If Assumptions \ref{ass:iid}-\ref{ass:bounded} are satisfied, then, for $s\in\mathbb{R}_+$,
+If Assumptions \ref{ass:iid}--\ref{ass:bounded} are satisfied, then, for $s\in\mathbb{R}_+$,
 $$
 \mathrm{Pr}\left(M_n-\E[S]\ge s\right)\le 1-\left\{1-e^{-\frac{1}{2}s^2/\nu^2}\right\}^n.
 $$
@@ -118,7 +105,7 @@ $$
 For any $\lambda>0$, 
 	\begin{flalign*}
 	\Pr\left\{ S\ge s\right\}=	\Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda (s-\E[S])}\right\}&\le e^{-\lambda(s-\mu)}\E e^{\lambda (S-\mu)}\\&\le  e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
-	\end{flalign*}Now, we can maximize the RHS of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound 
+	\end{flalign*}Now, we can maximise the RHS of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound 
 \begin{flalign*}
 	\Pr\left\{S\ge s\right\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.	
 \end{flalign*}
@@ -128,22 +115,28 @@ The stated result now follows by noting that
 \end{flalign*}
 \end{proof}
 \begin{corollary}\label{cor:one}
-If Assumptions \ref{ass:iid}-\ref{ass:bounded} are satisfied, then, for all $s>0$,  
+If Assumptions \ref{ass:iid}--\ref{ass:bounded} are satisfied, then, for all $s>0$,  
 \begin{flalign*}
-\mathrm{Pr}\left(|M_n-\E[S]|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(2n)}\right)\le e^{-s}.
+\mathrm{Pr}\Big(|M_n-\E[S]|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(2n)}\Big)\le e^{-s}.
 \end{flalign*}
 \end{corollary}
 \begin{proof}
   This follows directly from the union bound: 
 \begin{flalign*}
-\mathrm{Pr}\left(|M_n|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}\right)&\le n \Pr\left\{|S|\ge \sqrt{2}\nu^2s+\sqrt{2\nu^2\log(n)}\right\}\\&\le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)}\\&= 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}}\\&\le e^{-\sqrt{\log(2n)s}-s}\\&\le e^{-s} 
+\mathrm{Pr}\Big(|M_n|\ge \sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}\Big)&\le n \Pr\Big\{|S|\ge \sqrt{2}\nu^2s+\sqrt{2\nu^2\log(n)}\Big\}\\&\le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)}\\&= 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}}\\&\le e^{-\sqrt{\log(2n)s}-s}\\&\le e^{-s} 
 \end{flalign*}
-The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from re-organizing terms.
+The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganising terms.
 \end{proof}
-\begin{remark}
- Corollary \ref{cor:one} is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus in the EVT class. 
-\end{remark}
-\subsection{A Necessary Extension}
+
+Corollary \ref{cor:one} is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus in the EVT class. 
+
+\subsection{$S$ has an exponential moment}
+\begin{assumption}\label{ass:subbounded}The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e., 
+	$$
+\mathbb{E}\left[e^{\lambda(S-\E[S])}\right] \leq e^{\frac{\nu^2 \lambda^2}{2}} \quad\text{ for all } \quad |\lambda|< 1/b.
+	$$
+\end{assumption}
+
 In cases where the underlying density has full support on $\mathbb{R}$ and cannot be bounded from below, then the sub-Gaussianity condition in Assumption \ref{ass:bounded} may be violated, as the following example illustrates. 
 \begin{lemma}
 	If $Y\sim \phi(\cdot;\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular, 
@@ -176,11 +169,6 @@ $$Hence, when we have $Y\sim \phi(y;\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-e
 \end{proof}
 
 Therefore, to be able to use this machinery we need to a version of Lemma \ref{lem:bounds} that uses sub-exponentiality.
-\begin{assumption}\label{ass:subbounded}The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e., 
-	$$
-\mathbb{E}\left[e^{\lambda(S-\E[S])}\right] \leq e^{\frac{\nu^2 \lambda^2}{2}} \quad\text{ for all } \quad |\lambda|<\frac{1}{b}.
-	$$
-\end{assumption}
 Under the above assumption, we have a similar result to Lemma \ref{lem:bounds} with different behaviors. 
 
 
@@ -279,12 +267,11 @@ $$
 $$ For $n=10,20,50,100$ the estimate of the probability is between .565 and .551. However, if we let $\sigma^2=10$, then the mean surprisal is about 3.74, and, for the same value of $n$,  the probabilities range from about .225 to .223. This illustrates that the surprisal probability actually decreases as $\sigma$ increases. 
 \end{example}
 
-\subsection{A Final Limit}
-
-
+\subsection{$S$ has a polynomial moment}
 \begin{assumption}\label{ass:polybounded}The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$, i.e., 
 $	\mathbb{E}[|S|^p\le C^p$ for some $C>0$ such that $C^p-1>0$.
 \end{assumption}
+
 Under the above assumption, we have a similar result to Lemma \ref{lem:bounds} with different behaviors. 
 
 \begin{lemma}\label{lem:bounds_poly}
