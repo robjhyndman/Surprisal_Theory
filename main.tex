@@ -50,9 +50,19 @@ s_i=-\log f(y_i),
 $$
 where $f$ is either the density or probability mass function of $F$. While these are better known as ``log scores'' in statistics \citep{Good1952-zw}, in this context we prefer the term ``surprisal'' \citep[coined by][]{Tribus61},  as it captures the idea that observations with low density are more ``surprising'' (and therefore potentially anomalous) than those with high density.
 
-\citet{lookout} proposed using surprisals calculated from a leave-one-out kernel density estimate to detect anomalies, by fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. \citet{lookout2} provides some theoretical justification for this approach. 
+Let $G(s) = P(S\le s)$ be the distribution function of the surprisal values,  where $S = -\log f(Y)$ and $Y\sim F$. Then, the probability of observing a value with surprisal at least as large as $s$ is given by $1-G(s)$, which leads to a natural way to assign an anomaly score to each observation $y_i$:
+$$
+p_i = 1-G(s_i) = 1-G(-\log f(y_i)).
+$$
+Hence, one way to detect anomalies is to flag observations with $p_i < \alpha$, giving a false positive rate of $\alpha$. 
 
-Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $1-\beta$ of $\{-\log f_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = 1-P(-\log f_i \mid \hat\mu, \hat\sigma, \hat\xi)$, where $P$ is the distribution function of the GPD. The values of $p_1,\dots,p_n$ can be used as anomaly scores, and observations with $p_i < (1-\beta)\alpha$ can be flagged as anomalies. This is preferred to directly computing the probabilities from $F$, as it allows for some model mis-specification, and allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$.
+This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$.
+
+However, we will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile in the tails of the distribution, which is where anomalies are most likely to occur.
+
+To address this, \citet{lookout} proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. \citet{lookout2} provides some theoretical justification for this approach. 
+
+Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $1-\beta$ of $\{-\log f_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = 1-P(-\log f_i \mid \hat\mu, \hat\sigma, \hat\xi)$, where $P$ is the distribution function of the GPD. The values of $p_1,\dots,p_n$ can be used as anomaly scores, and observations with $p_i < (1-\beta)\alpha$ can be flagged as anomalies. 
 
 To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(Y)$, where $Y\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem \citep{coles2001introduction}.
 
