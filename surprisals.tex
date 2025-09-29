@@ -144,14 +144,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -499,7 +499,7 @@ distribution of \(S = -\log f(\bm{Y})\), where \(\bm{Y}\sim F\), similar
 to the Fisher-Tippett-Gnedenko (FTG) theorem
 \autocite{coles2001introduction}.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, opacityback=0, coltitle=black, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, colback=white, toptitle=1mm, titlerule=0mm, leftrule=.75mm, arc=.35mm, breakable, left=2mm, rightrule=.15mm, toprule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, left=2mm, coltitle=black, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, toprule=.15mm, colframe=quarto-callout-note-color-frame, rightrule=.15mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, colback=white, toptitle=1mm, leftrule=.75mm, titlerule=0mm, arc=.35mm, opacityback=0]
 
 Outline of paper TBC
 
@@ -855,6 +855,67 @@ Distribution \autocite[Theorem 4.1]{coles2001introduction}.
 
 \section{Experiments}\label{experiments}
 
+\subsection{Standard normal values}\label{standard-normal-values}
+
+The use of a GPD to estimate the tail probabilities of the surprisal
+distribution is designed to be robust to incorrect assumptions about the
+underlying distribution \(F\). Suppose we generate 1000 observations
+from a N(0,1) distribution, but use a \(t_4\) distribution to compute
+the surprisal values. The GPD approach should still give reasonable
+estimates of the tail probabilities, despite the incorrect distribution
+being used to compute the surprisals.
+
+To study the effect of the assumed distribution, we compute the
+surprisal values using both the correct Normal density and an incorrect
+\(t_4\) density. Then, for each set of surprisal values, we estimate the
+surprisal tail probabilities using the same distribution used to compute
+the surprisal values, and alternatively using a GPD fitted to the
+largest 100 surprisal values.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-norm_prob-1.pdf}}
+
+}
+
+\caption{\label{fig-norm_prob}Left: Observations are computed from a
+N(0,1) distribution. Right: Observations are computed from a \(t_4\)
+distribution. In each cases, surprisal probabilities are computed using
+(a) the correct distribution; (b) the incorrect distribution; (c) a GPD
+applied to the surprisal values from the correct distribution; (d) a GPD
+applied to the surprisal values from the incorrect distribution. This
+demonstrates that the surprisal probabilities under the GPD are still
+relatively accurate, even when the wrong distribution is used to compute
+the surprisal values.}
+
+\end{figure}%
+
+The various estimates are displayed in the left panel of
+Figure~\ref{fig-norm_prob} for observations greater than 2.5, showing
+how the GPD estimates are particularly accurate in the extreme tails,
+where we need them for anomaly detection. The true values are shown in
+orange (``Normal''). The two GPD estimates (blue and pink) are almost
+identical despite the incorrect distribution being used to compute the
+surprisals for one of them. When the incorrect distribution is also used
+to compute the probabilities (green), the results are very inaccurate.
+
+In summary, even when we don't know the distribution of the data, we can
+use some incorrect assumed distribution to compute the surprisals, and
+then apply either a GPD or the empirical distribution to obtain good
+estimates of the surprisal probabilities.
+
+The converse situation is shown in the right panel of
+Figure~\ref{fig-norm_prob}, where the data are generated from a \(t_4\)
+distribution, and the surprisal values are computed using both the
+correct \(t_4\) density and an incorrect N(0,1) density. Again, the GPD
+estimates of the surprisal probabilities are accurate in the extreme
+tails, even when the wrong distribution is used to compute the surprisal
+values.
+
+\subsection{Gamma values}\label{gamma-values}
+
 \begin{itemize}
 \tightlist
 \item
@@ -866,8 +927,6 @@ Distribution \autocite[Theorem 4.1]{coles2001introduction}.
   origin. Fit bivariate normal to all 1000 and compute surprisals. Fit
   GPD to largest 50 surprisals. Compare true and estimated tail
   probabilities.
-\item
-  \url{https://otexts.com/weird/06-density.html\#example-standard-normal-values}
 \end{itemize}
 
 \section{Applications}\label{applications}

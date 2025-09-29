@@ -44,6 +44,34 @@ include-in-header:
     \mathtoolsset{showonlyrefs,mathic=true}
 ---
 
+```{r}
+#| label: setup
+library(targets)
+library(ggplot2)
+
+# Set default colors
+options(
+  ggplot2.discrete.colour = c(
+    "#D55E00",
+    "#0072B2",
+    "#009E73",
+    "#CC79A7",
+    "#E69F00",
+    "#56B4E9",
+    "#F0E442"
+  ),
+  ggplot2.discrete.fill = c(
+    "#D55E00",
+    "#0072B2",
+    "#009E73",
+    "#CC79A7",
+    "#E69F00",
+    "#56B4E9",
+    "#F0E442"
+  )
+)
+```
+
 # Introduction
 
 Anomaly detection methods are often rather ad hoc and lack a solid theoretical foundation, or they make strong distributional assumptions that may not hold in practice. Here we propose a general framework for anomaly detection using extreme value theory to estimate the probability of each observation. This approach allows for a unified treatment of anomaly detection in both univariate and multivariate settings, and can be applied to both unconditional and conditional distributions. The basic idea is to calculate the surprisal (equal to the negative log density) of each observation, and then to use extreme value theory to model the tail of the surprisal distribution. This allows us to estimate the probability of observing a surprisal value as extreme or more extreme than a given observation, which can be used to flag anomalies. The surprisal approach to anomaly detection provides a principled way to control the false positive rate when flagging anomalies, by setting a threshold on the estimated tail probabilities.
@@ -398,45 +426,24 @@ $$
 
 The use of a GPD to estimate the tail probabilities of the surprisal distribution is designed to be robust to incorrect assumptions about the underlying distribution $F$. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t_4$ distribution to compute the surprisal values. The GPD approach should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
 
-To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t_4$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities using the same  distribution used to compute the surprisal values, and then using a GPD fitted to the largest 100 surprisal values.
+To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t_4$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities using the same  distribution used to compute the surprisal values, and alternatively using a GPD fitted to the largest 100 surprisal values.
 
 ```{r}
-#| label: surprisal_prob
-#| code-fold: false
-# Compute surprisal probabilities of v1 assuming a standard Normal distribution
-# and a t4 distribution
-norm_prob <- tibble(
-  y = n01$v1,
-  p =      surprisals(y, distribution = dist_normal()),
-  p_gpd =  surprisals(y, distribution = dist_normal(), approximation = "gpd"),
-  pt =     surprisals(y, distribution = dist_student_t(4)),
-  pt_gpd = surprisals(y, distribution = dist_student_t(4), approximation = "gpd"),
-)
-norm_prob |>
-  tidyr::pivot_longer(p:pt_gpd, names_to = "Estimate", values_to = "Probability") |>
-  ggplot2(
-    aes(x = p, )
-  )
+#| label: fig-norm_prob
+#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t_4$ distribution. In each cases, surprisal probabilities are computed using (a) the correct distribution; (b) the incorrect distribution; (c) a GPD applied to the surprisal values from the correct distribution; (d) a GPD applied to the surprisal values from the incorrect distribution. This demonstrates that the surprisal probabilities under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| fig-height: 4
+tar_read(fig_expt1)
 ```
 
-
-
-The most accurate values are in column `p`, as this uses the correct distribution applied to the correct surprisals. Notice that `p_gpd` and `p_emp` are both relatively accurate: the GPD and empirical approximations work. For the probabilities calculated using the incorrect distribution, `pt` is relatively inaccurate, with much larger probabilities than they should be, especially in the extreme tails. But `pt_gpd` and `pt_emp` are both reasonable estimates, despite being based on an incorrect distribution for computing the surprisals. In fact, `p_emp` and `pt_emp` are identical, because the ordering of the surprisals is unchanged despite the incorrect distribution being used.
-
-The various estimates are displayed in @fig-surprisal_prob for values of $y$ greater than 2.5, showing how the estimates (other than `pt`) are particularly accurate in the extreme tails, where we need them for anomaly detection.
-
-```{r}
-#| label: fig-surprisal_prob
-#| fig-cap: Surprisal probabilities estimated using the correct N(0,1) distribution and using an incorrect $t_4$ distribution. The GPD and empirical estimates of surprisal probabilities are still accurate, even when the wrong distribution is used to compute the surprisal values.
-norm_prob |>
-  filter(y > 2.5) |>
-  tidyr::pivot_longer(p:pt_emp, names_to = "Estimate", values_to = "Probability") |>
-  ggplot(aes(x = y, y = Probability, col = Estimate)) +
-  geom_line()
-```
+The various estimates are displayed in the left panel of @fig-norm_prob for observations greater than 2.5, showing how the GPD estimates are particularly accurate in the extreme tails, where we need them for anomaly detection. The true values are shown in orange ("Normal"). The two GPD estimates (blue and pink) are almost identical despite the incorrect distribution being used to compute the surprisals for one of them. When the incorrect distribution is also used to compute the probabilities (green), the results are very inaccurate.
 
 In summary, even when we don't know the distribution of the data, we can use some
 incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal  probabilities.
+
+The converse situation is shown in the right panel of @fig-norm_prob, where the data are generated from a $t_4$ distribution, and the surprisal values are computed using both the correct $t_4$ density and an incorrect N(0,1) density. Again, the GPD estimates of the surprisal probabilities are accurate in the extreme tails, even when the wrong distribution is used to compute the surprisal values.
+
+
+## Gamma values
 
 
 * 990 from Gamma(2,2) and 10 from Gamma(2,r). Fit Gamma to all 1000 and compute surprisals. Fit GPD to largest 50 surprisals. Compare true and estimated tail probabilities.

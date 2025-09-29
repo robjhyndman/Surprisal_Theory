@@ -1,2 +1,9 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-paper|stem|9d4c0233d675d66b|16ae1f7e2ac81611|2c530c1562a7fbd1|-1607195735|surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20360.262625841s|s1054771b|1054771|file|local|vector|||13.408||
+norm_prob|stem|2529e11556a450e8|bcef62d9e7114269|53eaa8190aeb58d5|-1230907058||t20360.2820731239s|s25193b|25193|rds|local|vector|||0.812||
+get_norm_prob|function|a3163afe8a14df93
+norm_data|stem|e7995e4511e18610|ca0c7b832947058a|2c530c1562a7fbd1|1494626338||t20360.2952637207s|s7748b|7748|rds|local|vector|||0.793||
+t4_data|stem|bf13981025ae4abd|ef69b3f73c5b9907|2c530c1562a7fbd1|1339690896||t20360.2952644658s|s7790b|7790|rds|local|vector|||0||
+fig_expt1|stem|1c0bcd06541d155c|21003c6016fa5f81|916399109fd6d148|2047858171||t20360.3022696479s|s1593020b|1593020|rds|local|vector|||0.288||
+get_expt1_prob|function|4d7a06f09c8fb630
+create_fig_expt1|function|6c7a5a300534eefd
+paper|stem|006c40ec6a29e768|cdd1c619d2002e26|b39b09d5583b21cc|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20360.3079902243s|s1082447b|1082447|file|local|vector|||18.186||
