@@ -389,68 +389,68 @@ Placing the three lemmas together gives the following ``three types'' Theorem.
 
 \cref{thm:three_types} gives a corresponding `three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution \citep[Theorem 4.1]{coles2001introduction}.
 
-\section{\cref{thm:three_types} in Action}
+% \section{\cref{thm:three_types} in Action}
 
-In this section, we provide a few numerical experiments that illustrate the validity of \cref{thm:three_types}. The essence of \cref{thm:three_types} is that, as $n\rightarrow\infty$, the distribution of $M_n$ behaves like a generalized extreme value distribution,
-$$
-	\mathrm{Gev}(x;\mu,\sigma,\xi)=\exp \left\{-\left(1+\xi \frac{x-\mu}{\sigma}\right)^{-1 / \xi}\right\},
-$$
-defined when $1+\xi(x-\mu) / \sigma>0 ; \mu \in \Re, \sigma>0$ and $\xi \in \mathbb{R}$. This distribution takes specific forms depending on the particular value of the shape parameter $\xi$ and changes depending on this value.
-\begin{enumerate}
-	\item The (reverse) Weibull distribution is obtained when $\xi<0$.
-	\item The Gumble distirbution is obtained when $\xi=0$.
-	\item The Frechet distribution is obtained when $\xi>0$.
-\end{enumerate}
-Thus, in order to validate the results of \cref{thm:three_types}, all we need to show is that:
-\begin{enumerate}
-	\item when $S$ is sub-Gaussian, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi<0$;
-	\item when $S$ is sub-exponential, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi=0$;
-	\item when $S$ only has a polynomial moment, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi>0$.
-\end{enumerate}
+% In this section, we provide a few numerical experiments that illustrate the validity of \cref{thm:three_types}, namely that, as $n\rightarrow\infty$, the distribution of $M_n$ behaves like a generalized extreme value distribution,
+% $$
+% 	\mathrm{Gev}(x;\mu,\sigma,\xi)=\exp \left\{-\left(1+\xi \frac{x-\mu}{\sigma}\right)^{-1 / \xi}\right\},
+% $$
+% defined when $1+\xi(x-\mu) / \sigma>0 ; \mu \in \Re, \sigma>0$ and $\xi \in \mathbb{R}$. This distribution takes specific forms depending on the particular value of the shape parameter $\xi$ and changes depending on this value.
+% \begin{enumerate}
+% 	\item The (reverse) Weibull distribution is obtained when $\xi<0$.
+% 	\item The Gumbel distirbution is obtained when $\xi=0$.
+% 	\item The Fréchet distribution is obtained when $\xi>0$.
+% \end{enumerate}
+% Thus, in order to validate the results of \cref{thm:three_types}, all we need to show is that:
+% \begin{enumerate}
+% 	\item when $S$ is sub-Gaussian, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi<0$;
+% 	\item when $S$ is sub-exponential, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi=0$;
+% 	\item when $S$ only has a polynomial moment, the distribution of the maximum surprisal $M_n$ has shape parameter $\xi>0$.
+% \end{enumerate}
 
-\subsection{Truncated Normal distribution}
+% \subsection{Truncated Normal distribution}
 
-Let us return to the truncated normal distribution example. Consider that we observe data generated according to
-$$
-	Y_i\stackrel{iid}{\sim} \mathcal{TN}(a=1,b=5,\mu=2,\sigma=1)\;(i=1,\dots,n).
-$$
-In this example, since $Y\in[1,5]$, it is simple to show that surprisal $S_i$ is bounded. Hence, we would expect that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi<0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the truncated normal distribution and for each $r=1,\dots,1000$ calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:one}. The distribution seems very close to the (reversed) Weibull distribution, and indeed the estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=-0.2002$, with a standard error of 0.0271, suggesting high confidence that the resulting estimated parameter is negative and that the distribution of $M_n$ is indeed Weibull.
+% Let us return to the truncated normal distribution example. Consider that we observe data generated according to
+% $$
+% 	Y_i\stackrel{iid}{\sim} \mathcal{TN}(a=1,b=5,\mu=2,\sigma=1)\;(i=1,\dots,n).
+% $$
+% In this example, since $Y\in[1,5]$, it is simple to show that surprisal $S_i$ is bounded. Hence, we would expect that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi<0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the truncated normal distribution and for each $r=1,\dots,1000$ calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:one}. The distribution seems very close to the (reversed) Weibull distribution, and indeed the estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=-0.2002$, with a standard error of 0.0271, suggesting high confidence that the resulting estimated parameter is negative and that the distribution of $M_n$ is indeed Weibull.
 
-\begin{figure}
-	\centering
-	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{weibull_plot.pdf}
-	\caption{The estimated GEV parameters and standard errors are as follows: location: 5.6839 (0.0314); scale: 0.8676 (0.0229); shape: -0.20002 (0.0271).}
-	\label{fig:one}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{weibull_plot.pdf}
+% 	\caption{The estimated GEV parameters and standard errors are as follows: location: 5.6839 (0.0314); scale: 0.8676 (0.0229); shape: -0.20002 (0.0271).}
+% 	\label{fig:one}
+% \end{figure}
 
-\subsection{Normal distribution}
+% \subsection{Normal distribution}
 
-Now, let us return to the normal example, which, from our theoretical results, we know should give rise to surprisals that exhibit Gumbel like behavior. To see that this is indeed the case, consider that we observe data generated according to
-$$
-	Y_i\stackrel{iid}{\sim} \mathcal{N}(\mu=1,\sigma=1)\;(i=1,\dots,n).
-$$
-In this example, we know that the surprisal $S_i$ will have a sub-exponential tail and that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi=0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the normal distribution with mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:two}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.0012$, with a standard error of 0.0209, suggesting high confidence that the actual shape parameter is either zero or very close to it, and that the distribution of $M_n$ is indeed Gumbel.
+% Now, let us return to the normal example, which, from our theoretical results, we know should give rise to surprisals that exhibit Gumbel like behavior. To see that this is indeed the case, consider that we observe data generated according to
+% $$
+% 	Y_i\stackrel{iid}{\sim} \mathcal{N}(\mu=1,\sigma=1)\;(i=1,\dots,n).
+% $$
+% In this example, we know that the surprisal $S_i$ will have a sub-exponential tail and that $M_n=\max\{S_1,\dots,S_n\}$ should eventually resemble a GEV distribution where the shape parameter $\xi=0$. To verify this, we generate $R=1000$ independent samples of size $n=1000$ from the normal distribution with mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:two}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.0012$, with a standard error of 0.0209, suggesting high confidence that the actual shape parameter is either zero or very close to it, and that the distribution of $M_n$ is indeed Gumbel.
 
-\begin{figure}
-	\centering
-	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{gumbel_plot.pdf}
-	\caption{The estimated GEV parameters and standard errors are given by: location: 6.30016 (0.0332); scale: 0.945129961 (0.0239); shape: -0.0012 (0.0209).}
-	\label{fig:two}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{gumbel_plot.pdf}
+% 	\caption{The estimated GEV parameters and standard errors are given by: location: 6.30016 (0.0332); scale: 0.945129961 (0.0239); shape: -0.0012 (0.0209).}
+% 	\label{fig:two}
+% \end{figure}
 
-\subsection{Student-t distribution}
-For the last example, we consider the situation where the assumed model is Gaussian with mean and variance equal to unity, but where the observed data is actually generated from a student-t distribution with five degrees of freedom. In this case, the tails of the student-t ensure that the surprisal does not have an exponential moment, and, as discussed in \cref{thm:three_types}, the distribution of the maximum surprisal, $M_n$, will be Frechet.
+% \subsection{Student-t distribution}
+% For the last example, we consider the situation where the assumed model is Gaussian with mean and variance equal to unity, but where the observed data is actually generated from a student-t distribution with five degrees of freedom. In this case, the tails of the student-t ensure that the surprisal does not have an exponential moment, and, as discussed in \cref{thm:three_types}, the distribution of the maximum surprisal, $M_n$, will be Fréchet.
 
-To show that this is the case we generate $R=1000$ independent samples of size $n=1000$ from a student-t distribution with five degrees of freedom, but where the mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:three}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.4557$, with a standard error of 0.0294, suggesting high confidence that the actual shape parameter is positive, and that the distribution of $M_n$ is indeed Frechet.
+% To show that this is the case we generate $R=1000$ independent samples of size $n=1000$ from a student-t distribution with five degrees of freedom, but where the mean and variance both equal to unity, and for each $r=1,\dots,1000$ we calculate $M_n^{(r)}=\max\{S_1^{(r)},\dots,S_n^{(r)}\}$. We plot the histogram of $\{M_n^{(r)}\}_{r=1}^{1000}$ and compare this with the fitted GEV distribution in \cref{fig:three}. The estimated parameters from this experiment yield an estimated shape parameter $\hat\xi_R=0.4557$, with a standard error of 0.0294, suggesting high confidence that the actual shape parameter is positive, and that the distribution of $M_n$ is indeed Fréchet.
 
-\begin{figure}
-	\centering
-	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{frechet_plot.pdf}
-	\caption{The estimated GEV parameters and standard errors are given by: location: 24.0107 (0.3564); scale: 9.9537 (0.3329); shape: 0.4557 (0.0293).}
-	\label{fig:three}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[trim= {0.0cm 0.00cm 0.0cm 0.0cm}, clip, width=0.79\columnwidth]{frechet_plot.pdf}
+% 	\caption{The estimated GEV parameters and standard errors are given by: location: 24.0107 (0.3564); scale: 9.9537 (0.3329); shape: 0.4557 (0.0293).}
+% 	\label{fig:three}
+% \end{figure}
 
-The most interesting thing from these examples from a methodological perspective is that if we get the assumed distribution of the data wrong, then this will have meaningful consequence for the behavior of the surprisal we are calculating. In particular, as the student-t example shows, when we model the data using a distribution which is assumed to have thinner tails than those of the actual data, the surprisal can have a very long/thick tail. This immediately suggests that if our goal is to check for anomalies, we should be using distributions that are somewhat robust to outliers, e.g., student-t, etc. I've obtained similar results if you model the data with a Gaussian, but the actual data generation mechanism is exponential. In this case, the max surprisal is Frechet. However, if you had modeled the data with something like a heavy-tailed student-t, then the max surprisal is Gumble. This suggests that the model you specify is absolutely critical to understanding behavior of the max surprisal itself.
+% The most interesting thing from these examples from a methodological perspective is that if we get the assumed distribution of the data wrong, then this will have meaningful consequence for the behavior of the surprisal we are calculating. In particular, as the student-t example shows, when we model the data using a distribution which is assumed to have thinner tails than those of the actual data, the surprisal can have a very long/thick tail. This immediately suggests that if our goal is to check for anomalies, we should be using distributions that are somewhat robust to outliers, e.g., student-t, etc. I've obtained similar results if you model the data with a Gaussian, but the actual data generation mechanism is exponential. In this case, the max surprisal is Fréchet. However, if you had modeled the data with something like a heavy-tailed student-t, then the max surprisal is Gumbel. This suggests that the model you specify is absolutely critical to understanding behavior of the max surprisal itself.
 
 \bibliographystyle{agsm}
 \bibliography{refs}
