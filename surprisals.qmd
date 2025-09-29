@@ -1,0 +1,459 @@
+---
+title: "Anomaly detection using surprisals"
+author:
+- name: Rob J Hyndman
+  affiliation:
+    - ref: ebs
+  email: Rob.Hyndman@monash.edu
+  corresponding: true
+  orcid: 0000-0002-2140-5352
+- name: David T Frazier
+  affiliation:
+    - ref: ebs
+affiliations:
+    - id: ebs
+      name: Monash University
+      department: Department of Econometrics & Business Statistics
+      city: Clayton
+      country: Australia
+      postal-code: 3800
+abstract: |
+  TBC
+keywords:
+  - Extreme value theory
+  - Generalized Pareto Distribution
+  - Outlier detection
+  - Tail bounds
+bibliography: refs.bib
+wpnumber: no/yr
+jelcodes: C10,C14,C46
+blind: false
+cover: true
+linestretch: 1.5
+format:
+  wp-pdf:
+    keep-tex: true
+crossref:
+  def-title: Assumption
+  def-prefix: Assumption
+include-in-header:
+  text: |
+    \newcommand{\dt}{\text{d}}
+    \newcommand{\E}{\mathbb{E}}
+    \usepackage{mathtools}
+    \mathtoolsset{showonlyrefs,mathic=true}
+---
+
+# Introduction
+
+Anomaly detection methods are often rather ad hoc and lack a solid theoretical foundation, or they make strong distributional assumptions that may not hold in practice. Here we propose a general framework for anomaly detection using extreme value theory to estimate the probability of each observation. This approach allows for a unified treatment of anomaly detection in both univariate and multivariate settings, and can be applied to both unconditional and conditional distributions. The basic idea is to calculate the surprisal (equal to the negative log density) of each observation, and then to use extreme value theory to model the tail of the surprisal distribution. This allows us to estimate the probability of observing a surprisal value as extreme or more extreme than a given observation, which can be used to flag anomalies. The surprisal approach to anomaly detection provides a principled way to control the false positive rate when flagging anomalies, by setting a threshold on the estimated tail probabilities.
+
+We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. We illustrate the approach with several examples, including both simulated and real data.
+
+Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations on $\mathbb{R}^d$ from a probability distribution $F$. The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
+$$
+s_i=-\log f(\bm{y}_i),
+$$
+where $f$ is either the density or probability mass function of $F$. While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density.
+
+Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then, the probability of observing a value with surprisal at least as large as $s$ is given by $1-G(s)$, which leads to a natural way to assign an anomaly score to each observation $\bm{y}_i$:
+$$
+p_i = 1-G(s_i) = 1-G(-\log f(\bm{y}_i)).
+$$
+Hence, one way to detect anomalies is to flag observations with $p_i < \alpha$, giving a false positive rate of $\alpha$ if all observations are from $F$. This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$. It is also preferable to a distance-based approach to anomaly detection [e.g., @hdoutliers], as it naturally handles skewed and heavy-tailed distributions.
+
+The surprisal approach converts the problem of working with a potentially multivariate distribution $F$ to working with a univariate distribution $G$. We can write
+$$
+G(s) = \Pr\{-\log f(Y)\le s\} = \Pr\{ f(Y)\ge e^{-s}\}.
+$$
+This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i< \alpha$ lies outside the $100(1-\alpha)$% HDR region of $F$.
+
+We will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile in areas of low density, which is precisely where we are looking for anomalies.
+
+To address this, @lookout proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
+
+Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
+
+To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+
+::: {.callout-note}
+Outline of paper TBC
+:::
+
+# Extreme value theory for the surprisal distribution
+
+We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$ where $f$ is the density or mass function of $\bm{Y}$. These conditions describe increasingly heavy tails:
+
+1. where $S$ is sub-Gaussian (e.g., when $f$ is bounded above and below);
+2. where $S$ is sub-exponential (e.g., when $f$ is Gaussian); and
+3. where $S$ has a polynomial moment (e.g., when $f$ is Student-t).
+
+We state these as three alternative assumptions.
+
+::: {#def-bounded}
+## Sub-Gaussian
+The random variable $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
+$$
+	\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\}.
+$$
+:::
+
+::: {#def-subbounded}
+## Sub-exponential
+The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e.,
+$$
+	\E \exp\{\lambda(S-\E[S])\} \leq \exp\{\lambda^2\nu^2/ 2\} \quad\text{ for all } \quad |\lambda|< 1/b.
+$$
+:::
+
+::: {#def-polybounded}
+## Polynomial
+The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\mathbb{E}[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
+:::
+
+Under each of Assumptions [-@def-bounded]--[-@def-polybounded], we seek a result on the limiting distribution of the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$. If we can show that this distribution falls within the class of extreme value distributions, then we can fit a Generalized Pareto Distribution (GPD) to the largest surprisal values [@coles2001introduction].
+
+## $S$ has sub-Gaussian tails
+
+Let's first assume that the surprisals are well-behaved and have a sub-Gaussian tail. @def-bounded will be satisfied in cases where the density $f$ is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound.
+
+For example, consider the truncated normal distribution on $[a,b]$, where $Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)$ and $-\infty < a < b < \infty$. Then
+$$
+S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\},
+$$
+where $\Phi$ is the standard normal distribution function. Since $Y\in[a,b]$, $S$ is bounded for all $\sigma>0$ and hence $S$ satisfies @def-bounded.
+
+Under @def-bounded, we have the following result on the maximum of the surprisals.
+
+::: {#lem-bounds}
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$.
+If $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
+$$
+\mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
+$$,
+then, for $s\in\mathbb{R}_+$,
+$$
+\Pr\{M_n-\mathbb{E}[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+$$
+:::
+
+::: {.proof}
+For any $\lambda>0$,
+\begin{align}
+\Pr\{S\ge s\} =
+\Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
+ & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
+ & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
+\end{align}
+Now, we can maximise the RHS of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
+$$
+\Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
+$$
+The stated result now follows by noting that
+\begin{align}
+\Pr\left(M_n-\mathbb{E}[S]\ge s\right) = 1-\Pr\{M_n\le s\}
+ & = 1-\Pr\{S\le s\}^n                       \\
+ & = 1-(1-\Pr\{S\ge s\})^n                           \\
+ & \le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+\end{align}
+:::
+
+::: {#cor-one}
+If @def-bounded is satisfied, then, for all $s>0$,
+$$
+\Pr\Big(|M_n-\mathbb{E}[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
+$$
+:::
+
+::: {.proof}
+This follows directly from the union bound:
+\begin{align}
+\Pr\Big(|M_n|\ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(n)}\Big)
+ & \le n \Pr\Big\{|S|\ge \sqrt{2}\nu^2s + \sqrt{2\nu^2\log(n)}\Big\} \\
+ & \le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)} \\
+ & = 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}} \\
+ & \le e^{-\sqrt{\log(2n)s}-s} \\
+ & \le e^{-s}
+\end{align}
+The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganising terms.
+:::
+
+@cor-one is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus is within the class of extreme value distributions.
+
+## $S$ has an exponential moment
+
+In cases where the underlying density has full support on $\mathbb{R}$ and the log density cannot be bounded from below, then the sub-Gaussianity condition in @def-bounded may be violated, as the following result illustrates.
+
+::: {#lem-normal}
+If $Y\sim \mathcal{N}(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular,
+$$
+\mathbb{E} e^{\lambda(S-1/2)+(\lambda/2)\log(2\pi\sigma^2)}\le e^{\lambda^2/2+(\lambda/2)\log(2\pi\sigma^2)},\quad \forall |\lambda|<1/2.
+$$
+:::
+
+::: {.proof}
+Firstly, note that
+$$
+S=-\log f(Y)= \frac{1}{2}\log (2\pi\sigma^2)+\frac{(Y-\mu)^2}{2\sigma^2}.
+$$
+and that
+$$
+\mu_S=\mathbb{E}[S]=-\int f(y)\log f(y)\mathrm{d} y=\frac{1}{2}\{1+\log (2\pi\sigma^2)\}.
+$$
+Define
+$$
+X=\frac{1}{2}\frac{(Y-\mu)^2}{\sigma^2}-\frac{1}{2},
+$$
+then $\mathbb{E}[X]=0$. Now, note that
+$$
+\mathbb{E} e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi\sigma^2}}\int e^{\frac{\lambda}{2}\left[\frac{(y-\mu)^2}{\sigma^2}-1\right]}e^{-\frac{(y-\mu)^2}{2\sigma^2}}\mathrm{d} y.
+$$
+Consider the change of variables $z=(y-\mu)/\sigma$ so that we have
+$$
+\E e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi}}\int e^{\frac{\lambda}{2}[z^2-1]}e^{-z^2/2}\dt y={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{e^{-2(\lambda/2)}}{\sqrt{1-2(\lambda/2)}}
+$$
+for all $\lambda<1$. Further, it can be verified that
+$$
+\frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
+$$
+Hence, when we have $Y\sim\mathcal{N}(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$.
+
+:::
+
+Therefore, to be able to apply extreme value theory to the surprisal values, we need a version of @lem-bounds that uses sub-exponentiality.
+
+::: {#lem-bounds_sub}
+
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-subbounded is satisfied, then, for $s\in\mathbb{R}_+$,
+$$
+	\Pr\left(M_n-\E[S]\ge s\right)\le 1-
+	\begin{cases}
+		(1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
+		(1-e^{-s/2b})^n                 & \text{ if }s>\nu^2/b
+	\end{cases}.
+$$
+
+:::
+
+::: {.proof}
+
+The result follows a similar argument as for @lem-bounds, up until we maximize the tail bound. In particular, for any $\lambda>0$,
+\begin{align*}
+  \Pr\left\{ S-\E[S]\ge s\right\} =
+  \Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}
+    & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
+    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
+\end{align*}
+Now, we must consider a constrained optimization to ensure the right hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
+$$
+  \Pr\left\{S-\E[S]\ge s\right\}\le
+  \begin{cases}
+    e^{-\frac{1}{2}s^2/\nu^2} & \text{ if }0\le s\le \nu^2/b; \\
+    e^{-s/2b}                 & \text{ if } s>\nu^2/b.
+  \end{cases}
+$$
+The stated result again follows by noting that
+\begin{align*}
+  \Pr\left\{M_n-\E[S]\ge s\right\}
+    & = 1-\Pr\left\{M_n\le s\right\} \\
+    & = 1-\Pr\left\{S\le s\right\}^n \\
+    & \le 1-
+  \begin{cases}
+    (1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if } 0\le s\le \nu^2/b; \\
+    (1-e^{-s/2b})^n                 & \text{ if } s>\nu^2/b.
+  \end{cases}
+\end{align*}
+
+:::
+
+Results similar to @lem-bounds_sub also hold for $\Pr\left\{M_n-\E[S]\le s\right\}$, and for $\Pr\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e.,
+$$
+\Pr\left\{|M_n-\E[S]|\ge s\right\}\le 1-
+\begin{cases}
+  (1-2e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
+  (1-2e^{-s/2b})^n                 & \text{ if }s>\nu^2/b.
+\end{cases}
+$$
+
+::: {#cor-two}
+
+Under @def-subbounded, for $s>\nu^2/b$, as $n\rightarrow\infty$
+$$
+	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
+$$
+
+:::
+
+::: {.proof}
+
+Apply @def-subbounded to see that
+\begin{align*}
+	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
+	 & \le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n                       \\
+	 & = 1-\big(1-e^{-s}/n\big)^n                                     \\
+	 & = 1-e^{e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
+\end{align*}
+The result now follows by noting that, for all $s>0$,
+$$
+	\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right]= o(1)\le 0.
+$$
+
+:::
+
+@cor-two is useful as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that @cor-two implies
+$$
+	\sup_{s:s>\nu^2/b}\left|\Pr\Big\{|M_n-\mu|\ge \big[2bs+2b\log(2n)\big]\Big\}-\big(1-e^{e^{-s}}\big)\right| = o(1).
+$$
+To see that this implies that $M_n-\E[S]$, appropriately standardized, converges to an extreme value distribution, we first recall that
+$$
+	\Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
+$$
+Hence,
+$$
+	\sup_{x\in\mathcal{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathcal{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
+$$
+so that when $X_n$ and $X$ are both continuous we see that @cor-two implies that the CDF of $(M_n-\E[S]-2b\log(2n))/2b$ converges to that of the Type-1 extreme value distribution (i.e., Gumbel distribution); i.e., using @cor-two and the above we have that
+$$
+	\sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\le [2bs+2b\log(2n)]\right\}-e^{e^{-s}}\right|=o(1).
+$$
+This is one notion of convergence in distribution.
+
+## $S$ has a polynomial moment
+
+Finally, we consider the case where the surprisal has a polynomial moment (e.g., Student-t random variables), and derive a corresponding result to @lem-bounds.
+
+::: {@lem:bounds_poly}
+
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-polybounded is satisfied, then, for $s>0$ and such that $s>C>0$,
+$$
+  \Pr\left(|M_n-\E[S]|\ge s\right) \le 1- (1-C^p/s^p)^n.
+$$
+Hence,
+$$
+	\sup_{s:s>C} \left|\Pr\big(|M_n-\E[S]|\le (s\cdot n^{1/p})\big)-e^{-s^{-p}}\right|=o(1).
+$$
+
+:::
+
+::: {.proof}
+
+By Markov's inequality,
+$$
+	\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
+$$
+To derive the first stated result, again note that
+\begin{align*}
+\Pr\left\{|M_n-\E[S]|\ge s\right\}
+& = 1 -\Pr\left\{|M_n-\E[S]|\le s\right\}               \\
+& = 1-\Pr\left\{|S-\E[S]|\le s\right\}^n                \\
+& = 1-\left(1-\Pr\left\{|S-\E[S]|\ge s\right\}\right)^n \\
+& \le 1-(1-C^p/s^p)^n.
+\end{align*}
+
+To derive the second stated result, apply the first result with $t=sn^{1/p}C>1$, which clearly holds for some $n$ large enough, to see that
+$$
+	\Pr\left\{|M_n-\E[S]|\ge t\right\}
+	\le 1- \left(1-\frac{C^p}{(Csn^{1/p})^p}\right)^n \\
+	= 1-\left(1-s^{-p}/n\right)^n.
+$$
+Now, recall that, for $x\ge0$,
+$$
+	\lim_{n\rightarrow\infty}(1-x/n)^n=e^{-x}.
+$$
+Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
+$$
+	\sup_{s:s>C}\left|\Pr\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}\right|=o(1).
+$$
+
+:::
+
+## Three types theorem
+
+Placing the three lemmas together gives the following "three types" Theorem.
+
+::: {#thm-three_types}
+
+Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $Y\sim \bm{F}$. Further, let $M_n=\max\{s_1,\dots,s_n\}$, where $s_i=-\log f(y_i)$.
+
+1. If the surprisal satisfies @def-bounded, then
+$$
+  \sup_{s:s>0}\left|\Pr\left\{\Big|M_n-\E[S]\Big|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
+$$
+2. If the surprisal satisfies @def-subbounded, then
+$$
+  \sup_{s:s>1/b}\left|\Pr\Big\{\big|M_n-\E[S]\big|\ge (2b)s+(2b)\log(2n)\Big\}-e^{-e^{-s}}\right|=o(1).
+$$
+3. If the surprisal satisfies @def-polybounded, then
+$$
+	\sup_{s:s>C}\left|\Pr\Big\{\big|M_n-\E[S]\big|\ge (Csn^{1/p})\Big\}-e^{-s^{-p}}\right|=o(1).
+$$
+
+:::
+
+@thm-three_types gives a corresponding 'three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
+
+# Experiments
+
+## Standard normal values
+
+The use of a GPD to estimate the tail probabilities of the surprisal distribution is designed to be robust to incorrect assumptions about the underlying distribution $F$. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t_4$ distribution to compute the surprisal values. The GPD approach should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
+
+To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t_4$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities using the same  distribution used to compute the surprisal values, and then using a GPD fitted to the largest 100 surprisal values.
+
+```{r}
+#| label: surprisal_prob
+#| code-fold: false
+# Compute surprisal probabilities of v1 assuming a standard Normal distribution
+# and a t4 distribution
+norm_prob <- tibble(
+  y = n01$v1,
+  p =      surprisals(y, distribution = dist_normal()),
+  p_gpd =  surprisals(y, distribution = dist_normal(), approximation = "gpd"),
+  pt =     surprisals(y, distribution = dist_student_t(4)),
+  pt_gpd = surprisals(y, distribution = dist_student_t(4), approximation = "gpd"),
+)
+norm_prob |>
+  tidyr::pivot_longer(p:pt_gpd, names_to = "Estimate", values_to = "Probability") |>
+  ggplot2(
+    aes(x = p, )
+  )
+```
+
+
+
+The most accurate values are in column `p`, as this uses the correct distribution applied to the correct surprisals. Notice that `p_gpd` and `p_emp` are both relatively accurate: the GPD and empirical approximations work. For the probabilities calculated using the incorrect distribution, `pt` is relatively inaccurate, with much larger probabilities than they should be, especially in the extreme tails. But `pt_gpd` and `pt_emp` are both reasonable estimates, despite being based on an incorrect distribution for computing the surprisals. In fact, `p_emp` and `pt_emp` are identical, because the ordering of the surprisals is unchanged despite the incorrect distribution being used.
+
+The various estimates are displayed in @fig-surprisal_prob for values of $y$ greater than 2.5, showing how the estimates (other than `pt`) are particularly accurate in the extreme tails, where we need them for anomaly detection.
+
+```{r}
+#| label: fig-surprisal_prob
+#| fig-cap: Surprisal probabilities estimated using the correct N(0,1) distribution and using an incorrect $t_4$ distribution. The GPD and empirical estimates of surprisal probabilities are still accurate, even when the wrong distribution is used to compute the surprisal values.
+norm_prob |>
+  filter(y > 2.5) |>
+  tidyr::pivot_longer(p:pt_emp, names_to = "Estimate", values_to = "Probability") |>
+  ggplot(aes(x = y, y = Probability, col = Estimate)) +
+  geom_line()
+```
+
+In summary, even when we don't know the distribution of the data, we can use some
+incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal  probabilities.
+
+
+* 990 from Gamma(2,2) and 10 from Gamma(2,r). Fit Gamma to all 1000 and compute surprisals. Fit GPD to largest 50 surprisals. Compare true and estimated tail probabilities.
+* 990 from trivariate N(0,1) with 10 from ring at distance 2 from origin. Fit bivariate normal to all 1000 and compute surprisals. Fit GPD to largest 50 surprisals. Compare true and estimated tail probabilities.
+
+
+# Applications
+
+* US COVID death rates: <https://otexts.com/weird/09-timeseries.html#multivariate-time-series>
+* <https://otexts.com/weird/06-density.html#gam-surprisals>
+
+# Discussion
+
+## Software and reproducibility {.unnumbered}
+
+All results presented here can be reproduced using the code available at <https://github.com/robjhyndman/Surprisal_Theory>. The analysis was conducted using R version 4.5.1 [@R], with the following R packages: weird [@Rweird], tsibble [@Rtsibble], targets [@targets;@targetspaper], ggplot2 [@ggplot2;@ggplotbook], and other tidyverse [@tidyverse] packages.
+
+## Acknowledgements {.unnumbered}
+
+Both authors are funded by the Australian Research Council through Discovery Project DP250100702. Rob Hyndman is a member of the Australian Research Council Industrial Transformation Training Centre in Optimisation Technologies, Integrated Methodologies, and Applications (OPTIMA), Project ID IC200100009.
