@@ -74,38 +74,63 @@ options(
 
 # Introduction
 
-Anomaly detection methods are often rather ad hoc and lack a solid theoretical foundation, or they make strong distributional assumptions that may not hold in practice. Here we propose a general framework for anomaly detection using extreme value theory to estimate the probability of each observation. This approach allows for a unified treatment of anomaly detection in both univariate and multivariate settings, and can be applied to both unconditional and conditional distributions. The basic idea is to calculate the surprisal (equal to the negative log density) of each observation, and then to use extreme value theory to model the tail of the surprisal distribution. This allows us to estimate the probability of observing a surprisal value as extreme or more extreme than a given observation, which can be used to flag anomalies. The surprisal approach to anomaly detection provides a principled way to control the false positive rate when flagging anomalies, by setting a threshold on the estimated tail probabilities.
+Anomaly detection methods are often rather ad hoc and lack a solid theoretical foundation, or they make strong distributional assumptions that may not hold in practice. Here we define an anomaly as a point of low probability, and we propose a general framework for anomaly detection by estimating the probability of each observation, or one more anomalous. This approach allows for a unified treatment of anomaly detection that can be applied to any anomaly detection problem, provided a probability distribution can be defined on the space of observations. It allows for univariate and multivariate settings, and can be applied to both unconditional and conditional distributions.
 
-We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. We illustrate the approach with several examples, including both simulated and real data.
+The basic idea is to calculate the surprisal (equal to the negative log density) of each observation, and then estimate the tail probability from the surprisal distribution. This allows us to estimate the probability of observing a surprisal value as extreme or more extreme than a given observation, which can then be used to flag anomalies. The surprisal approach to anomaly detection provides a principled way to control the false positive rate when flagging anomalies, by setting a threshold on the estimated tail probabilities.
 
-Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations on $\mathbb{R}^d$ from a probability distribution $F$. The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
+Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations from a probability distribution $F$ defined on an appropriate sample space. The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
 $$
 s_i=-\log f(\bm{y}_i),
 $$
-where $f$ is either the density or probability mass function of $F$. While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density.
+where $f$ is either the density or probability mass function of $F$. While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density. A large value of $s_i$ indicates that $\bm{y}_i$ is not a likely value, and so is a potential anomaly. On the other hand, typical values will have low surprisals. In information theory, the average surprisal is known as the entropy of a random variable [@Cover2006;@Stone2022] and provides a measure of uncertainty.
+
+Although the term "surprisal" may not be in common use amongst statisticians and other data scientists, the underlying idea is widely used. For example, if $f$ is obtained from a model with parameters that need to be estimated from the data, then the sum of the surprisals is equal to minus the log likelihood of the data. Therefore, finding parameters that minimize the sum of the surprisals is equivalent to maximum likelihood estimation.
 
 Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then, the probability of observing a value with surprisal at least as large as $s$ is given by $1-G(s)$, which leads to a natural way to assign an anomaly score to each observation $\bm{y}_i$:
 $$
 p_i = 1-G(s_i) = 1-G(-\log f(\bm{y}_i)).
 $$
-Hence, one way to detect anomalies is to flag observations with $p_i < \alpha$, giving a false positive rate of $\alpha$ if all observations are from $F$. This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$. It is also preferable to a distance-based approach to anomaly detection [e.g., @hdoutliers], as it naturally handles skewed and heavy-tailed distributions.
 
-The surprisal approach converts the problem of working with a potentially multivariate distribution $F$ to working with a univariate distribution $G$. We can write
+We define anomalies as observations with $p_i < \alpha$, giving a false positive rate of $\alpha$ if all observations are from $F$. This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$. It is also preferable to a distance-based approach to anomaly detection [e.g., @hdoutliers], as it naturally handles skewed and heavy-tailed distributions.
+
+The surprisal approach converts the problem of working with $F$, a potentially multivariate distribution (or even one on a manifold or some non-Euclidean space), to working with a univariate distribution $G$ defined on $\mathbb{R}$. We can write
 $$
 G(s) = \Pr\{-\log f(Y)\le s\} = \Pr\{ f(Y)\ge e^{-s}\}.
 $$
 This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i< \alpha$ lies outside the $100(1-\alpha)$% HDR region of $F$.
 
-We will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile in areas of low density, which is precisely where we are looking for anomalies.
+We will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile in areas of low density, which is precisely where we are looking for anomalies. Further, we are seeking a method that does not make strong distributional assumptions.
 
-To address this, @lookout proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
+We present three ways to compute the tail probabilities $\{p_1,\dots,p_n\}$ from the surprisal distribution: 
 
-Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
+(1) by using the same assumed or estimated distribution that was used to compute the surprisals; 
+(2) by using the empirical distribution function of the observed surprisals $\{s_1,\dots,s_n\}$; and 
+(3) by fitting a Generalized Pareto distribution to the most extreme surprisals. 
 
-To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+Clearly, approach (1) makes strong distributional assumptions, as it requires that we have an accurate distribution of the original observations.  The other two approaches allow for considerable mis-specification of the distribution used to compute the surprisals. Approach (2) requires only that the ordering of the surprisals is similar to what would have been obtained under the true distribution, while approach (3) requires that extreme value theory applies to the surprisal distribution.
+
+We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. 
+
+An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
+
+Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+
+We illustrate all three approaches with several examples, including both simulated and real data.
 
 ::: {.callout-note}
 Outline of paper TBC
+:::
+
+# Empirical surprisal probabilities
+
+Under approach (2) above, we estimate $p_i$ as the proportion of surprisals larger than $s_i$. For large $n$, this provides a quick and convenient estimate of $p_i$ that is accurate even when the assumed distribution $F$ is not. 
+
+::: {.callout-important}
+What can we say about the quality of the approximation?
+
+If the surprisal ranks under the true and estimated $F$ distributions are equal, this is obviously ok. That should be true in the tails of any distribution --- i.e., when $y_i$ is greater than the largest mode of $f$, or less than the smallest mode of $f$.
+
+Can we say anything else?
 :::
 
 # Extreme value theory for the surprisal distribution
@@ -430,7 +455,7 @@ To study the effect of the assumed distribution, we compute the surprisal values
 
 ```{r}
 #| label: fig-norm_prob
-#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t_4$ distribution. In each cases, surprisal probabilities are computed using (a) the correct distribution; (b) the incorrect distribution; (c) a GPD applied to the surprisal values from the correct distribution; (d) a GPD applied to the surprisal values from the incorrect distribution. This demonstrates that the surprisal probabilities under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t_4$ distribution. In each cases, surprisals are computed using the correct distribution and the incorrect distribution, and tail probabilities are computed using the assumed distribution, the empirical distribution and a GPD applied to the surprisal values. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
 #| fig-height: 4
 tar_read(fig_expt1)
 ```
