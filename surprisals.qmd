@@ -95,11 +95,11 @@ We define anomalies as observations with $p_i < \alpha$, giving a false positive
 
 The surprisal approach converts the problem of working with $F$, a potentially multivariate distribution (or even one on a manifold or some non-Euclidean space), to working with a univariate distribution $G$ defined on $\mathbb{R}$. We can write
 $$
-G(s) = \Pr\{-\log f(Y)\le s\} = \Pr\{ f(Y)\ge e^{-s}\}.
+G(s) = \Pr\{-\log f(\bm{Y})\le s\} = \Pr\{ f(\bm{Y})\ge e^{-s}\}.
 $$
-This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i< \alpha$ lies outside the $100(1-\alpha)$% HDR region of $F$.
+This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i< \alpha$ lies outside the $100(1-\alpha)$% highest density region of $F$.
 
-We will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile in areas of low density, which is precisely where we are looking for anomalies. Further, we are seeking a method that does not make strong distributional assumptions.
+We will usually not know $F$, and so we need to estimate it from data or from theory. Such estimates are particularly fragile or uncertain in areas of low density, which is precisely where we are looking for anomalies. Further, we are seeking a method that does not make strong distributional assumptions.
 
 We present three ways to compute the tail probabilities $\{p_1,\dots,p_n\}$ from the surprisal distribution: 
 
@@ -108,12 +108,6 @@ We present three ways to compute the tail probabilities $\{p_1,\dots,p_n\}$ from
 (3) by fitting a Generalized Pareto distribution to the most extreme surprisals. 
 
 Clearly, approach (1) makes strong distributional assumptions, as it requires that we have an accurate distribution of the original observations.  The other two approaches allow for considerable mis-specification of the distribution used to compute the surprisals. Approach (2) requires only that the ordering of the surprisals is similar to what would have been obtained under the true distribution, while approach (3) requires that extreme value theory applies to the surprisal distribution.
-
-We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. 
-
-An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
-
-Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
 
 We illustrate all three approaches with several examples, including both simulated and real data.
 
@@ -135,6 +129,12 @@ Can we say anything else?
 
 # Extreme value theory for the surprisal distribution
 
+We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. 
+
+An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
+
+Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+
 We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$ where $f$ is the density or mass function of $\bm{Y}$. These conditions describe increasingly heavy tails:
 
 1. where $S$ is sub-Gaussian (e.g., when $f$ is bounded above and below);
@@ -144,7 +144,7 @@ We consider three possible conditions on the surprisal distribution of $S = -\lo
 We state these as three alternative assumptions.
 
 ::: {#def-bounded}
-## Sub-Gaussian
+#### Sub-Gaussian
 The random variable $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
 $$
 	\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\}.
@@ -152,7 +152,7 @@ $$
 :::
 
 ::: {#def-subbounded}
-## Sub-exponential
+#### Sub-exponential
 The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e.,
 $$
 	\E \exp\{\lambda(S-\E[S])\} \leq \exp\{\lambda^2\nu^2/ 2\} \quad\text{ for all } \quad |\lambda|< 1/b.
@@ -160,7 +160,7 @@ $$
 :::
 
 ::: {#def-polybounded}
-## Polynomial
+#### Polynomial
 The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\mathbb{E}[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
 :::
 
@@ -270,13 +270,11 @@ $$
 \frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
 $$
 Hence, when we have $Y\sim\mathcal{N}(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$.
-
 :::
 
 Therefore, to be able to apply extreme value theory to the surprisal values, we need a version of @lem-bounds that uses sub-exponentiality.
 
 ::: {#lem-bounds_sub}
-
 Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-subbounded is satisfied, then, for $s\in\mathbb{R}_+$,
 $$
 	\Pr\left(M_n-\E[S]\ge s\right)\le 1-
@@ -285,11 +283,9 @@ $$
 		(1-e^{-s/2b})^n                 & \text{ if }s>\nu^2/b
 	\end{cases}.
 $$
-
 :::
 
 ::: {.proof}
-
 The result follows a similar argument as for @lem-bounds, up until we maximize the tail bound. In particular, for any $\lambda>0$,
 \begin{align*}
   \Pr\left\{ S-\E[S]\ge s\right\} =
@@ -316,7 +312,6 @@ The stated result again follows by noting that
     (1-e^{-s/2b})^n                 & \text{ if } s>\nu^2/b.
   \end{cases}
 \end{align*}
-
 :::
 
 Results similar to @lem-bounds_sub also hold for $\Pr\left\{M_n-\E[S]\le s\right\}$, and for $\Pr\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e.,
@@ -329,16 +324,13 @@ $$
 $$
 
 ::: {#cor-two}
-
 Under @def-subbounded, for $s>\nu^2/b$, as $n\rightarrow\infty$
 $$
 	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
 $$
-
 :::
 
 ::: {.proof}
-
 Apply @def-subbounded to see that
 \begin{align*}
 	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
@@ -350,7 +342,6 @@ The result now follows by noting that, for all $s>0$,
 $$
 	\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right]= o(1)\le 0.
 $$
-
 :::
 
 @cor-two is useful as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that @cor-two implies
@@ -376,7 +367,6 @@ This is one notion of convergence in distribution.
 Finally, we consider the case where the surprisal has a polynomial moment (e.g., Student-t random variables), and derive a corresponding result to @lem-bounds.
 
 ::: {@lem:bounds_poly}
-
 Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-polybounded is satisfied, then, for $s>0$ and such that $s>C>0$,
 $$
   \Pr\left(|M_n-\E[S]|\ge s\right) \le 1- (1-C^p/s^p)^n.
@@ -385,11 +375,9 @@ Hence,
 $$
 	\sup_{s:s>C} \left|\Pr\big(|M_n-\E[S]|\le (s\cdot n^{1/p})\big)-e^{-s^{-p}}\right|=o(1).
 $$
-
 :::
 
 ::: {.proof}
-
 By Markov's inequality,
 $$
 	\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
@@ -417,7 +405,6 @@ Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
 $$
 	\sup_{s:s>C}\left|\Pr\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}\right|=o(1).
 $$
-
 :::
 
 ## Three types theorem
@@ -425,7 +412,6 @@ $$
 Placing the three lemmas together gives the following "three types" Theorem.
 
 ::: {#thm-three_types}
-
 Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $Y\sim \bm{F}$. Further, let $M_n=\max\{s_1,\dots,s_n\}$, where $s_i=-\log f(y_i)$.
 
 1. If the surprisal satisfies @def-bounded, then
@@ -440,7 +426,6 @@ $$
 $$
 	\sup_{s:s>C}\left|\Pr\Big\{\big|M_n-\E[S]\big|\ge (Csn^{1/p})\Big\}-e^{-s^{-p}}\right|=o(1).
 $$
-
 :::
 
 @thm-three_types gives a corresponding 'three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
@@ -449,23 +434,22 @@ $$
 
 ## Standard normal values
 
-The use of a GPD to estimate the tail probabilities of the surprisal distribution is designed to be robust to incorrect assumptions about the underlying distribution $F$. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t_4$ distribution to compute the surprisal values. The GPD approach should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
+Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
 
-To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t_4$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities using the same  distribution used to compute the surprisal values, and alternatively using a GPD fitted to the largest 100 surprisal values.
+To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t(4)$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities in three ways: (a) using the same distribution used to compute the surprisal values; (b) using empirical tail probabilities; and (c) using a GPD fitted to the largest 100 surprisal values. 
 
 ```{r}
 #| label: fig-norm_prob
-#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t_4$ distribution. In each cases, surprisals are computed using the correct distribution and the incorrect distribution, and tail probabilities are computed using the assumed distribution, the empirical distribution and a GPD applied to the surprisal values. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t(4)$ distribution. In each cases, surprisals are computed using the correct distribution and the incorrect distribution, and tail probabilities are computed using the assumed distribution, the empirical distribution and a GPD applied to the surprisal values. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
 #| fig-height: 4
 tar_read(fig_expt1)
 ```
 
-The various estimates are displayed in the left panel of @fig-norm_prob for observations greater than 2.5, showing how the GPD estimates are particularly accurate in the extreme tails, where we need them for anomaly detection. The true values are shown in orange ("Normal"). The two GPD estimates (blue and pink) are almost identical despite the incorrect distribution being used to compute the surprisals for one of them. When the incorrect distribution is also used to compute the probabilities (green), the results are very inaccurate.
+The various estimates are displayed in the left panel of @fig-norm_prob for observations greater than 2.5, showing how both empirical tail probabilities and the GPD estimates are still accurate, regardless of which distribution was used to compute the surprisals. The solid lines show the results for surprisals computed using the true N(0,1) distribution, while the dashed line shows the results for surprisals computed using the mis-specified $t(4)$ distribution. The estimates computed directly from $t(4)$ ("Assumed distribution") are very inaccurate, but all other estimates lie close to the truth.
 
-In summary, even when we don't know the distribution of the data, we can use some
-incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal  probabilities.
+In summary, even when we don't know the distribution of the data, we can use some incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal probabilities.
 
-The converse situation is shown in the right panel of @fig-norm_prob, where the data are generated from a $t_4$ distribution, and the surprisal values are computed using both the correct $t_4$ density and an incorrect N(0,1) density. Again, the GPD estimates of the surprisal probabilities are accurate in the extreme tails, even when the wrong distribution is used to compute the surprisal values.
+The converse situation is shown in the right panel of @fig-norm_prob, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect N(0,1) density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
 
 
 ## Gamma values

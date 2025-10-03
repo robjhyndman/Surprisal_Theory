@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -283,7 +283,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{2 October 2025}
+\date{3 October 2025}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -383,7 +383,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 2 October 2025}
+   \lfoot{\sf Hyndman, Frazier: 3 October 2025}
 
 % Keywords
 
@@ -478,17 +478,17 @@ The surprisal approach converts the problem of working with \(F\), a
 potentially multivariate distribution (or even one on a manifold or some
 non-Euclidean space), to working with a univariate distribution \(G\)
 defined on \(\mathbb{R}\). We can write \[
-G(s) = \Pr\{-\log f(Y)\le s\} = \Pr\{ f(Y)\ge e^{-s}\}.
+G(s) = \Pr\{-\log f(\bm{Y})\le s\} = \Pr\{ f(\bm{Y})\ge e^{-s}\}.
 \] This makes clear that the surprisal probability is related to the
 highest density regions of the distribution \autocite{HDR96}. In fact,
 every observation with \(p_i< \alpha\) lies outside the
-\(100(1-\alpha)\)\% HDR region of \(F\).
+\(100(1-\alpha)\)\% highest density region of \(F\).
 
 We will usually not know \(F\), and so we need to estimate it from data
-or from theory. Such estimates are particularly fragile in areas of low
-density, which is precisely where we are looking for anomalies. Further,
-we are seeking a method that does not make strong distributional
-assumptions.
+or from theory. Such estimates are particularly fragile or uncertain in
+areas of low density, which is precisely where we are looking for
+anomalies. Further, we are seeking a method that does not make strong
+distributional assumptions.
 
 We present three ways to compute the tail probabilities
 \(\{p_1,\dots,p_n\}\) from the surprisal distribution:
@@ -515,6 +515,39 @@ Approach (2) requires only that the ordering of the surprisals is
 similar to what would have been obtained under the true distribution,
 while approach (3) requires that extreme value theory applies to the
 surprisal distribution.
+
+We illustrate all three approaches with several examples, including both
+simulated and real data.
+
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, titlerule=0mm, rightrule=.15mm, opacityback=0, toptitle=1mm, arc=.35mm, bottomtitle=1mm, left=2mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, leftrule=.75mm, bottomrule=.15mm, colback=white, colframe=quarto-callout-note-color-frame]
+
+Outline of paper TBC
+
+\end{tcolorbox}
+
+\section{Empirical surprisal
+probabilities}\label{empirical-surprisal-probabilities}
+
+Under approach (2) above, we estimate \(p_i\) as the proportion of
+surprisals larger than \(s_i\). For large \(n\), this provides a quick
+and convenient estimate of \(p_i\) that is accurate even when the
+assumed distribution \(F\) is not.
+
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, titlerule=0mm, rightrule=.15mm, opacityback=0, toptitle=1mm, arc=.35mm, bottomtitle=1mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, leftrule=.75mm, bottomrule=.15mm, colback=white, colframe=quarto-callout-important-color-frame]
+
+What can we say about the quality of the approximation?
+
+If the surprisal ranks under the true and estimated \(F\) distributions
+are equal, this is obviously ok. That should be true in the tails of any
+distribution --- i.e., when \(y_i\) is greater than the largest mode of
+\(f\), or less than the smallest mode of \(f\).
+
+Can we say anything else?
+
+\end{tcolorbox}
+
+\section{Extreme value theory for the surprisal
+distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
 
 We show that under weak conditions on the tail of the surprisal
 distribution, the maximum surprisal converges to one of the three types
@@ -544,39 +577,6 @@ contained in the largest \(\beta\) of \(\{s_i\}_{i=1}^n\) are assigned
 surprisal distribution of \(S = -\log f(\bm{Y})\), where
 \(\bm{Y}\sim F\), similar to the Fisher-Tippett-Gnedenko (FTG) theorem
 \autocite{coles2001introduction}.
-
-We illustrate all three approaches with several examples, including both
-simulated and real data.
-
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, coltitle=black, left=2mm, colframe=quarto-callout-note-color-frame, opacityback=0, bottomtitle=1mm, colback=white, arc=.35mm, toprule=.15mm, toptitle=1mm, breakable, opacitybacktitle=0.6, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white]
-
-Outline of paper TBC
-
-\end{tcolorbox}
-
-\section{Empirical surprisal
-probabilities}\label{empirical-surprisal-probabilities}
-
-Under approach (2) above, we estimate \(p_i\) as the proportion of
-surprisals larger than \(s_i\). For large \(n\), this provides a quick
-and convenient estimate of \(p_i\) that is accurate even when the
-assumed distribution \(F\) is not.
-
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, coltitle=black, left=2mm, colframe=quarto-callout-important-color-frame, opacityback=0, bottomtitle=1mm, colback=white, arc=.35mm, toprule=.15mm, toptitle=1mm, breakable, opacitybacktitle=0.6, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white]
-
-What can we say about the quality of the approximation?
-
-If the surprisal ranks under the true and estimated \(F\) distributions
-are equal, this is obviously ok. That should be true in the tails of any
-distribution --- i.e., when \(y_i\) is greater than the largest mode of
-\(f\), or less than the smallest mode of \(f\).
-
-Can we say anything else?
-
-\end{tcolorbox}
-
-\section{Extreme value theory for the surprisal
-distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
 
 We consider three possible conditions on the surprisal distribution of
 \(S = -\log f(\bm{Y})\) where \(f\) is the density or mass function of
@@ -927,20 +927,22 @@ Distribution \autocite[Theorem 4.1]{coles2001introduction}.
 
 \subsection{Standard normal values}\label{standard-normal-values}
 
-The use of a GPD to estimate the tail probabilities of the surprisal
-distribution is designed to be robust to incorrect assumptions about the
-underlying distribution \(F\). Suppose we generate 1000 observations
-from a N(0,1) distribution, but use a \(t_4\) distribution to compute
-the surprisal values. The GPD approach should still give reasonable
-estimates of the tail probabilities, despite the incorrect distribution
-being used to compute the surprisals.
+Although we need to assume some density function \(f\) when computing
+surprisals, we want the resulting tail probabilities to be robust to a
+mis-specified distribution. Suppose we generate 1000 observations from a
+N(0,1) distribution, but use a \(t(4)\) distribution to compute the
+surprisal values. The empirical tail probabilities, and those obtained
+using the GPD approach, should still give reasonable estimates of the
+tail probabilities, despite the incorrect distribution being used to
+compute the surprisals.
 
 To study the effect of the assumed distribution, we compute the
 surprisal values using both the correct Normal density and an incorrect
-\(t_4\) density. Then, for each set of surprisal values, we estimate the
-surprisal tail probabilities using the same distribution used to compute
-the surprisal values, and alternatively using a GPD fitted to the
-largest 100 surprisal values.
+\(t(4)\) density. Then, for each set of surprisal values, we estimate
+the surprisal tail probabilities in three ways: (a) using the same
+distribution used to compute the surprisal values; (b) using empirical
+tail probabilities; and (c) using a GPD fitted to the largest 100
+surprisal values.
 
 \begin{figure}
 
@@ -951,7 +953,7 @@ largest 100 surprisal values.
 }
 
 \caption{\label{fig-norm_prob}Left: Observations are computed from a
-N(0,1) distribution. Right: Observations are computed from a \(t_4\)
+N(0,1) distribution. Right: Observations are computed from a \(t(4)\)
 distribution. In each cases, surprisals are computed using the correct
 distribution and the incorrect distribution, and tail probabilities are
 computed using the assumed distribution, the empirical distribution and
@@ -964,12 +966,14 @@ distribution is used to compute the surprisal values.}
 
 The various estimates are displayed in the left panel of
 Figure~\ref{fig-norm_prob} for observations greater than 2.5, showing
-how the GPD estimates are particularly accurate in the extreme tails,
-where we need them for anomaly detection. The true values are shown in
-orange (``Normal''). The two GPD estimates (blue and pink) are almost
-identical despite the incorrect distribution being used to compute the
-surprisals for one of them. When the incorrect distribution is also used
-to compute the probabilities (green), the results are very inaccurate.
+how both empirical tail probabilities and the GPD estimates are still
+accurate, regardless of which distribution was used to compute the
+surprisals. The solid lines show the results for surprisals computed
+using the true N(0,1) distribution, while the dashed line shows the
+results for surprisals computed using the mis-specified \(t(4)\)
+distribution. The estimates computed directly from \(t(4)\) (``Assumed
+distribution'') are very inaccurate, but all other estimates lie close
+to the truth.
 
 In summary, even when we don't know the distribution of the data, we can
 use some incorrect assumed distribution to compute the surprisals, and
@@ -977,12 +981,12 @@ then apply either a GPD or the empirical distribution to obtain good
 estimates of the surprisal probabilities.
 
 The converse situation is shown in the right panel of
-Figure~\ref{fig-norm_prob}, where the data are generated from a \(t_4\)
+Figure~\ref{fig-norm_prob}, where the data are generated from a \(t(4)\)
 distribution, and the surprisal values are computed using both the
-correct \(t_4\) density and an incorrect N(0,1) density. Again, the GPD
-estimates of the surprisal probabilities are accurate in the extreme
-tails, even when the wrong distribution is used to compute the surprisal
-values.
+correct \(t(4)\) density and an incorrect N(0,1) density. Again, the
+empirical tail probabilities, and the GPD estimates, are relatively
+accurate, even when the wrong distribution is used to compute the
+surprisal values.
 
 \subsection{Gamma values}\label{gamma-values}
 
