@@ -21,7 +21,7 @@ get_expt2_prob_single <- function(n) {
     rename(count = n)
 }
 
-get_expt2_prob <- function(n = 10^seq(2, 5, by = 0.25), nrep = 200) {
+get_expt2_prob <- function(n = 10^seq(2, 5, by = 0.1), nrep = 500) {
   purrr::pmap_dfr(
     tidyr::expand_grid(n = n, rep = seq(nrep)),
     function(n, rep) {
@@ -34,8 +34,13 @@ create_fig_expt2 <- function(expt2_prob) {
   expt2_prob |>
     mutate(anomaly_rate = count / n) |>
     group_by(Method, n) |>
-    summarise(anomaly_rate = mean(anomaly_rate)) |>
-    #mutate(groups = paste0(Method, rep)) |>
+    summarise(anomaly_rate = mean(anomaly_rate), .groups = "drop") |>
+    mutate(Method = recode(Method,
+      Empirical1 = "Empirical (Gamma)",
+      GDP1 = "GDP (Gamma)",
+      Empirical2 = "Empirical (Gaussian)",
+      GDP2 = "GDP (Gaussian)"
+    )) |>
     ggplot(aes(x = n, y = anomaly_rate * 100, col = Method)) +
     geom_line() +
     geom_hline(aes(yintercept = 1)) +

@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
-\theoremstyle{definition}
-\newtheorem{definition}{Assumption}[section]
-\theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Assumption}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -433,12 +433,17 @@ control the false positive rate when flagging anomalies, by setting a
 threshold on the estimated tail probabilities.
 
 Let \(\bm{y}_1,\dots,\bm{y}_n\) be iid observations from a probability
-distribution \(F\) defined on an appropriate sample space. The
-\emph{surprisal} of observation \(\bm{y}_i\) is defined as
+distribution \(F\) defined on an appropriate sample space, and let \(f\)
+be the generalized probability density function of \(F\). That is, \(f\)
+is defined using Dirac delta functions at jump points of \(F\), so that
+it represents the density function if \(F\) is continuous, the
+probability mass function if \(F\) is discrete, and a combination of
+both if \(F\) is a mixture of continuous and discrete components.
+
+The \emph{surprisal} of observation \(\bm{y}_i\) is defined as
 \autocite{Stone2022} \[
-s_i=-\log f(\bm{y}_i),
-\] where \(f\) is either the density or probability mass function of
-\(F\). While these are better known as ``log scores'' in statistics
+s_i=-\log f(\bm{y}_i).
+\] While these are better known as ``log scores'' in statistics
 \autocite{Good1952-zw}, in this context we prefer the term ``surprisal''
 \autocite[coined by][]{Tribus61}, as it captures the idea that
 observations with low density are more ``surprising'' (and therefore
@@ -520,7 +525,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, toptitle=1mm, opacityback=0, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, toprule=.15mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, coltitle=black, opacitybacktitle=0.6, arc=.35mm, left=2mm, rightrule=.15mm, titlerule=0mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, arc=.35mm, toprule=.15mm, coltitle=black, opacityback=0, breakable, opacitybacktitle=0.6, colback=white, left=2mm, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, rightrule=.15mm, bottomrule=.15mm]
 
 Outline of paper TBC
 
@@ -534,7 +539,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, toptitle=1mm, opacityback=0, bottomrule=.15mm, breakable, colframe=quarto-callout-important-color-frame, toprule=.15mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, coltitle=black, opacitybacktitle=0.6, arc=.35mm, left=2mm, rightrule=.15mm, titlerule=0mm, colback=white, colbacktitle=quarto-callout-important-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, arc=.35mm, toprule=.15mm, coltitle=black, opacityback=0, breakable, opacitybacktitle=0.6, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, rightrule=.15mm, bottomrule=.15mm]
 
 What can we say about the quality of the approximation?
 
@@ -585,8 +590,8 @@ surprisal distribution of \(S = -\log f(\bm{Y})\), where
 \autocite{coles2001introduction}.
 
 We consider three possible conditions on the surprisal distribution of
-\(S = -\log f(\bm{Y})\) where \(f\) is the density or mass function of
-\(\bm{Y}\). These conditions describe increasingly heavy tails:
+\(S = -\log f(\bm{Y})\) where \(f\) is the density of \(\bm{Y}\). These
+conditions describe increasingly heavy tails:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -961,13 +966,12 @@ surprisal values.
 
 \caption{\label{fig-norm_prob}Left: Observations are computed from a
 N(0,1) distribution. Right: Observations are computed from a \(t(4)\)
-distribution. In each cases, surprisals are computed using the correct
-distribution and the incorrect distribution, and tail probabilities are
-computed using the assumed distribution, the empirical distribution and
-a GPD applied to the surprisal values. This demonstrates that the
-surprisal probabilities computed using the empirical distribution or
-under the GPD are still relatively accurate, even when the wrong
-distribution is used to compute the surprisal values.}
+distribution. Distribution indicates which distribution was used to
+compute the surprisal values. Estimate shows how the tail probabilities
+were computed. This demonstrates that the surprisal probabilities
+computed using the empirical distribution or under the GPD are still
+relatively accurate, even when the wrong distribution is used to compute
+the surprisal values.}
 
 \end{figure}%
 
@@ -997,15 +1001,23 @@ surprisal values.
 
 \subsection{Bivariate gamma values}\label{bivariate-gamma-values}
 
-The quality of the approximations used depends on the amount of data
+The quality of the approximation used depends on the amount of data
 available, so in this next experiment we compare the tail probabilities
 of the different approaches across sample sizes. Let
 \(\bm{Y} = (Y_{i,1},Y_{i,2})'\) where \(Y_{i,j}\) are independent
 Gamma(2,2) random variables. We generate \(n\) observations from this
 bivariate distribution, and explore the quality of the probability
-estimates as \(n\) increases from \(100\) to \(100,000\). The anomaly
-rate shown is the number of anomalies detected when \(\alpha=0.01\) for
-different sample sizes, averaged over 1000 replications.
+estimates as \(n\) increases from \(100\) to \(100,000\). The surprisal
+values are computed using the correct distribution, as well as the
+incorrect bivariate normal distribution with mean \((1,1)'\) and
+covariance matrix \(0.5\bm{I}\). For each set of surprisal values, we
+estimate the tail probabilities in two ways: (a) using empirical tail
+probabilities; and (b) using a GPD fitted to the largest 10\% of
+surprisal values. We repeat this experiment 1000 times for each sample
+size. The anomaly rate shown is the number of anomalies detected when
+\(\alpha=0.01\) for different sample sizes, averaged over 1000
+replications. The false anomaly rate under the true distribution is, of
+course, 0.01.
 
 \pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/unnamed-chunk-1-1.pdf}}
 

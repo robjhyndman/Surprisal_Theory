@@ -78,11 +78,13 @@ Anomaly detection methods are often rather ad hoc and lack a solid theoretical f
 
 The basic idea is to calculate the surprisal (equal to the negative log density) of each observation, and then estimate the tail probability from the surprisal distribution. This allows us to estimate the probability of observing a surprisal value as extreme or more extreme than a given observation, which can then be used to flag anomalies. The surprisal approach to anomaly detection provides a principled way to control the false positive rate when flagging anomalies, by setting a threshold on the estimated tail probabilities.
 
-Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations from a probability distribution $F$ defined on an appropriate sample space. The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
+Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations from a probability distribution $F$ defined on an appropriate sample space, and let $f$ be the generalized probability density function of $F$. That is, $f$ is defined using Dirac delta functions at jump points of $F$, so that it represents the density function if $F$ is continuous, the probability mass function if $F$ is discrete, and a combination of both if $F$ is a mixture of continuous and discrete components. 
+
+The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
 $$
-s_i=-\log f(\bm{y}_i),
+s_i=-\log f(\bm{y}_i).
 $$
-where $f$ is either the density or probability mass function of $F$. While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density. A large value of $s_i$ indicates that $\bm{y}_i$ is an unlikely value, and so is a potential anomaly. On the other hand, typical values will have low surprisals. In information theory, the average surprisal is known as the entropy of a random variable [@Cover2006;@Stone2022] and provides a measure of uncertainty. If $f$ is obtained from a parametric model, then the sum of the surprisals is equal to minus the log likelihood of the data.
+While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density. A large value of $s_i$ indicates that $\bm{y}_i$ is an unlikely value, and so is a potential anomaly. On the other hand, typical values will have low surprisals. In information theory, the average surprisal is known as the entropy of a random variable [@Cover2006;@Stone2022] and provides a measure of uncertainty. If $f$ is obtained from a parametric model, then the sum of the surprisals is equal to minus the log likelihood of the data.
 
 Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then, the probability of observing a value with surprisal at least as large as $s$ is given by $1-G(s)$, which leads to a natural way to assign an anomaly score to each observation $\bm{y}_i$:
 $$
@@ -136,7 +138,7 @@ An important precursor to this work is @lookout who proposed estimating $F$ by a
 
 Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of each observation or one more extreme, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
 
-We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$ where $f$ is the density or mass function of $\bm{Y}$. These conditions describe increasingly heavy tails:
+We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$ where $f$ is the density of $\bm{Y}$. These conditions describe increasingly heavy tails:
 
 1. where $S$ is sub-Gaussian (e.g., when $f$ is bounded above and below);
 2. where $S$ is sub-exponential (e.g., when $f$ is Gaussian); and
@@ -441,7 +443,7 @@ To study the effect of the assumed distribution, we compute the surprisal values
 
 ```{r}
 #| label: fig-norm_prob
-#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t(4)$ distribution. In each cases, surprisals are computed using the correct distribution and the incorrect distribution, and tail probabilities are computed using the assumed distribution, the empirical distribution and a GPD applied to the surprisal values. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t(4)$ distribution. Distribution indicates which distribution was used to compute the surprisal values. Estimate shows how the tail probabilities were computed. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
 #| fig-height: 4
 tar_read(fig_expt1)
 ```
@@ -454,7 +456,7 @@ The converse situation is shown in the right panel of @fig-norm_prob, where the 
 
 ## Bivariate gamma values
 
-The quality of the approximations used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $100,000$. The anomaly rate shown is the number of anomalies detected when $\alpha=0.01$ for different sample sizes, averaged over 1000 replications.
+The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $100,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is the number of anomalies detected when $\alpha=0.01$ for different sample sizes, averaged over 1000 replications. The false anomaly rate under the true distribution is, of course, 0.01.
 
 ```{r}
 tar_read(fig_expt2)
