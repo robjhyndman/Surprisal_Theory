@@ -412,14 +412,16 @@ detection;
 
 Anomaly detection methods are often rather ad hoc and lack a solid
 theoretical foundation, or they make strong distributional assumptions
-that may not hold in practice. Here we define an anomaly as a point of
-low probability, and we propose a general framework for anomaly
-detection by estimating the probability of each observation, or one more
-anomalous. This approach allows for a unified treatment of anomaly
-detection that can be applied to any anomaly detection problem, provided
-a probability distribution can be defined on the space of observations.
-It allows for univariate and multivariate settings, and can be applied
-to both unconditional and conditional distributions.
+that may not hold in practice. We aim to address this by defining an
+anomaly as a point of low probability, and proposing a general framework
+for anomaly detection by estimating the probability of each observation,
+or one more anomalous. Our approach allows for a unified treatment of
+anomaly detection that can be applied to any anomaly detection problem,
+provided a probability distribution can be defined on the space of
+observations. It allows for univariate and multivariate settings, and
+can be applied to both unconditional and conditional distributions.
+Although it requires a specified probability distribution, it is robust
+to substantial mis-specification of that distribution.
 
 The basic idea is to calculate the surprisal (equal to the negative log
 density) of each observation, and then estimate the tail probability
@@ -441,19 +443,13 @@ s_i=-\log f(\bm{y}_i),
 \autocite[coined by][]{Tribus61}, as it captures the idea that
 observations with low density are more ``surprising'' (and therefore
 potentially anomalous) than those with high density. A large value of
-\(s_i\) indicates that \(\bm{y}_i\) is not a likely value, and so is a
+\(s_i\) indicates that \(\bm{y}_i\) is an unlikely value, and so is a
 potential anomaly. On the other hand, typical values will have low
 surprisals. In information theory, the average surprisal is known as the
 entropy of a random variable \autocite{Cover2006,Stone2022} and provides
-a measure of uncertainty.
-
-Although the term ``surprisal'' may not be in common use amongst
-statisticians and other data scientists, the underlying idea is widely
-used. For example, if \(f\) is obtained from a model with parameters
-that need to be estimated from the data, then the sum of the surprisals
-is equal to minus the log likelihood of the data. Therefore, finding
-parameters that minimize the sum of the surprisals is equivalent to
-maximum likelihood estimation.
+a measure of uncertainty. If \(f\) is obtained from a parametric model,
+then the sum of the surprisals is equal to minus the log likelihood of
+the data.
 
 Let \(G(s) = \Pr\{S\le s\}\) be the distribution function of the
 surprisal values, where \(S = -\log f(\bm{Y})\) and \(\bm{Y}\sim F\).
@@ -490,36 +486,41 @@ areas of low density, which is precisely where we are looking for
 anomalies. Further, we are seeking a method that does not make strong
 distributional assumptions.
 
-We present three ways to compute the tail probabilities
-\(\{p_1,\dots,p_n\}\) from the surprisal distribution:
+Our approach begins with an assumed \(F\), which may be estimated from
+data, or obtained from theory. This distribution is used to compute the
+surprisal values \(\{s_1,\dots,s_n\}\). Then, we estimate the tail
+probabilities \(\{p_1,\dots,p_n\}\) from the surprisal values, using one
+of three approaches.
 
 \begin{enumerate}
 \def\labelenumi{(\arabic{enumi})}
 \tightlist
 \item
-  by using the same assumed or estimated distribution that was used to
-  compute the surprisals;
+  Using the assumed distribution \(F\) to compute the tail
+  probabilities, i.e.,
+  \(p_i = \int I\{f(\bm{y})\le e^{-s_i}\} d\bm{y}\), where \(I\) is the
+  indicator function;
 \item
-  by using the empirical distribution function of the observed
-  surprisals \(\{s_1,\dots,s_n\}\); and
+  Using the empirical distribution function of the observed surprisals
+  \(\{s_1,\dots,s_n\}\), so that \(p_i\) is the proportion of surprisals
+  at least as large as \(s_i\);
 \item
-  by fitting a Generalized Pareto distribution to the most extreme
-  surprisals.
+  Fitting a Generalized Pareto Distribution (GPD) to the largest
+  surprisal values, and using this to estimate the tail probabilities.
 \end{enumerate}
 
-Clearly, approach (1) makes strong distributional assumptions, as it
-requires that we have an accurate distribution of the original
-observations. The other two approaches allow for considerable
-mis-specification of the distribution used to compute the surprisals.
-Approach (2) requires only that the ordering of the surprisals is
-similar to what would have been obtained under the true distribution,
-while approach (3) requires that extreme value theory applies to the
-surprisal distribution.
+Obviously approach (1) makes the strong assumption that \(F\) is an
+accurate representation of the data. Approaches (2) and (3) allow for
+considerable mis-specification of the distribution used to compute the
+surprisals. Approach (2) requires only that the ordering of the
+surprisals in the tail is similar to what would have been obtained under
+the true distribution, while approach (3) requires that extreme value
+theory applies to the surprisal distribution.
 
-We illustrate all three approaches with several examples, including both
+We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, colback=white, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, arc=.35mm, bottomtitle=1mm, left=2mm, opacitybacktitle=0.6, coltitle=black, bottomrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, breakable, leftrule=.75mm, toptitle=1mm, titlerule=0mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, toptitle=1mm, opacityback=0, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, toprule=.15mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, coltitle=black, opacitybacktitle=0.6, arc=.35mm, left=2mm, rightrule=.15mm, titlerule=0mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 Outline of paper TBC
 
@@ -533,7 +534,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, colback=white, colframe=quarto-callout-important-color-frame, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, bottomtitle=1mm, left=2mm, opacitybacktitle=0.6, coltitle=black, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, breakable, leftrule=.75mm, toptitle=1mm, titlerule=0mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, toptitle=1mm, opacityback=0, bottomrule=.15mm, breakable, colframe=quarto-callout-important-color-frame, toprule=.15mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, coltitle=black, opacitybacktitle=0.6, arc=.35mm, left=2mm, rightrule=.15mm, titlerule=0mm, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 What can we say about the quality of the approximation?
 
@@ -553,11 +554,12 @@ using the quantile density approach of \textcite{HDR96}.
 \section{Extreme value theory for the surprisal
 distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
 
-We show that under weak conditions on the tail of the surprisal
-distribution, the maximum surprisal converges to one of the three types
-of extreme value distributions. This justifies fitting a Generalized
-Pareto Distribution (GPD) to the largest surprisal values, and using it
-to estimate tail probabilities.
+Our third approach uses extreme value theory applied to the surprisal
+values. We will show that under weak conditions on the tail of the
+surprisal distribution, the maximum surprisal converges to one of the
+three types of extreme value distributions. This justifies fitting a
+Generalized Pareto Distribution (GPD) to the largest surprisal values,
+and using it to estimate tail probabilities.
 
 An important precursor to this work is \textcite{lookout} who proposed
 estimating \(F\) by a leave-one-out kernel density estimate, and then
