@@ -23,6 +23,14 @@ list(
     fig_expt1,
     create_fig_expt1(norm_data, t4_data)
   ),
+  tar_target(
+    expt2_prob,
+    get_expt2_prob()
+  ),
+  tar_target(
+    fig_expt2,
+    create_fig_expt2(expt2_prob)
+  ),
   tar_quarto(
     paper,
     "surprisals.qmd",

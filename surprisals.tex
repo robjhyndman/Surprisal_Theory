@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
-\theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -519,7 +519,7 @@ surprisal distribution.
 We illustrate all three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, titlerule=0mm, rightrule=.15mm, opacityback=0, toptitle=1mm, arc=.35mm, bottomtitle=1mm, left=2mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, leftrule=.75mm, bottomrule=.15mm, colback=white, colframe=quarto-callout-note-color-frame]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, colback=white, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, arc=.35mm, bottomtitle=1mm, left=2mm, opacitybacktitle=0.6, coltitle=black, bottomrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, breakable, leftrule=.75mm, toptitle=1mm, titlerule=0mm, rightrule=.15mm]
 
 Outline of paper TBC
 
@@ -533,7 +533,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, titlerule=0mm, rightrule=.15mm, opacityback=0, toptitle=1mm, arc=.35mm, bottomtitle=1mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, leftrule=.75mm, bottomrule=.15mm, colback=white, colframe=quarto-callout-important-color-frame]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, colback=white, colframe=quarto-callout-important-color-frame, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, bottomtitle=1mm, left=2mm, opacitybacktitle=0.6, coltitle=black, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, breakable, leftrule=.75mm, toptitle=1mm, titlerule=0mm, rightrule=.15mm]
 
 What can we say about the quality of the approximation?
 
@@ -545,6 +545,10 @@ distribution --- i.e., when \(y_i\) is greater than the largest mode of
 Can we say anything else?
 
 \end{tcolorbox}
+
+Using this approach, the anomaly boundary for a threshold of \(\alpha\)
+corresponds to the \(100(1-\alpha)\)\% highest density region computed
+using the quantile density approach of \textcite{HDR96}.
 
 \section{Extreme value theory for the surprisal
 distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
@@ -925,7 +929,8 @@ Distribution \autocite[Theorem 4.1]{coles2001introduction}.
 
 \section{Experiments}\label{experiments}
 
-\subsection{Standard normal values}\label{standard-normal-values}
+\subsection{Standard univariate normal
+values}\label{standard-univariate-normal-values}
 
 Although we need to assume some density function \(f\) when computing
 surprisals, we want the resulting tail probabilities to be robust to a
@@ -988,20 +993,19 @@ empirical tail probabilities, and the GPD estimates, are relatively
 accurate, even when the wrong distribution is used to compute the
 surprisal values.
 
-\subsection{Gamma values}\label{gamma-values}
+\subsection{Bivariate gamma values}\label{bivariate-gamma-values}
 
-\begin{itemize}
-\tightlist
-\item
-  990 from Gamma(2,2) and 10 from Gamma(2,r). Fit Gamma to all 1000 and
-  compute surprisals. Fit GPD to largest 50 surprisals. Compare true and
-  estimated tail probabilities.
-\item
-  990 from trivariate N(0,1) with 10 from ring at distance 2 from
-  origin. Fit bivariate normal to all 1000 and compute surprisals. Fit
-  GPD to largest 50 surprisals. Compare true and estimated tail
-  probabilities.
-\end{itemize}
+The quality of the approximations used depends on the amount of data
+available, so in this next experiment we compare the tail probabilities
+of the different approaches across sample sizes. Let
+\(\bm{Y} = (Y_{i,1},Y_{i,2})'\) where \(Y_{i,j}\) are independent
+Gamma(2,2) random variables. We generate \(n\) observations from this
+bivariate distribution, and explore the quality of the probability
+estimates as \(n\) increases from \(100\) to \(100,000\). The anomaly
+rate shown is the number of anomalies detected when \(\alpha=0.01\) for
+different sample sizes, averaged over 1000 replications.
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/unnamed-chunk-1-1.pdf}}
 
 \section{Applications}\label{applications}
 

@@ -127,6 +127,9 @@ If the surprisal ranks under the true and estimated $F$ distributions are equal,
 Can we say anything else?
 :::
 
+Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
+
+
 # Extreme value theory for the surprisal distribution
 
 We show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. 
@@ -432,7 +435,7 @@ $$
 
 # Experiments
 
-## Standard normal values
+## Standard univariate normal values
 
 Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
 
@@ -451,13 +454,13 @@ In summary, even when we don't know the distribution of the data, we can use som
 
 The converse situation is shown in the right panel of @fig-norm_prob, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect N(0,1) density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
 
+## Bivariate gamma values
 
-## Gamma values
+The quality of the approximations used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $100,000$. The anomaly rate shown is the number of anomalies detected when $\alpha=0.01$ for different sample sizes, averaged over 1000 replications.
 
-
-* 990 from Gamma(2,2) and 10 from Gamma(2,r). Fit Gamma to all 1000 and compute surprisals. Fit GPD to largest 50 surprisals. Compare true and estimated tail probabilities.
-* 990 from trivariate N(0,1) with 10 from ring at distance 2 from origin. Fit bivariate normal to all 1000 and compute surprisals. Fit GPD to largest 50 surprisals. Compare true and estimated tail probabilities.
-
+```{r}
+tar_read(fig_expt2)
+```
 
 # Applications
 
