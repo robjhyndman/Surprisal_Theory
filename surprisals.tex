@@ -144,14 +144,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
-\theoremstyle{definition}
-\newtheorem{definition}{Assumption}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -525,7 +525,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, arc=.35mm, toprule=.15mm, coltitle=black, opacityback=0, breakable, opacitybacktitle=0.6, colback=white, left=2mm, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, rightrule=.15mm, bottomrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, rightrule=.15mm, opacityback=0, coltitle=black, titlerule=0mm, breakable, opacitybacktitle=0.6, toptitle=1mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, leftrule=.75mm, left=2mm]
 
 Outline of paper TBC
 
@@ -539,7 +539,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, arc=.35mm, toprule=.15mm, coltitle=black, opacityback=0, breakable, opacitybacktitle=0.6, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, rightrule=.15mm, bottomrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, rightrule=.15mm, opacityback=0, coltitle=black, titlerule=0mm, breakable, opacitybacktitle=0.6, toptitle=1mm, colframe=quarto-callout-important-color-frame, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, leftrule=.75mm, left=2mm]
 
 What can we say about the quality of the approximation?
 

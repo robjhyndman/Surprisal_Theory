@@ -462,6 +462,8 @@ The quality of the approximation used depends on the amount of data available, s
 tar_read(fig_expt2)
 ```
 
+Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged.
+
 # Applications
 
 * US COVID death rates: <https://otexts.com/weird/09-timeseries.html#multivariate-time-series>
