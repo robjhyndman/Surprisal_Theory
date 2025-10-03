@@ -34,15 +34,17 @@ create_fig_expt2 <- function(expt2_prob) {
   expt2_prob |>
     mutate(anomaly_rate = count / n) |>
     group_by(Method, n) |>
-    summarise(anomaly_rate = mean(anomaly_rate), .groups = "drop") |>
-    mutate(Method = recode(Method,
-      Empirical1 = "Empirical (Gamma)",
-      GDP1 = "GDP (Gamma)",
-      Empirical2 = "Empirical (Gaussian)",
-      GDP2 = "GDP (Gaussian)"
-    )) |>
+    mutate(
+      Method = recode(
+        Method,
+        Empirical1 = "Empirical (Gamma)",
+        GDP1 = "GDP (Gamma)",
+        Empirical2 = "Empirical (Gaussian)",
+        GDP2 = "GDP (Gaussian)"
+      )
+    ) |>
     ggplot(aes(x = n, y = anomaly_rate * 100, col = Method)) +
-    geom_line() +
+    geom_smooth(method = "loess", span = 0.6) +
     geom_hline(aes(yintercept = 1)) +
     scale_x_log10() +
     labs(x = "Sample size n", y = "Anomaly rate")
