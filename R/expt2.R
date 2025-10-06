@@ -39,8 +39,8 @@ create_fig_expt2 <- function(expt2_prob) {
         Method,
         Empirical1 = "Empirical (Gamma)",
         GDP1 = "GDP (Gamma)",
-        Empirical2 = "Empirical (Gaussian)",
-        GDP2 = "GDP (Gaussian)"
+        Empirical2 = "Empirical (Normal)",
+        GDP2 = "GDP (Normal)"
       )
     ) |>
     ggplot(aes(x = n, y = anomaly_rate * 100, col = Method)) +
