@@ -1385,6 +1385,67 @@
       ],
       "Encoding": "UTF-8"
     },
+    "fabletools": {
+      "Package": "fabletools",
+      "Version": "0.5.1",
+      "Source": "Repository",
+      "Title": "Core Tools for Packages in the 'fable' Framework",
+      "Authors@R": "c(person(given = \"Mitchell\", family = \"O'Hara-Wild\", role = c(\"aut\", \"cre\"), email = \"mail@mitchelloharawild.com\", comment = c(ORCID = \"0000-0001-6729-7695\")), person(given = \"Rob\", family = \"Hyndman\", role = \"aut\"), person(given = \"Earo\", family = \"Wang\", role = \"aut\", comment = c(ORCID = \"0000-0001-6448-5260\")), person(given = \"Di\", family = \"Cook\", role = \"ctb\"), person(given = \"George\", family = \"Athanasopoulos\", role = \"ctb\"), person(given = \"David\", family = \"Holt\", role = \"ctb\"))",
+      "Description": "Provides tools, helpers and data structures for developing models and time series functions for 'fable' and extension packages. These tools support a consistent and tidy interface for time series modelling and analysis.",
+      "License": "GPL-3",
+      "URL": "https://fabletools.tidyverts.org/, https://github.com/tidyverts/fabletools",
+      "BugReports": "https://github.com/tidyverts/fabletools/issues",
+      "Depends": [
+        "R (>= 3.1.3)"
+      ],
+      "Imports": [
+        "tsibble (>= 0.9.0)",
+        "tibble (>= 1.4.1)",
+        "ggplot2 (>= 3.0.0)",
+        "tidyselect",
+        "rlang (>= 0.4.5)",
+        "stats",
+        "dplyr (>= 1.0.0)",
+        "tidyr (>= 1.1.0)",
+        "generics",
+        "R6",
+        "utils",
+        "vctrs (>= 0.2.2)",
+        "distributional (>= 0.3.0.9000)",
+        "progressr",
+        "lifecycle",
+        "ggdist",
+        "scales"
+      ],
+      "Suggests": [
+        "covr",
+        "crayon",
+        "fable (>= 0.2.0)",
+        "future",
+        "future.apply",
+        "knitr",
+        "pillar (>= 1.0.1)",
+        "feasts (>= 0.1.2)",
+        "rmarkdown",
+        "spelling",
+        "testthat",
+        "tsibbledata (>= 0.2.0)",
+        "lubridate",
+        "urca",
+        "mvtnorm",
+        "Matrix"
+      ],
+      "VignetteBuilder": "knitr",
+      "RdMacros": "lifecycle",
+      "ByteCompile": "true",
+      "Encoding": "UTF-8",
+      "Language": "en-GB",
+      "RoxygenNote": "7.3.2",
+      "NeedsCompilation": "no",
+      "Author": "Mitchell O'Hara-Wild [aut, cre] (ORCID: <https://orcid.org/0000-0001-6729-7695>), Rob Hyndman [aut], Earo Wang [aut] (ORCID: <https://orcid.org/0000-0001-6448-5260>), Di Cook [ctb], George Athanasopoulos [ctb], David Holt [ctb]",
+      "Maintainer": "Mitchell O'Hara-Wild <mail@mitchelloharawild.com>",
+      "Repository": "CRAN"
+    },
     "farver": {
       "Package": "farver",
       "Version": "2.1.2",
@@ -1427,6 +1488,60 @@
       "Author": "Winston Chang [aut, cre], Posit Software, PBC [cph, fnd], Tessil [cph] (hopscotch_map library)",
       "Maintainer": "Winston Chang <winston@posit.co>",
       "Repository": "RSPM"
+    },
+    "feasts": {
+      "Package": "feasts",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Title": "Feature Extraction and Statistics for Time Series",
+      "Description": "Provides a collection of features, decomposition methods,  statistical summaries and graphics functions for the analysing tidy time series data. The package name 'feasts' is an acronym comprising of its key features: Feature Extraction And Statistics for Time Series.",
+      "Authors@R": "c( person(\"Mitchell\", \"O'Hara-Wild\", email = \"mail@mitchelloharawild.com\", role = c(\"aut\", \"cre\")), person(\"Rob\", \"Hyndman\", role = \"aut\"), person(\"Earo\", \"Wang\", role = \"aut\"), person(\"Di\", \"Cook\", role = \"ctb\"), person(\"Thiyanga\", \"Talagala\", role = \"ctb\", comment = \"Correlation features\"), person(\"Leanne\", \"Chhay\", role = \"ctb\", comment = \"Guerrero's method\") )",
+      "Depends": [
+        "R (>= 3.5.0)",
+        "fabletools (>= 0.3.1)"
+      ],
+      "Imports": [
+        "rlang (>= 0.2.0)",
+        "tibble (>= 1.4.1)",
+        "tsibble (>= 0.9.0)",
+        "ggplot2 (>= 3.0.0)",
+        "dplyr (>= 1.0.0)",
+        "tidyr (>= 0.8.3)",
+        "scales (>= 1.1.0)",
+        "vctrs",
+        "lubridate",
+        "grid",
+        "slider",
+        "utils",
+        "lifecycle",
+        "gtable"
+      ],
+      "Suggests": [
+        "tsibbledata",
+        "pillar (>= 1.0.1)",
+        "knitr",
+        "rmarkdown",
+        "testthat",
+        "covr",
+        "seasonal",
+        "urca",
+        "fracdiff",
+        "fable",
+        "ggrepel"
+      ],
+      "ByteCompile": "true",
+      "VignetteBuilder": "knitr",
+      "License": "GPL-3",
+      "URL": "http://feasts.tidyverts.org/, https://github.com/tidyverts/feasts/",
+      "BugReports": "https://github.com/tidyverts/feasts/issues",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.2.9000",
+      "Language": "en-GB",
+      "RdMacros": "lifecycle",
+      "NeedsCompilation": "no",
+      "Author": "Mitchell O'Hara-Wild [aut, cre], Rob Hyndman [aut], Earo Wang [aut], Di Cook [ctb], Thiyanga Talagala [ctb] (Correlation features), Leanne Chhay [ctb] (Guerrero's method)",
+      "Maintainer": "Mitchell O'Hara-Wild <mail@mitchelloharawild.com>",
+      "Repository": "CRAN"
     },
     "fontawesome": {
       "Package": "fontawesome",
@@ -1572,6 +1687,73 @@
       "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
       "Repository": "RSPM"
     },
+    "ggdist": {
+      "Package": "ggdist",
+      "Version": "3.3.3",
+      "Source": "Repository",
+      "Title": "Visualizations of Distributions and Uncertainty",
+      "Date": "2025-04-20",
+      "Authors@R": "c( person(\"Matthew\", \"Kay\", role = c(\"aut\", \"cre\"), email = \"mjskay@northwestern.edu\"), person(\"Brenton M.\", \"Wiernik\", role = \"ctb\", email = \"brenton@wiernik.org\") )",
+      "Maintainer": "Matthew Kay <mjskay@northwestern.edu>",
+      "Description": "Provides primitives for visualizing distributions using 'ggplot2' that are particularly tuned for visualizing uncertainty in either a frequentist or Bayesian mode. Both analytical distributions (such as  frequentist confidence distributions or Bayesian priors) and distributions represented as samples (such as  bootstrap distributions or Bayesian posterior samples) are easily visualized. Visualization primitives include but are not limited to: points with multiple uncertainty intervals,  eye plots (Spiegelhalter D., 1999) <https://ideas.repec.org/a/bla/jorssa/v162y1999i1p45-58.html>, density plots, gradient plots, dot plots (Wilkinson L., 1999) <doi:10.1080/00031305.1999.10474474>, quantile dot plots (Kay M., Kola T., Hullman J., Munson S., 2016) <doi:10.1145/2858036.2858558>, complementary cumulative distribution function  barplots (Fernandes M., Walls L., Munson S., Hullman J., Kay M., 2018) <doi:10.1145/3173574.3173718>, and fit curves with multiple uncertainty ribbons.",
+      "Depends": [
+        "R (>= 4.0.0)"
+      ],
+      "Imports": [
+        "grid",
+        "ggplot2 (>= 3.5.0)",
+        "scales",
+        "rlang (>= 0.3.0)",
+        "cli",
+        "tibble",
+        "vctrs",
+        "withr",
+        "glue",
+        "gtable",
+        "distributional (>= 0.3.2)",
+        "numDeriv",
+        "quadprog",
+        "Rcpp"
+      ],
+      "Suggests": [
+        "tidyselect",
+        "dplyr (>= 1.0.0)",
+        "fda",
+        "posterior (>= 1.4.0)",
+        "beeswarm (>= 0.4.0)",
+        "rmarkdown",
+        "knitr",
+        "testthat (>= 3.0.0)",
+        "vdiffr (>= 1.0.0)",
+        "svglite (>= 2.1.0)",
+        "fontquiver",
+        "sysfonts",
+        "showtext",
+        "mvtnorm",
+        "covr",
+        "broom (>= 0.5.6)",
+        "patchwork",
+        "tidyr (>= 1.0.0)",
+        "ragg (>= 1.3.0)",
+        "pkgdown"
+      ],
+      "License": "GPL (>= 3)",
+      "Language": "en-US",
+      "BugReports": "https://github.com/mjskay/ggdist/issues",
+      "URL": "https://mjskay.github.io/ggdist/, https://github.com/mjskay/ggdist/",
+      "VignetteBuilder": "knitr",
+      "RoxygenNote": "7.3.2",
+      "LazyData": "true",
+      "Encoding": "UTF-8",
+      "Collate": "\"ggdist-package.R\" \"util.R\" \"compat.R\" \"rd.R\" \"RcppExports.R\" \"abstract_geom.R\" \"abstract_stat.R\" \"abstract_stat_slabinterval.R\" \"auto_partial.R\" \"binning_methods.R\" \"bounder.R\" \"curve_interval.R\" \"cut_cdf_qi.R\" \"data.R\" \"density.R\" \"distributions.R\" \"draw_key_slabinterval.R\" \"geom.R\" \"geom_slabinterval.R\" \"geom_dotsinterval.R\" \"geom_blur_dots.R\" \"geom_interval.R\" \"geom_lineribbon.R\" \"geom_pointinterval.R\" \"geom_slab.R\" \"geom_spike.R\" \"geom_swarm.R\" \"guide_rampbar.R\" \"interval_widths.R\" \"lkjcorr_marginal.R\" \"parse_dist.R\" \"partial_colour_ramp.R\" \"point_interval.R\" \"position_dodgejust.R\" \"pr.R\" \"rd_density.R\" \"rd_dotsinterval.R\" \"rd_slabinterval.R\" \"rd_spike.R\" \"rd_lineribbon.R\" \"scale_colour_ramp.R\" \"scale_thickness.R\" \"scale_side_mirrored.R\" \"scale_.R\" \"smooth.R\" \"stat.R\" \"stat_slabinterval.R\" \"stat_dotsinterval.R\" \"stat_mcse_dots.R\" \"stat_pointinterval.R\" \"stat_interval.R\" \"stat_lineribbon.R\" \"stat_spike.R\" \"student_t.R\" \"subguide.R\" \"subscale.R\" \"testthat.R\" \"theme_ggdist.R\" \"thickness.R\" \"tidy_format_translators.R\" \"weighted_ecdf.R\" \"weighted_hist.R\" \"weighted_quantile.R\" \"deprecated.R\"",
+      "Config/testthat/edition": "3",
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "NeedsCompilation": "yes",
+      "Author": "Matthew Kay [aut, cre], Brenton M. Wiernik [ctb]",
+      "Repository": "RSPM"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "4.0.0",
@@ -1642,6 +1824,55 @@
       "NeedsCompilation": "no",
       "Author": "Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Winston Chang [aut] (ORCID: <https://orcid.org/0000-0002-1576-2126>), Lionel Henry [aut], Thomas Lin Pedersen [aut, cre] (ORCID: <https://orcid.org/0000-0002-5147-4711>), Kohske Takahashi [aut], Claus Wilke [aut] (ORCID: <https://orcid.org/0000-0002-7470-9261>), Kara Woo [aut] (ORCID: <https://orcid.org/0000-0002-5125-4188>), Hiroaki Yutani [aut] (ORCID: <https://orcid.org/0000-0002-3385-7233>), Dewey Dunnington [aut] (ORCID: <https://orcid.org/0000-0002-9415-4582>), Teun van den Brand [aut] (ORCID: <https://orcid.org/0000-0002-9335-7468>), Posit, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
       "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
+      "Repository": "RSPM"
+    },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.9.6",
+      "Source": "Repository",
+      "Authors@R": "c( person(\"Kamil\", \"Slowikowski\", email = \"kslowikowski@gmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-2843-6370\")), person(\"Alicia\", \"Schep\", role = \"ctb\", comment = c(ORCID = \"0000-0002-3915-0618\")), person(\"Sean\", \"Hughes\", role = \"ctb\", comment = c(ORCID = \"0000-0002-9409-9405\")), person(\"Trung Kien\", \"Dang\", role = \"ctb\", comment = c(ORCID = \"0000-0001-7562-6495\")), person(\"Saulius\", \"Lukauskas\", role = \"ctb\"), person(\"Jean-Olivier\", \"Irisson\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4920-3880\")), person(\"Zhian N\", \"Kamvar\", role = \"ctb\", comment = c(ORCID = \"0000-0003-1458-7108\")), person(\"Thompson\", \"Ryan\", role = \"ctb\", comment = c(ORCID = \"0000-0002-0450-8181\")), person(\"Dervieux\", \"Christophe\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4474-2498\")), person(\"Yutani\", \"Hiroaki\", role = \"ctb\"), person(\"Pierre\", \"Gramme\", role = \"ctb\"), person(\"Amir Masoud\", \"Abdol\", role = \"ctb\"), person(\"Malcolm\", \"Barrett\", role = \"ctb\", comment = c(ORCID = \"0000-0003-0299-5825\")), person(\"Robrecht\", \"Cannoodt\", role = \"ctb\", comment = c(ORCID = \"0000-0003-3641-729X\")), person(\"Michał\", \"Krassowski\", role = \"ctb\", comment = c(ORCID = \"0000-0002-9638-7785\")), person(\"Michael\", \"Chirico\", role = \"ctb\", comment = c(ORCID = \"0000-0003-0787-087X\")), person(\"Pedro\", \"Aphalo\", role = \"ctb\", comment = c(ORCID = \"0000-0003-3385-972X\")), person(\"Francis\", \"Barton\", role = \"ctb\") )",
+      "Title": "Automatically Position Non-Overlapping Text Labels with 'ggplot2'",
+      "Description": "Provides text and label geoms for 'ggplot2' that help to avoid overlapping text labels. Labels repel away from each other and away from the data points.",
+      "Depends": [
+        "R (>= 3.0.0)",
+        "ggplot2 (>= 2.2.0)"
+      ],
+      "Imports": [
+        "grid",
+        "Rcpp",
+        "rlang (>= 0.3.0)",
+        "scales (>= 0.5.0)",
+        "withr (>= 2.5.0)"
+      ],
+      "Suggests": [
+        "knitr",
+        "rmarkdown",
+        "testthat",
+        "svglite",
+        "vdiffr",
+        "gridExtra",
+        "ggpp",
+        "patchwork",
+        "devtools",
+        "prettydoc",
+        "ggbeeswarm",
+        "dplyr",
+        "magrittr",
+        "readr",
+        "stringr"
+      ],
+      "VignetteBuilder": "knitr",
+      "License": "GPL-3 | file LICENSE",
+      "URL": "https://ggrepel.slowkow.com/, https://github.com/slowkow/ggrepel",
+      "BugReports": "https://github.com/slowkow/ggrepel/issues",
+      "RoxygenNote": "7.3.1",
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "Encoding": "UTF-8",
+      "NeedsCompilation": "yes",
+      "Author": "Kamil Slowikowski [aut, cre] (<https://orcid.org/0000-0002-2843-6370>), Alicia Schep [ctb] (<https://orcid.org/0000-0002-3915-0618>), Sean Hughes [ctb] (<https://orcid.org/0000-0002-9409-9405>), Trung Kien Dang [ctb] (<https://orcid.org/0000-0001-7562-6495>), Saulius Lukauskas [ctb], Jean-Olivier Irisson [ctb] (<https://orcid.org/0000-0003-4920-3880>), Zhian N Kamvar [ctb] (<https://orcid.org/0000-0003-1458-7108>), Thompson Ryan [ctb] (<https://orcid.org/0000-0002-0450-8181>), Dervieux Christophe [ctb] (<https://orcid.org/0000-0003-4474-2498>), Yutani Hiroaki [ctb], Pierre Gramme [ctb], Amir Masoud Abdol [ctb], Malcolm Barrett [ctb] (<https://orcid.org/0000-0003-0299-5825>), Robrecht Cannoodt [ctb] (<https://orcid.org/0000-0003-3641-729X>), Michał Krassowski [ctb] (<https://orcid.org/0000-0002-9638-7785>), Michael Chirico [ctb] (<https://orcid.org/0000-0003-0787-087X>), Pedro Aphalo [ctb] (<https://orcid.org/0000-0003-3385-972X>), Francis Barton [ctb]",
+      "Maintainer": "Kamil Slowikowski <kslowikowski@gmail.com>",
       "Repository": "RSPM"
     },
     "gh": {
@@ -2779,7 +3010,7 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.3.3",
+      "Version": "2.3.4",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Toolkit for Encryption, Signatures and Certificates Based on OpenSSL",
@@ -2808,7 +3039,51 @@
       "NeedsCompilation": "yes",
       "Author": "Jeroen Ooms [aut, cre] (ORCID: <https://orcid.org/0000-0002-4035-0289>), Oliver Keyes [ctb]",
       "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
-      "Repository": "RSPM"
+      "Repository": "https://packagemanager.posit.co/cran/latest"
+    },
+    "patchwork": {
+      "Package": "patchwork",
+      "Version": "1.3.2",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "The Composer of Plots",
+      "Authors@R": "person(given = \"Thomas Lin\", family = \"Pedersen\", role = c(\"cre\", \"aut\"), email = \"thomasp85@gmail.com\", comment = c(ORCID = \"0000-0002-5147-4711\"))",
+      "Maintainer": "Thomas Lin Pedersen <thomasp85@gmail.com>",
+      "Description": "The 'ggplot2' package provides a strong API for sequentially  building up a plot, but does not concern itself with composition of multiple plots. 'patchwork' is a package that expands the API to allow for  arbitrarily complex composition of plots by, among others, providing  mathematical operators for combining multiple plots. Other packages that try  to address this need (but with a different approach) are 'gridExtra' and  'cowplot'.",
+      "License": "MIT + file LICENSE",
+      "Encoding": "UTF-8",
+      "Imports": [
+        "ggplot2 (>= 3.0.0)",
+        "gtable (>= 0.3.6)",
+        "grid",
+        "stats",
+        "grDevices",
+        "utils",
+        "graphics",
+        "rlang (>= 1.0.0)",
+        "cli",
+        "farver"
+      ],
+      "RoxygenNote": "7.3.2",
+      "URL": "https://patchwork.data-imaginist.com, https://github.com/thomasp85/patchwork",
+      "BugReports": "https://github.com/thomasp85/patchwork/issues",
+      "Suggests": [
+        "knitr",
+        "rmarkdown",
+        "gridGraphics",
+        "gridExtra",
+        "ragg",
+        "testthat (>= 2.1.0)",
+        "vdiffr",
+        "covr",
+        "png",
+        "gt (>= 0.11.0)"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "gifski",
+      "NeedsCompilation": "no",
+      "Author": "Thomas Lin Pedersen [cre, aut] (ORCID: <https://orcid.org/0000-0002-5147-4711>)",
+      "Repository": "CRAN"
     },
     "pcaPP": {
       "Package": "pcaPP",
@@ -3014,6 +3289,55 @@
       "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
       "Repository": "RSPM"
     },
+    "progressr": {
+      "Package": "progressr",
+      "Version": "0.16.0",
+      "Source": "Repository",
+      "Title": "An Inclusive, Unifying API for Progress Updates",
+      "Description": "A minimal, unifying API for scripts and packages to report progress updates from anywhere including when using parallel processing.  The package is designed such that the developer can to focus on what progress should be reported on without having to worry about how to present it.  The end user has full control of how, where, and when to render these progress updates, e.g. in the terminal using utils::txtProgressBar(), cli::cli_progress_bar(), in a graphical user interface using utils::winProgressBar(), tcltk::tkProgressBar() or shiny::withProgress(), via the speakers using beepr::beep(), or on a file system via the size of a file. Anyone can add additional, customized, progression handlers. The 'progressr' package uses R's condition framework for signaling progress updated. Because of this, progress can be reported from almost anywhere in R, e.g. from classical for and while loops, from map-reduce API:s like the lapply() family of functions, 'purrr', 'plyr', and 'foreach'. It will also work with parallel processing via the 'future' framework, e.g. future.apply::future_lapply(), furrr::future_map(), and 'foreach' with 'doFuture'. The package is compatible with Shiny applications.",
+      "Authors@R": "c(person(\"Henrik\", \"Bengtsson\", role = c(\"aut\", \"cre\", \"cph\"), email = \"henrikb@braju.com\", comment = c(ORCID = \"0000-0002-7579-5165\")))",
+      "License": "GPL (>= 3)",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "Imports": [
+        "digest",
+        "utils"
+      ],
+      "Suggests": [
+        "graphics",
+        "tcltk",
+        "beepr",
+        "cli",
+        "crayon",
+        "pbmcapply",
+        "progress",
+        "purrr",
+        "foreach",
+        "plyr",
+        "doFuture",
+        "future",
+        "future.apply",
+        "furrr",
+        "ntfy",
+        "RPushbullet",
+        "rstudioapi",
+        "shiny",
+        "commonmark",
+        "base64enc",
+        "tools"
+      ],
+      "VignetteBuilder": "progressr",
+      "Language": "en-US",
+      "Encoding": "UTF-8",
+      "URL": "https://progressr.futureverse.org, https://github.com/futureverse/progressr",
+      "BugReports": "https://github.com/futureverse/progressr/issues",
+      "RoxygenNote": "7.3.3",
+      "NeedsCompilation": "no",
+      "Author": "Henrik Bengtsson [aut, cre, cph] (ORCID: <https://orcid.org/0000-0002-7579-5165>)",
+      "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
+      "Repository": "https://packagemanager.posit.co/cran/latest"
+    },
     "ps": {
       "Package": "ps",
       "Version": "1.9.1",
@@ -3101,6 +3425,24 @@
       "Author": "Hadley Wickham [aut, cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Lionel Henry [aut], Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "RSPM"
+    },
+    "quadprog": {
+      "Package": "quadprog",
+      "Version": "1.5-8",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Functions to Solve Quadratic Programming Problems",
+      "Date": "2019-11-20",
+      "Author": "S original by Berwin A. Turlach <Berwin.Turlach@gmail.com>  R port by Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at> Fortran contributions from Cleve Moler (dposl/LINPACK and (a modified version of) dpodi/LINPACK)",
+      "Maintainer": "Berwin A. Turlach <Berwin.Turlach@gmail.com>",
+      "Description": "This package contains routines and documentation for solving quadratic programming problems.",
+      "Depends": [
+        "R (>= 3.1.0)"
+      ],
+      "License": "GPL (>= 2)",
+      "NeedsCompilation": "yes",
+      "Repository": "RSPM",
+      "Encoding": "UTF-8"
     },
     "quarto": {
       "Package": "quarto",
@@ -3573,6 +3915,49 @@
       "NeedsCompilation": "yes",
       "Author": "Charlie Gao [aut, cre] (<https://orcid.org/0000-0002-0750-061X>), Hibiki AI Limited [cph]",
       "Maintainer": "Charlie Gao <charlie.gao@shikokuchuo.net>",
+      "Repository": "RSPM"
+    },
+    "slider": {
+      "Package": "slider",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Title": "Sliding Window Functions",
+      "Authors@R": "c( person(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
+      "Description": "Provides type-stable rolling window functions over any R data type. Cumulative and expanding windows are also supported. For more advanced usage, an index can be used as a secondary vector that defines how sliding windows are to be created.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/r-lib/slider, https://slider.r-lib.org",
+      "BugReports": "https://github.com/r-lib/slider/issues",
+      "Depends": [
+        "R (>= 4.0.0)"
+      ],
+      "Imports": [
+        "cli (>= 3.6.1)",
+        "rlang (>= 1.1.1)",
+        "vctrs (>= 0.6.3)",
+        "warp"
+      ],
+      "Suggests": [
+        "covr",
+        "dplyr (>= 1.0.0)",
+        "knitr",
+        "lubridate",
+        "rmarkdown",
+        "testthat (>= 3.0.0)"
+      ],
+      "LinkingTo": [
+        "vctrs (>= 0.6.3)"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/build/compilation-database": "true",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Config/testthat/edition": "3",
+      "Config/usethis/last-upkeep": "2024-10-25",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.2",
+      "Collate": "'arithmetic.R' 'block.R' 'conditions.R' 'hop-common.R' 'hop-index-common.R' 'hop-index.R' 'hop-index2.R' 'hop.R' 'hop2.R' 'phop-index.R' 'phop.R' 'slide-index2.R' 'pslide-index.R' 'slide-period2.R' 'pslide-period.R' 'slide2.R' 'pslide.R' 'segment-tree.R' 'slide-common.R' 'slide-index-common.R' 'slide-index.R' 'slide-period-common.R' 'slide-period.R' 'slide.R' 'slider-package.R' 'summary-index.R' 'summary-slide.R' 'utils.R' 'zzz.R'",
+      "NeedsCompilation": "yes",
+      "Author": "Davis Vaughan [aut, cre], Posit Software, PBC [cph, fnd]",
+      "Maintainer": "Davis Vaughan <davis@posit.co>",
       "Repository": "RSPM"
     },
     "stray": {
@@ -4257,6 +4642,34 @@
       "Author": "Simon Garnier [aut, cre], Noam Ross [ctb, cph], Bob Rudis [ctb, cph], Marco Sciaini [ctb, cph], Antônio Pedro Camargo [ctb, cph], Cédric Scherer [ctb, cph]",
       "Repository": "RSPM"
     },
+    "warp": {
+      "Package": "warp",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Title": "Group Dates",
+      "Authors@R": "c( person(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
+      "Description": "Tooling to group dates by a variety of periods including: yearly, monthly, by second, by week of the month, and more.  The groups are defined in such a way that they also represent the distance between dates in terms of the period. This extracts valuable information that can be used in further calculations that rely on a specific temporal spacing between observations.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/DavisVaughan/warp, https://davisvaughan.github.io/warp/",
+      "BugReports": "https://github.com/DavisVaughan/warp/issues",
+      "Depends": [
+        "R (>= 3.2)"
+      ],
+      "Suggests": [
+        "covr",
+        "knitr",
+        "rmarkdown",
+        "testthat (>= 3.0.0)"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.2.3",
+      "NeedsCompilation": "yes",
+      "Author": "Davis Vaughan [aut, cre], Posit Software, PBC [cph, fnd]",
+      "Maintainer": "Davis Vaughan <davis@posit.co>",
+      "Repository": "RSPM"
+    },
     "weird": {
       "Package": "weird",
       "Version": "1.0.2.9000",
@@ -4308,11 +4721,11 @@
       "Author": "Rob Hyndman [aut, cre, cph] (ORCID: <https://orcid.org/0000-0002-2140-5352>), RStudio [cph]",
       "Maintainer": "Rob Hyndman <Rob.Hyndman@monash.edu>",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "robjhyndman",
       "RemoteRepo": "weird-package",
       "RemoteRef": "main",
-      "RemoteSha": "36a41d750d2b46bc93f2c5acff4e73b5530146a5",
+      "RemoteSha": "c380284cc2826be28f25c758bd0267a61e8de60f",
+      "RemoteHost": "api.github.com",
       "Remotes": "sevvandi/lookout"
     },
     "whisker": {
