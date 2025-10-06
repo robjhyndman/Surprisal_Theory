@@ -144,12 +144,12 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
@@ -358,7 +358,7 @@ Distribution, Outlier detection, Tail bounds},
 
 % Authors
 
-
+\nocover
   \author{Rob J Hyndman, David T Frazier}
   \addresses{%
     %
@@ -525,7 +525,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-note-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-note-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
 
 Outline of paper TBC
 
@@ -559,19 +559,12 @@ a_t = \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
 \] Then \(e_t = (y_t-m_t)/a_t\) provides a measure for how different an
 observation \(y_t\) is from its neighbours. The Hampel identifier
 denotes an observation as an anomaly if \(|e_t| > \tau\) for some
-threshold \(\tau\). The threshold is often set under the assumption of a
-Normal distribution, for which the MAD is equal to 0.67445 times the
-standard deviation. So it is common to set \(\tau = k/0.67445\) where
-\(k\) is the number of standard deviations permitted before an
-observation is considered an outlier. Because we apply the rule
-repeatedly over the length of a time series, we need to be careful of
-the problem of multiple comparisons, where the probability of a false
-positive overall is much larger than the probability of a false positive
-for each individual test. However, it is not straightforward to adjust
-the probabilities because the tests are not independent, and the
-dependency between them depends on the window size \(h\), and the
-characteristics of the time series. Setting \(k=5\) or 6 seems to work
-quite well for many problems.
+threshold \(\tau\). The threshold is often set under the assumption of
+Normal distribution. When we take a surprisal perspective, this is
+equivalent to setting \(F\) to be a conditional Normal distribution \[
+  [y_t  \mid y_{t-h},\dots,y_{t-1},y_{t+1},\dots,y_{t+h}]  \sim N(m_t, a_t/\Phi^{-1}(0.75)),
+\] where \(\Phi(\cdot)\) is the standard normal distribution function.
+The false anomaly rate is \(\alpha = 1 - \Phi(\tau\Phi(0.75))/2\).
 
 \section{Empirical surprisal
 probabilities}\label{empirical-surprisal-probabilities}
@@ -581,7 +574,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-important-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
 
 What can we say about the quality of the approximation?
 
@@ -692,8 +685,8 @@ with mass functions on a finite set. However, it may not be satisfied if
 the log density has no lower bound.
 
 For example, consider the truncated normal distribution on \([a,b]\),
-where \(Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)\) and
-\(-\infty < a < b < \infty\). Then \[
+where \(Y\sim TN(a,b,\mu,\sigma^2)\) and \(-\infty < a < b < \infty\).
+Then \[
 S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\},
 \] where \(\Phi\) is the standard normal distribution function. Since
 \(Y\in[a,b]\), \(S\) is bounded for all \(\sigma>0\) and hence \(S\)
@@ -769,8 +762,8 @@ violated, as the following result illustrates.
 
 \begin{lemma}[]\protect\hypertarget{lem-normal}{}\label{lem-normal}
 
-If \(Y\sim \mathcal{N}(\mu,\sigma^2)\), then \(S=-\log f(Y)\) is
-sub-exponential. In particular, \[
+If \(Y\sim N(\mu,\sigma^2)\), then \(S=-\log f(Y)\) is sub-exponential.
+In particular, \[
 \mathbb{E} e^{\lambda(S-1/2)+(\lambda/2)\log(2\pi\sigma^2)}\le e^{\lambda^2/2+(\lambda/2)\log(2\pi\sigma^2)},\quad \forall |\lambda|<1/2.
 \]
 
@@ -790,9 +783,8 @@ X=\frac{1}{2}\frac{(Y-\mu)^2}{\sigma^2}-\frac{1}{2},
 \E e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi}}\int e^{\frac{\lambda}{2}[z^2-1]}e^{-z^2/2}\dt y={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{e^{-2(\lambda/2)}}{\sqrt{1-2(\lambda/2)}}
 \] for all \(\lambda<1\). Further, it can be verified that \[
 \frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
-\] Hence, when we have \(Y\sim\mathcal{N}(\mu,\sigma^2)\), then
-\(S=-\log f(Y)\) is sub-exponential with parameter \(\nu=1\) and
-\(b=2\).
+\] Hence, when we have \(Y\sim N(\mu,\sigma^2)\), then \(S=-\log f(Y)\)
+is sub-exponential with parameter \(\nu=1\) and \(b=2\).
 \end{proof}
 
 Therefore, to be able to apply extreme value theory to the surprisal
@@ -984,11 +976,11 @@ values}\label{standard-univariate-normal-values}
 Although we need to assume some density function \(f\) when computing
 surprisals, we want the resulting tail probabilities to be robust to a
 mis-specified distribution. Suppose we generate 1000 observations from a
-\(\mathcal{N}(0,1)\) distribution, but use a \(t(4)\) distribution to
-compute the surprisal values. The empirical tail probabilities, and
-those obtained using the GPD approach, should still give reasonable
-estimates of the tail probabilities, despite the incorrect distribution
-being used to compute the surprisals.
+\(N(0,1)\) distribution, but use a \(t(4)\) distribution to compute the
+surprisal values. The empirical tail probabilities, and those obtained
+using the GPD approach, should still give reasonable estimates of the
+tail probabilities, despite the incorrect distribution being used to
+compute the surprisals.
 
 To study the effect of the assumed distribution, we compute the
 surprisal values using both the correct Normal density and an incorrect
@@ -1022,11 +1014,11 @@ Figure~\ref{fig-expt1} for observations greater than 2.5, showing how
 both empirical tail probabilities and the GPD estimates are still
 accurate, regardless of which distribution was used to compute the
 surprisals. The solid lines show the results for surprisals computed
-using the true \(\mathcal{N}(0,1)\) distribution, while the dashed line
-shows the results for surprisals computed using the mis-specified
-\(t(4)\) distribution. The estimates computed directly from \(t(4)\)
-(``Assumed distribution'') are very inaccurate, but all other estimates
-lie close to the truth.
+using the true \(N(0,1)\) distribution, while the dashed line shows the
+results for surprisals computed using the mis-specified \(t(4)\)
+distribution. The estimates computed directly from \(t(4)\) (``Assumed
+distribution'') are very inaccurate, but all other estimates lie close
+to the truth.
 
 In summary, even when we don't know the distribution of the data, we can
 use some incorrect assumed distribution to compute the surprisals, and
@@ -1036,10 +1028,10 @@ estimates of the surprisal probabilities.
 The converse situation is shown in the right panel of
 Figure~\ref{fig-expt1}, where the data are generated from a \(t(4)\)
 distribution, and the surprisal values are computed using both the
-correct \(t(4)\) density and an incorrect \(\mathcal{N}(0,1)\) density.
-Again, the empirical tail probabilities, and the GPD estimates, are
-relatively accurate, even when the wrong distribution is used to compute
-the surprisal values.
+correct \(t(4)\) density and an incorrect \(N(0,1)\) density. Again, the
+empirical tail probabilities, and the GPD estimates, are relatively
+accurate, even when the wrong distribution is used to compute the
+surprisal values.
 
 \subsection{Bivariate gamma values}\label{bivariate-gamma-values}
 
@@ -1078,7 +1070,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-important-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
@@ -1089,10 +1081,10 @@ asymptotic bias.
 
 \subsection{French mortality rates}\label{french-mortality-rates}
 
-French mortality rates, disaggregated by age and sex, are available from
-the \textcite{HMD}. We will consider male and female data from 1816 to
-1999 over ages 0 to 85, giving 172 separate time series, each of length
-184.
+French mortality rates, disaggregated by age (single years) and sex, are
+available from the \textcite{HMD}. We will consider male and female data
+from 1816 to 1999 over ages 0 to 85, giving 172 separate time series,
+each of length 184.
 
 Figure~\ref{fig-fr_mortality_plot} shows the data for both sexes and all
 ages. The mortality rates have improved over time for all ages,
@@ -1140,9 +1132,9 @@ evident in the data:
 \item
   1832, 1849, 1854: Cholera outbreaks
 \item
-  1853-1856: Crimean war
+  1853--1856: Crimean war
 \item
-  1870: Franco-Prussian war
+  1870: Franco--Prussian war
 \item
   1871: Repression of the `Commune de Paris'
 \item
@@ -1150,7 +1142,7 @@ evident in the data:
 \item
   1918: Spanish flu outbreak
 \item
-  1940-1944: World War II
+  1940--1944: World War II
 \end{itemize}
 
 \subsection{Test cricket not outs}\label{test-cricket-not-outs}

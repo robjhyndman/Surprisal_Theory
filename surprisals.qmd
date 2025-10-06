@@ -28,7 +28,7 @@ bibliography: refs.bib
 wpnumber: no/yr
 jelcodes: C10,C14,C46
 blind: false
-cover: true
+cover: false
 linestretch: 1.5
 format:
   wp-pdf:
@@ -133,8 +133,11 @@ Similarly, the local median absolute deviation (MAD) is given by
 $$
 a_t = \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
 $$
-Then $e_t = (y_t-m_t)/a_t$ provides a measure for how different an observation $y_t$ is from its neighbours. The Hampel identifier denotes an observation as an anomaly if $|e_t| > \tau$ for some threshold $\tau$. The threshold is often set under the assumption of a Normal distribution, for which the MAD is equal to 0.67445 times the standard deviation. So it is common to set $\tau = k/0.67445$ where $k$ is the number of standard deviations permitted before an observation is considered an outlier. Because we apply the rule repeatedly over the length of a time series, we need to be careful of the problem of multiple comparisons, where the probability of a false positive overall is much larger than the probability of a false positive for each individual test. However, it is not straightforward to adjust the probabilities because the tests are not independent, and the dependency between them depends on the window size $h$, and the characteristics of the time series. Setting $k=5$ or 6 seems to work quite well for many problems.
-
+Then $e_t = (y_t-m_t)/a_t$ provides a measure for how different an observation $y_t$ is from its neighbours. The Hampel identifier denotes an observation as an anomaly if $|e_t| > \tau$ for some threshold $\tau$. The threshold is often set under the assumption of Normal distribution. When we take a surprisal perspective, this is equivalent to setting $F$ to be a conditional Normal distribution 
+$$
+  [y_t  \mid y_{t-h},\dots,y_{t-1},y_{t+1},\dots,y_{t+h}]  \sim N(m_t, a_t/\Phi^{-1}(0.75)),
+$$
+where $\Phi(\cdot)$ is the standard normal distribution function. The false anomaly rate is $\alpha = 1 - \Phi(\tau\Phi(0.75))/2$.
 
 # Empirical surprisal probabilities
 
@@ -194,7 +197,7 @@ Under each of Assumptions [-@def-bounded]--[-@def-polybounded], we seek a result
 
 Let's first assume that the surprisals are well-behaved and have a sub-Gaussian tail. @def-bounded will be satisfied in cases where the density $f$ is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound.
 
-For example, consider the truncated normal distribution on $[a,b]$, where $Y\sim \mathcal{TN}(a,b,\mu,\sigma^2)$ and $-\infty < a < b < \infty$. Then
+For example, consider the truncated normal distribution on $[a,b]$, where $Y\sim TN(a,b,\mu,\sigma^2)$ and $-\infty < a < b < \infty$. Then
 $$
 S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\},
 $$
@@ -262,7 +265,7 @@ The first result follows from the iid assumption on $S$ and the union bound, whi
 In cases where the underlying density has full support on $\mathbb{R}$ and the log density cannot be bounded from below, then the sub-Gaussianity condition in @def-bounded may be violated, as the following result illustrates.
 
 ::: {#lem-normal}
-If $Y\sim \mathcal{N}(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular,
+If $Y\sim N(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular,
 $$
 \mathbb{E} e^{\lambda(S-1/2)+(\lambda/2)\log(2\pi\sigma^2)}\le e^{\lambda^2/2+(\lambda/2)\log(2\pi\sigma^2)},\quad \forall |\lambda|<1/2.
 $$
@@ -293,7 +296,7 @@ for all $\lambda<1$. Further, it can be verified that
 $$
 \frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
 $$
-Hence, when we have $Y\sim\mathcal{N}(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$.
+Hence, when we have $Y\sim N(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$.
 :::
 
 Therefore, to be able to apply extreme value theory to the surprisal values, we need a version of @lem-bounds that uses sub-exponentiality.
@@ -458,7 +461,7 @@ $$
 
 ## Standard univariate normal values
 
-Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a $\mathcal{N}(0,1)$ distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
+Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a $N(0,1)$ distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
 
 To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t(4)$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities in three ways: (a) using the same distribution used to compute the surprisal values; (b) using empirical tail probabilities; and (c) using a GPD fitted to the largest 100 surprisal values. 
 
@@ -469,11 +472,11 @@ To study the effect of the assumed distribution, we compute the surprisal values
 tar_read(fig_expt1)
 ```
 
-The various estimates are displayed in the left panel of @fig-expt1 for observations greater than 2.5, showing how both empirical tail probabilities and the GPD estimates are still accurate, regardless of which distribution was used to compute the surprisals. The solid lines show the results for surprisals computed using the true $\mathcal{N}(0,1)$ distribution, while the dashed line shows the results for surprisals computed using the mis-specified $t(4)$ distribution. The estimates computed directly from $t(4)$ ("Assumed distribution") are very inaccurate, but all other estimates lie close to the truth.
+The various estimates are displayed in the left panel of @fig-expt1 for observations greater than 2.5, showing how both empirical tail probabilities and the GPD estimates are still accurate, regardless of which distribution was used to compute the surprisals. The solid lines show the results for surprisals computed using the true $N(0,1)$ distribution, while the dashed line shows the results for surprisals computed using the mis-specified $t(4)$ distribution. The estimates computed directly from $t(4)$ ("Assumed distribution") are very inaccurate, but all other estimates lie close to the truth.
 
 In summary, even when we don't know the distribution of the data, we can use some incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal probabilities.
 
-The converse situation is shown in the right panel of @fig-expt1, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect $\mathcal{N}(0,1)$ density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
+The converse situation is shown in the right panel of @fig-expt1, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect $N(0,1)$ density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
 
 ## Bivariate gamma values
 
@@ -499,7 +502,7 @@ What's going on with the GPD under Gaussian? There seems to be an asymptotic bia
 tar_load(c(fr_mortality, fr_anomalies))
 ```
 
-French mortality rates, disaggregated by age and sex, are available from the @HMD. We will consider male and female data from `r min(fr_mortality$Year)` to `r max(fr_mortality$Year)` over ages `r min(fr_mortality$Age)` to `r max(fr_mortality$Age)`, giving `r fr_mortality |> dplyr::select(Age, Sex) |> dplyr::distinct() |> NROW()` separate time series, each of length `r max(fr_mortality$Year) - min(fr_mortality$Year) + 1`. 
+French mortality rates, disaggregated by age (single years) and sex, are available from the @HMD. We will consider male and female data from `r min(fr_mortality$Year)` to `r max(fr_mortality$Year)` over ages `r min(fr_mortality$Age)` to `r max(fr_mortality$Age)`, giving `r fr_mortality |> dplyr::select(Age, Sex) |> dplyr::distinct() |> NROW()` separate time series, each of length `r max(fr_mortality$Year) - min(fr_mortality$Year) + 1`. 
 
 @fig-fr_mortality_plot shows the data for both sexes and all ages. The mortality rates have improved over time for all ages, especially since 1950. Infant mortality (age 0) is much higher than the rest of childhood, with mortality rates at a minimum at about age 10 in all years. The highest mortality rates are for the oldest age groups. The effect of the two wars are particularly evident in the male mortality rates.
 
@@ -520,12 +523,12 @@ tar_read(fr_anomaly_plot)
 @fig-hampel_fr shows the `r NROW(fr_anomalies)` observations (out of `r NROW(fr_mortality)`) that have been identified as anomalies, showing the wars and epidemics that have occurred over time. The following events in French history are evident in the data:
 
 * 1832, 1849, 1854: Cholera outbreaks
-* 1853-1856: Crimean war
-* 1870: Franco-Prussian war
+* 1853--1856: Crimean war
+* 1870: Franco--Prussian war
 * 1871: Repression of the ‘Commune de Paris’
 * 1914-1918: World War I
 * 1918: Spanish flu outbreak
-* 1940-1944: World War II
+* 1940--1944: World War II
 
 <!-- 
 ## US COVID-19 death rates
@@ -554,7 +557,7 @@ Ignoring the period 2020--2022, it is clear that the remainder has a heavy taile
 
 Let $\{y_t\}$ denotes the remainder series from the STL decomposition. We model this using a Gaussian autoregressive model of order 3:
 $$
-  y_t \mid y_{t-1}, y_{t-2}, y_{t-3} \sim \mathcal{N}(\phi_1 y_{t-1} + \phi_2 y_{t-2} + \phi_3 y_{t-3}, \sigma^2),
+  y_t \mid y_{t-1}, y_{t-2}, y_{t-3} \sim N(\phi_1 y_{t-1} + \phi_2 y_{t-2} + \phi_3 y_{t-3}, \sigma^2),
 $$
 where the order was selected by minimizing Akaike's Information Criterion. Surprisals are computed using this conditional distribution.
  -->
