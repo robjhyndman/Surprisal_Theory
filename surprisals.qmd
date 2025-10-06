@@ -458,32 +458,38 @@ $$
 
 ## Standard univariate normal values
 
-Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a N(0,1) distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
+Although we need to assume some density function $f$ when computing surprisals, we want the resulting tail probabilities to be robust to a mis-specified distribution. Suppose we generate 1000 observations from a $\mathcal{N}(0,1)$ distribution, but use a $t(4)$ distribution to compute the surprisal values. The empirical tail probabilities, and those obtained using the GPD approach, should still give reasonable estimates of the tail probabilities, despite the incorrect distribution being used to compute the surprisals.
 
 To study the effect of the assumed distribution, we compute the surprisal values using both the correct Normal density and an incorrect $t(4)$ density. Then, for each set of surprisal values, we estimate the surprisal tail probabilities in three ways: (a) using the same distribution used to compute the surprisal values; (b) using empirical tail probabilities; and (c) using a GPD fitted to the largest 100 surprisal values. 
 
 ```{r}
-#| label: fig-norm_prob
-#| fig-cap: "Left: Observations are computed from a N(0,1) distribution. Right: Observations are computed from a $t(4)$ distribution. Distribution indicates which distribution was used to compute the surprisal values. Estimate shows how the tail probabilities were computed. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| label: fig-expt1
+#| fig-cap: "Left: Observations are computed from a $\\mathcal{N(0,1)}$ distribution. Right: Observations are computed from a $t(4)$ distribution. Distribution indicates which distribution was used to compute the surprisal values. Estimate shows how the tail probabilities were computed. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
 #| fig-height: 4
 tar_read(fig_expt1)
 ```
 
-The various estimates are displayed in the left panel of @fig-norm_prob for observations greater than 2.5, showing how both empirical tail probabilities and the GPD estimates are still accurate, regardless of which distribution was used to compute the surprisals. The solid lines show the results for surprisals computed using the true N(0,1) distribution, while the dashed line shows the results for surprisals computed using the mis-specified $t(4)$ distribution. The estimates computed directly from $t(4)$ ("Assumed distribution") are very inaccurate, but all other estimates lie close to the truth.
+The various estimates are displayed in the left panel of @fig-expt1 for observations greater than 2.5, showing how both empirical tail probabilities and the GPD estimates are still accurate, regardless of which distribution was used to compute the surprisals. The solid lines show the results for surprisals computed using the true $\mathcal{N}(0,1)$ distribution, while the dashed line shows the results for surprisals computed using the mis-specified $t(4)$ distribution. The estimates computed directly from $t(4)$ ("Assumed distribution") are very inaccurate, but all other estimates lie close to the truth.
 
 In summary, even when we don't know the distribution of the data, we can use some incorrect assumed distribution to compute the surprisals, and then apply either a GPD or the empirical distribution to obtain good estimates of the surprisal probabilities.
 
-The converse situation is shown in the right panel of @fig-norm_prob, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect N(0,1) density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
+The converse situation is shown in the right panel of @fig-expt1, where the data are generated from a $t(4)$ distribution, and the surprisal values are computed using both the correct $t(4)$ density and an incorrect $\mathcal{N}(0,1)$ density. Again, the empirical tail probabilities, and the GPD estimates, are relatively accurate, even when the wrong distribution is used to compute the surprisal values.
 
 ## Bivariate gamma values
 
 The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $100,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is the number of anomalies detected when $\alpha=0.01$ for different sample sizes, averaged over 1000 replications. The false anomaly rate under the true distribution is, of course, 0.01.
 
 ```{r}
+#| label: fig-expt2
+#| fig-cap: "Estimated false anomaly rate under different approximations when $\\alpha = 0.01$."
 tar_read(fig_expt2)
 ```
 
-Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged.
+Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged. 
+
+::: {.callout-important}
+What's going on with the GPD under Gaussian? There seems to be an asymptotic bias.
+:::
 
 # Applications
 
