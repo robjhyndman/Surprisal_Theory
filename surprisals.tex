@@ -147,11 +147,11 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -283,7 +283,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{3 October 2025}
+\date{6 October 2025}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -383,7 +383,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 3 October 2025}
+   \lfoot{\sf Hyndman, Frazier: 6 October 2025}
 
 % Keywords
 
@@ -525,11 +525,53 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, rightrule=.15mm, opacityback=0, coltitle=black, titlerule=0mm, breakable, opacitybacktitle=0.6, toptitle=1mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, leftrule=.75mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-note-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-note-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
 
 Outline of paper TBC
 
 \end{tcolorbox}
+
+\section{Reinterpreting anomaly detection methods using
+surprisals}\label{reinterpreting-anomaly-detection-methods-using-surprisals}
+
+Many proposed anomaly detection methods can be understood within the
+framework of surprisals.
+
+For example, under any symmetric univariate distribution,
+\(p_i = 2[1 - F(c+|y_i-c|)]\), where \(F\) is the corresponding
+distribution function centered at \(c\). Therefore, under the Normal
+distribution \(N(\mu, \sigma^2)\),
+\(p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]\), where \(\Phi\) is the standard
+Normal distribution function. Thus, when \(F\) is a Normal distribution,
+identifying anomalies as observations with \(p_i < \alpha\) is
+equivalent to a z-score test with the threshold set to the
+\(1-\alpha/2\) quantile of the standard Normal distribution.
+
+The Hampel identifier is due to a proposal of Frank Hampel
+\autocite{Davies1993}, and is designed to identify anomalies in a time
+series based on whether an observation is very different from the
+neighbouring observations. Suppose we define neighbourhoods comprising
+observations within \(h\) time periods. Then the local median is given
+by \[
+m_t = \text{median}(y_{t-h}, \dots, y_{t+h}).
+\] Similarly, the local median absolute deviation (MAD) is given by \[
+a_t = \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
+\] Then \(e_t = (y_t-m_t)/a_t\) provides a measure for how different an
+observation \(y_t\) is from its neighbours. The Hampel identifier
+denotes an observation as an anomaly if \(|e_t| > \tau\) for some
+threshold \(\tau\). The threshold is often set under the assumption of a
+Normal distribution, for which the MAD is equal to 0.67445 times the
+standard deviation. So it is common to set \(\tau = k/0.67445\) where
+\(k\) is the number of standard deviations permitted before an
+observation is considered an outlier. Because we apply the rule
+repeatedly over the length of a time series, we need to be careful of
+the problem of multiple comparisons, where the probability of a false
+positive overall is much larger than the probability of a false positive
+for each individual test. However, it is not straightforward to adjust
+the probabilities because the tests are not independent, and the
+dependency between them depends on the window size \(h\), and the
+characteristics of the time series. Setting \(k=5\) or 6 seems to work
+quite well for many problems.
 
 \section{Empirical surprisal
 probabilities}\label{empirical-surprisal-probabilities}
@@ -539,7 +581,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, rightrule=.15mm, opacityback=0, coltitle=black, titlerule=0mm, breakable, opacitybacktitle=0.6, toptitle=1mm, colframe=quarto-callout-important-color-frame, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, leftrule=.75mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-important-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
 
 What can we say about the quality of the approximation?
 
@@ -942,11 +984,11 @@ values}\label{standard-univariate-normal-values}
 Although we need to assume some density function \(f\) when computing
 surprisals, we want the resulting tail probabilities to be robust to a
 mis-specified distribution. Suppose we generate 1000 observations from a
-N(0,1) distribution, but use a \(t(4)\) distribution to compute the
-surprisal values. The empirical tail probabilities, and those obtained
-using the GPD approach, should still give reasonable estimates of the
-tail probabilities, despite the incorrect distribution being used to
-compute the surprisals.
+\(\mathcal{N}(0,1)\) distribution, but use a \(t(4)\) distribution to
+compute the surprisal values. The empirical tail probabilities, and
+those obtained using the GPD approach, should still give reasonable
+estimates of the tail probabilities, despite the incorrect distribution
+being used to compute the surprisals.
 
 To study the effect of the assumed distribution, we compute the
 surprisal values using both the correct Normal density and an incorrect
@@ -960,31 +1002,31 @@ surprisal values.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-norm_prob-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-expt1-1.pdf}}
 
 }
 
-\caption{\label{fig-norm_prob}Left: Observations are computed from a
-N(0,1) distribution. Right: Observations are computed from a \(t(4)\)
-distribution. Distribution indicates which distribution was used to
-compute the surprisal values. Estimate shows how the tail probabilities
-were computed. This demonstrates that the surprisal probabilities
-computed using the empirical distribution or under the GPD are still
-relatively accurate, even when the wrong distribution is used to compute
-the surprisal values.}
+\caption{\label{fig-expt1}Left: Observations are computed from a
+\(\mathcal{N(0,1)}\) distribution. Right: Observations are computed from
+a \(t(4)\) distribution. Distribution indicates which distribution was
+used to compute the surprisal values. Estimate shows how the tail
+probabilities were computed. This demonstrates that the surprisal
+probabilities computed using the empirical distribution or under the GPD
+are still relatively accurate, even when the wrong distribution is used
+to compute the surprisal values.}
 
 \end{figure}%
 
 The various estimates are displayed in the left panel of
-Figure~\ref{fig-norm_prob} for observations greater than 2.5, showing
-how both empirical tail probabilities and the GPD estimates are still
+Figure~\ref{fig-expt1} for observations greater than 2.5, showing how
+both empirical tail probabilities and the GPD estimates are still
 accurate, regardless of which distribution was used to compute the
 surprisals. The solid lines show the results for surprisals computed
-using the true N(0,1) distribution, while the dashed line shows the
-results for surprisals computed using the mis-specified \(t(4)\)
-distribution. The estimates computed directly from \(t(4)\) (``Assumed
-distribution'') are very inaccurate, but all other estimates lie close
-to the truth.
+using the true \(\mathcal{N}(0,1)\) distribution, while the dashed line
+shows the results for surprisals computed using the mis-specified
+\(t(4)\) distribution. The estimates computed directly from \(t(4)\)
+(``Assumed distribution'') are very inaccurate, but all other estimates
+lie close to the truth.
 
 In summary, even when we don't know the distribution of the data, we can
 use some incorrect assumed distribution to compute the surprisals, and
@@ -992,12 +1034,12 @@ then apply either a GPD or the empirical distribution to obtain good
 estimates of the surprisal probabilities.
 
 The converse situation is shown in the right panel of
-Figure~\ref{fig-norm_prob}, where the data are generated from a \(t(4)\)
+Figure~\ref{fig-expt1}, where the data are generated from a \(t(4)\)
 distribution, and the surprisal values are computed using both the
-correct \(t(4)\) density and an incorrect N(0,1) density. Again, the
-empirical tail probabilities, and the GPD estimates, are relatively
-accurate, even when the wrong distribution is used to compute the
-surprisal values.
+correct \(t(4)\) density and an incorrect \(\mathcal{N}(0,1)\) density.
+Again, the empirical tail probabilities, and the GPD estimates, are
+relatively accurate, even when the wrong distribution is used to compute
+the surprisal values.
 
 \subsection{Bivariate gamma values}\label{bivariate-gamma-values}
 
@@ -1019,18 +1061,178 @@ size. The anomaly rate shown is the number of anomalies detected when
 replications. The false anomaly rate under the true distribution is, of
 course, 0.01.
 
-\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/unnamed-chunk-1-1.pdf}}
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-expt2-1.pdf}}
+
+}
+
+\caption{\label{fig-expt2}Estimated false anomaly rate under different
+approximations when \(\alpha = 0.01\).}
+
+\end{figure}%
+
+Note that the empirical tail probabilities are identical under both the
+correct Gamma and incorrect Normal distributions, because the ranking of
+the surprisals in the tail are unchanged.
+
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, colbacktitle=quarto-callout-important-color!10!white, titlerule=0mm, coltitle=black, toprule=.15mm, colback=white, rightrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, opacitybacktitle=0.6, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, arc=.35mm, leftrule=.75mm]
+
+What's going on with the GPD under Gaussian? There seems to be an
+asymptotic bias.
+
+\end{tcolorbox}
 
 \section{Applications}\label{applications}
+
+\subsection{French mortality rates}\label{french-mortality-rates}
+
+French mortality rates, disaggregated by age and sex, are available from
+the \textcite{HMD}. We will consider male and female data from 1816 to
+1999 over ages 0 to 85, giving 172 separate time series, each of length
+184.
+
+Figure~\ref{fig-fr_mortality_plot} shows the data for both sexes and all
+ages. The mortality rates have improved over time for all ages,
+especially since 1950. Infant mortality (age 0) is much higher than the
+rest of childhood, with mortality rates at a minimum at about age 10 in
+all years. The highest mortality rates are for the oldest age groups.
+The effect of the two wars are particularly evident in the male
+mortality rates.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-fr_mortality_plot-1.pdf}}
+
+}
+
+\caption{\label{fig-fr_mortality_plot}French mortality rates by sex and
+age from 1816 to 1999. We use a log scale because the rates are vastly
+different for different age groups.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-hampel_fr-1.pdf}}
+
+}
+
+\caption{\label{fig-hampel_fr}Anomalies identified in the Frency
+mortality data by year and age. Wars and epidemics in French history are
+revealed.}
+
+\end{figure}%
+
+Figure~\ref{fig-hampel_fr} shows the 403 observations (out of 31648)
+that have been identified as anomalies, showing the wars and epidemics
+that have occurred over time. The following events in French history are
+evident in the data:
 
 \begin{itemize}
 \tightlist
 \item
-  US COVID death rates:
-  \url{https://otexts.com/weird/09-timeseries.html\#multivariate-time-series}
+  1832, 1849, 1854: Cholera outbreaks
 \item
-  \url{https://otexts.com/weird/06-density.html\#gam-surprisals}
+  1853-1856: Crimean war
+\item
+  1870: Franco-Prussian war
+\item
+  1871: Repression of the `Commune de Paris'
+\item
+  1914-1918: World War I
+\item
+  1918: Spanish flu outbreak
+\item
+  1940-1944: World War II
 \end{itemize}
+
+\subsection{Test cricket not outs}\label{test-cricket-not-outs}
+
+Consider the number of ``not outs'' for each batter (men and women) in
+test cricket to the end of 2024. A ``not out'' occurs when a batter has
+not been dismissed at the end of the team's innings. Let's consider if
+there are some batters who have an unusually high proportion of not
+outs. The data set contains results from 97649 innings, of which 12695
+were not outs. So the overall proportion of not outs is
+\(12695 / 97649 = 0.130\).
+
+Figure~\ref{fig-notouts} shows the proportion of not outs for each
+batter as a function of the number of innings they played. The unusual
+patterns on the left of each plot are due to the discrete nature of the
+data --- both the number of not outs and the number of innings must be
+integers. There is some overplotting that occurs due to batters having
+the same numbers of not-outs and innings, which results in the higher
+color density of the corresponding plotted points. Batters who have
+played only a few innings tend to have a higher proportion of not outs
+on average, and a higher variance, than those who have played a large
+number of innings.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{surprisals_files/figure-pdf/fig-notouts-1.pdf}}
+
+}
+
+\caption{\label{fig-notouts}Proportion of not outs for each batter as a
+function of the number of innings they played. The blue line and
+associated 95\% confidence interval shows the probability of a batter
+not being dismissed as a function of the number of innings they have
+played.}
+
+\end{figure}%
+
+This suggests that we can construct a generalized additive model
+\autocite{Wood2017gam} for the number of not outs for each batter as a
+function of the number of innings they played. It is natural to use a
+Binomial distribution with a logit link function: \[
+  \text{NotOuts} \mid \text{Innings} \sim \text{Binomial}(n=\text{Innings},~ p),
+\] where \(p\) denotes the probability of a batter not being dismissed
+in an innings, \[
+  \log(p / (1- p)) = g(\text{Innings}),
+\] and \(g()\) is a smooth function to be estimated nonparametrically.
+The resulting estimate, obtained from the mgcv package with penalized
+regression splines \autocite{mgcv}, is shown in blue in
+Figure~\ref{fig-notouts}.
+
+Now we can use the fitted model to compute the surprisals from the
+Binomial distribution, and find the most anomalous batters. While the
+Binomial distribution is probably a good first approximation, it does
+assume that the probability of a batter being dismissed does not change
+over their career, which is an unlikely assumption as it does not allow
+for the development of skill, the value of experience, or the effect of
+ageing. So we will use the GPD approximation to compute the surprisal
+probabilities.
+
+The most anomalous batters are all ``tail-enders'' (i.e., not skilled
+batters) who played for a long time (so they have a large number of
+innings). Because they batted last, or nearly last, they are more likely
+to be not out at the end of the team's innings.
+
+The largest surprisal is for English batter Jimmy Anderson, who has had
+114 not outs in 265 innings, which is much higher than the expected
+number of not outs of \(265 \times 0.148 = 39.3\). This anomaly is also
+seen in Figure~\ref{fig-notouts}, as being somewhat unusual for that
+part of the data. Although Jimmy Anderson was not a great batter, he was
+good at defence, and was able to bat for a long time without being
+dismissed, leaving the other batter time to score runs.
+
+We have identified an anomaly that is not anomalous in the proportion of
+not-outs, or in the number of innings, and the difference between the
+actual proportion and the predicted proportion is not anomalous either
+compared to some of the other values. However, because we have used a
+statistical model, we have been able to account for the particular
+features of this data set, such as the discrete nature of the data, and
+the changing variance, to identify an observation that is anomalous in
+the context of the model.
 
 \section{Discussion}\label{discussion}
 
