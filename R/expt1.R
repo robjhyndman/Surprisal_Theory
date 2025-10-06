@@ -36,7 +36,11 @@ create_fig_expt1 <- function(norm, t4) {
       values_to = "Probability"
     ) |>
     mutate(
-      Distribution = if_else(Estimate %in% c("p","p_emp","p_gdp"), "Normal", "t(4)"),
+      Distribution = if_else(
+        Estimate %in% c("p", "p_emp", "p_gdp"),
+        "Normal",
+        "t(4)"
+      ),
       Estimate = factor(
         Estimate,
         levels = c("p", "pt", "p_emp", "pt_emp", "p_gpd", "pt_gpd"),
@@ -50,7 +54,7 @@ create_fig_expt1 <- function(norm, t4) {
         )
       )
     ) |>
-    ggplot(aes(x = y, y = Probability, col = Estimate, lty=Distribution)) +
+    ggplot(aes(x = y, y = Probability, col = Estimate, lty = Distribution)) +
     geom_line() +
     facet_wrap(~Model, scales = "free_x") +
     theme(legend.position = "bottom")
