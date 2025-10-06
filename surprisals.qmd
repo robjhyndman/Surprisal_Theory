@@ -119,6 +119,23 @@ We illustrate the three approaches with several examples, including both simulat
 Outline of paper TBC
 :::
 
+# Reinterpreting anomaly detection methods using surprisals
+
+Many proposed anomaly detection methods can be understood within the framework of surprisals. 
+
+For example, under any symmetric univariate distribution, $p_i = 2[1 - F(c+|y_i-c|)]$, where $F$ is the corresponding distribution function centered at $c$. Therefore, under the Normal distribution $N(\mu, \sigma^2)$, $p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]$, where $\Phi$ is the standard Normal distribution function. Thus, when $F$ is a Normal distribution, identifying anomalies as observations with $p_i < \alpha$ is equivalent to a z-score test with the threshold set to the $1-\alpha/2$ quantile of the standard Normal distribution.
+
+The Hampel identifier is due to a proposal of Frank Hampel [@Davies1993], and is designed to identify anomalies in a time series based on whether an observation is very different from the neighbouring observations. Suppose we define neighbourhoods comprising observations within $h$ time periods. Then the local median is given by
+$$
+m_t = \text{median}(y_{t-h}, \dots, y_{t+h}).
+$$
+Similarly, the local median absolute deviation (MAD) is given by
+$$
+a_t = \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
+$$
+Then $e_t = (y_t-m_t)/a_t$ provides a measure for how different an observation $y_t$ is from its neighbours. The Hampel identifier denotes an observation as an anomaly if $|e_t| > \tau$ for some threshold $\tau$. The threshold is often set under the assumption of a Normal distribution, for which the MAD is equal to 0.67445 times the standard deviation. So it is common to set $\tau = k/0.67445$ where $k$ is the number of standard deviations permitted before an observation is considered an outlier. Because we apply the rule repeatedly over the length of a time series, we need to be careful of the problem of multiple comparisons, where the probability of a false positive overall is much larger than the probability of a false positive for each individual test. However, it is not straightforward to adjust the probabilities because the tests are not independent, and the dependency between them depends on the window size $h$, and the characteristics of the time series. Setting $k=5$ or 6 seems to work quite well for many problems.
+
+
 # Empirical surprisal probabilities
 
 Under approach (2) above, we estimate $p_i$ as the proportion of surprisals larger than $s_i$. For large $n$, this provides a quick and convenient estimate of $p_i$ that is accurate even when the assumed distribution $F$ is not. 
