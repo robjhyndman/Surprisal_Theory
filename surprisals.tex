@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
-\theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -270,8 +270,9 @@ Distribution, Outlier detection, Tail bounds},
 \makeatother
 
 %% PAGE BREAKING to avoid widows and orphans
-\clubpenalty = 2000
-\widowpenalty = 2000
+\clubpenalty = 10000
+\widowpenalty = 10000
+
 \usepackage{microtype}
 % Placement of logos
 
@@ -283,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{6 October 2025}
+\date{7 October 2025}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -383,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 6 October 2025}
+   \lfoot{\sf Hyndman, Frazier: 7 October 2025}
 
 % Keywords
 
@@ -458,13 +459,11 @@ the data.
 
 Let \(G(s) = \Pr\{S\le s\}\) be the distribution function of the
 surprisal values, where \(S = -\log f(\bm{Y})\) and \(\bm{Y}\sim F\).
-Then, the probability of observing a value with surprisal at least as
-large as \(s\) is given by \(1-G(s)\), which leads to a natural way to
-assign an anomaly score to each observation \(\bm{y}_i\): \[
+Then the probability of observing a value with surprisal at least as
+large as \(s\) is given by \(1-G(s)\), which leads to a natural way of
+assigning an anomaly score to each observation \(\bm{y}_i\): \[
 p_i = 1-G(s_i) = 1-G(-\log f(\bm{y}_i)).
-\]
-
-We define anomalies as observations with \(p_i < \alpha\), giving a
+\] We define anomalies as observations with \(p_i < \alpha\), giving a
 false positive rate of \(\alpha\) if all observations are from \(F\).
 This is preferable to directly computing the probabilities from the tail
 of \(F\), as it allows for anomalies to occur anywhere in the
@@ -484,6 +483,30 @@ G(s) = \Pr\{-\log f(\bm{Y})\le s\} = \Pr\{ f(\bm{Y})\ge e^{-s}\}.
 highest density regions of the distribution \autocite{HDR96}. In fact,
 every observation with \(p_i< \alpha\) lies outside the
 \(100(1-\alpha)\)\% highest density region of \(F\).
+
+If \(F = N(\mu, \sigma^2)\), then \(p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]\),
+where \(\Phi\) is the standard Normal distribution function. In this
+case, identifying anomalies as observations with \(p_i < \alpha\) is
+equivalent to a z-score test with the threshold set to
+\(\Phi^{-1}(1-\alpha/2)\).Hence, our approach can be seen as a
+generalization of anomaly detection methods based on z-scores including
+Grubbs' test \autocite{Grubbs1950}.
+
+It can also be seen as a generalization of other anomaly detection
+methods. For example, the Hampel identifier, due to a proposal of Frank
+Hampel \autocite{Davies1993}, is designed to identify anomalies in a
+time series based on whether an observation is very different from the
+neighbouring observations. It denotes an observation as an anomaly if
+\(|y_t-m_t|/a_t > \tau\), where \begin{align*}
+m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
+\text{and}\qquad
+a_t &= \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
+\end{align*} The threshold \(\tau\) is often set under the assumption of
+a Normal distribution. When we take a surprisal perspective, this is
+equivalent to setting \begin{equation}\phantomsection\label{eq-hampel}{
+  F  = N(m_t, a_t/\Phi^{-1}(0.75)).
+}\end{equation} The false anomaly rate is
+\(\alpha = 2[1 - \Phi(\tau\Phi(0.75))]\).
 
 We will usually not know \(F\), and so we need to estimate it from data
 or from theory. Such estimates are particularly fragile or uncertain in
@@ -525,46 +548,11 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, colframe=quarto-callout-note-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
 
 Outline of paper TBC
 
 \end{tcolorbox}
-
-\section{Reinterpreting anomaly detection methods using
-surprisals}\label{reinterpreting-anomaly-detection-methods-using-surprisals}
-
-Many proposed anomaly detection methods can be understood within the
-framework of surprisals.
-
-For example, under any symmetric univariate distribution,
-\(p_i = 2[1 - F(c+|y_i-c|)]\), where \(F\) is the corresponding
-distribution function centered at \(c\). Therefore, under the Normal
-distribution \(N(\mu, \sigma^2)\),
-\(p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]\), where \(\Phi\) is the standard
-Normal distribution function. Thus, when \(F\) is a Normal distribution,
-identifying anomalies as observations with \(p_i < \alpha\) is
-equivalent to a z-score test with the threshold set to the
-\(1-\alpha/2\) quantile of the standard Normal distribution.
-
-The Hampel identifier is due to a proposal of Frank Hampel
-\autocite{Davies1993}, and is designed to identify anomalies in a time
-series based on whether an observation is very different from the
-neighbouring observations. Suppose we define neighbourhoods comprising
-observations within \(h\) time periods. Then the local median is given
-by \[
-m_t = \text{median}(y_{t-h}, \dots, y_{t+h}).
-\] Similarly, the local median absolute deviation (MAD) is given by \[
-a_t = \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
-\] Then \(e_t = (y_t-m_t)/a_t\) provides a measure for how different an
-observation \(y_t\) is from its neighbours. The Hampel identifier
-denotes an observation as an anomaly if \(|e_t| > \tau\) for some
-threshold \(\tau\). The threshold is often set under the assumption of
-Normal distribution. When we take a surprisal perspective, this is
-equivalent to setting \(F\) to be a conditional Normal distribution \[
-  [y_t  \mid y_{t-h},\dots,y_{t-1},y_{t+1},\dots,y_{t+h}]  \sim N(m_t, a_t/\Phi^{-1}(0.75)),
-\] where \(\Phi(\cdot)\) is the standard normal distribution function.
-The false anomaly rate is \(\alpha = 1 - \Phi(\tau\Phi(0.75))/2\).
 
 \section{Empirical surprisal
 probabilities}\label{empirical-surprisal-probabilities}
@@ -574,7 +562,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-important-color!10!white, coltitle=black, colframe=quarto-callout-important-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
 
 What can we say about the quality of the approximation?
 
@@ -1070,7 +1058,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacityback=0, colback=white, breakable, toprule=.15mm, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, bottomrule=.15mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, rightrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-important-color!10!white, coltitle=black, colframe=quarto-callout-important-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
@@ -1122,17 +1110,19 @@ revealed.}
 
 \end{figure}%
 
-Figure~\ref{fig-hampel_fr} shows the 403 observations (out of 31648)
-that have been identified as anomalies, showing the wars and epidemics
-that have occurred over time. The following events in French history are
-evident in the data:
+We compute the surprisals using the conditional distribution
+(\ref{eq-hampel}), and then compute the surprisal probabilities under a
+GPD with \(\alpha = 0.01\). With so many observations, there is a high
+likelihood of many false positives, so we only retain anomalies when at
+least three age groups are anomalous in the same year, and for the same
+sex. This results in 289 anomalies out of 31648 observations.
+Figure~\ref{fig-hampel_fr} shows these anomalies, which coincide with
+various wars and epidemics that have occurred over French history:
 
 \begin{itemize}
 \tightlist
 \item
-  1832, 1849, 1854: Cholera outbreaks
-\item
-  1853--1856: Crimean war
+  1832, 1849: Cholera outbreaks
 \item
   1870: Franco--Prussian war
 \item
@@ -1142,17 +1132,21 @@ evident in the data:
 \item
   1918: Spanish flu outbreak
 \item
-  1940--1944: World War II
+  1940: World War II
 \end{itemize}
+
+In addition, there appears to have been unusually high infant mortality
+in 1834, and unusually high elderly mortality in 1837. The causes of
+these is unknown.
 
 \subsection{Test cricket not outs}\label{test-cricket-not-outs}
 
-Consider the number of ``not outs'' for each batter (men and women) in
-test cricket to the end of 2024. A ``not out'' occurs when a batter has
-not been dismissed at the end of the team's innings. Let's consider if
-there are some batters who have an unusually high proportion of not
-outs. The data set contains results from 97649 innings, of which 12695
-were not outs. So the overall proportion of not outs is
+Career batting data for all men and women to have played test cricket
+between 1834 and 6 October 2025 were obtained from \textcite{Rweird}. We
+will investigate if there are some batters who have an unusually high
+proportion of innings where they have not been dismissed, known as a
+``not out''. The data set contains results from 97649 innings, of which
+12695 were not outs. So the overall proportion of not outs is
 \(12695 / 97649 = 0.130\).
 
 Figure~\ref{fig-notouts} shows the proportion of not outs for each
@@ -1163,8 +1157,8 @@ integers. There is some overplotting that occurs due to batters having
 the same numbers of not-outs and innings, which results in the higher
 color density of the corresponding plotted points. Batters who have
 played only a few innings tend to have a higher proportion of not outs
-on average, and a higher variance, than those who have played a large
-number of innings.
+on average, and a higher variance, than those who have played many
+innings.
 
 \begin{figure}
 

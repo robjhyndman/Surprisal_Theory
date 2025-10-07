@@ -13,14 +13,16 @@ us_stmf_plot|stem|e5d28914f8af6fff|2f7be8635bc7d6f5|aadcc108c2446f61|543524466||
 us_stmf_anomalies|stem|a66444f0f5f907c5|8d1ba0d444ec87fe|2d4a34b355ea1d49|-332614153||t20367.1050756403s|s14318b|14318|rds|local|vector|||0.278||
 us_stmf_anomaly_plot|stem|a74852e9fd8fac36|f0b25483ac29e81f|a15ad0ee30d85cfd|-154910397||t20367.1066027462s|s1685180b|1685180|rds|local|vector|||0.125||
 fr_mortality|stem|1a6facab860d15ab|b80d086a10275110|2c530c1562a7fbd1|-841661118||t20367.1459997514s|s176946b|176946|rds|local|vector|||0.681||
-fr_anomalies|stem|ab3caa44cea3ef15|59353db7eff907e3|3d087ae08a2884bb|1211319699||t20367.1460131243s|s3755b|3755|rds|local|vector|||1.083||
 fr_mortality_plot|stem|b6973811cc414379|ca57af3d56a95048|4e9326d7e37d0d79|1588448204||t20367.1460282926s|s2738068b|2738068|rds|local|vector|||0.112||
-fr_anomaly_plot|stem|9d7df355219fe2eb|7de4a73bb331bccd|caf5144875fbd610|-1428623120||t20367.1460452256s|s2343788b|2343788|rds|local|vector|||0.182||
 cricket_batting|stem|c77bc1305bfe71b1|f0b5df2249414851|2c530c1562a7fbd1|1545454860||t20367.1930081138s|s84964b|84964|rds|local|vector|||0.605||
 not_outs|stem|579a9b23e1e65534|bd3772fa630134d6|5fb3475ee23871ee|1846917439||t20367.1935611511s|s91709b|91709|rds|local|vector|||0.026||
 fit_no|stem|673bfe53d945fe4c|1b8f533835546fdd|e9c5d2ca10dc7c26|690687162||t20367.1942021779s|s337955b|337955|rds|local|vector|||1.461||
 not_outs_plot|stem|cf53a4441aaf2bcb|b277edfac8920749|3613e0268ac4bd05|167166307||t20367.2040350429s|s2203304b|2203304|rds|local|vector|||0.117||
 notouts_aug|stem|fad526dc0c46b123|b9d8d85659dab814|ff78cd6fa0fa5ffd|-76025296||t20367.2088621265s|s138693b|138693|rds|local|vector|||0.077||
+new_hampel_anomalies|function|e0ac30d816c94b66
+fr_anomalies|stem|d1ae3266b4067f27|59353db7eff907e3|12f4cea9f8088930|1211319699||t20368.2420898683s|s2941b|2941|rds|local|vector|||1.756|There were 8 warnings in `mutate()`. The first warning was: ℹ In argument: `hampel = hampel_anomalies(Mortality, bandwidth = 7, alpha =   0.01, approximation = 'gpd')`. ℹ In group 46: `Age = 22` `Sex = 'Male'`. Caused by warning in `fpot.norm()`: ! optimization may not have succeeded ℹ Run `dplyr::last_dplyr_warnings()` to see the 7 remaining warnings.|
+fr_anomaly_plot|stem|f2652e1ecc20305c|7de4a73bb331bccd|cd3bcc1317f37d7f|-1428623120||t20368.247431631s|s2324647b|2324647|rds|local|vector|||0.27||
+paper|stem|336df23c7b45c3a0|c799efe5f40cf6a2|3c55c307e4025421|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20368.2602809439s|s1339815b|1339815|file|local|vector|||87.879||
 fit_notouts|function|02b1342331ef627b
 create_notouts_plot|function|fa4bc39f250a74a1
 noutouts_anomalies|function|87a06cc95c72f089
@@ -29,13 +31,13 @@ get_expt2_prob_single|function|f664403ff35c4648
 create_fr_mortality_plot|function|f01aab782c2df0d7
 create_fig_expt2|function|0dc7c327c019b175
 create_stmf_plot|function|4a10cc49d1a4dd3d
-create_fr_anomaly_plot|function|f51fe49ce32bb642
+hampel_anomalies|function|81d72d540552bfc6
+create_fr_anomaly_plot|function|28e72f88ffd2bf2f
 augment_notouts|function|120c6b036fc687e5
 create_stmf_anomaly_plot|function|0666f0ea590a4473
-find_fr_anomalies|function|9677ee86a94f826a
 read_stmf_data|function|04ec289c01e1d2b6
 us_stmf_pca|function|1985a384b0e90eed
 get_stmf_anomalies|function|17306a531763177e
 create_fig_expt1|function|f48dc0298ae6aff6
 get_expt2_prob|function|b575e309c59230e1
-paper|stem|818cf3d79ba1d693|c799efe5f40cf6a2|d127529bbc7bd14a|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20367.2792308882s|s1350790b|1350790|file|local|vector|||95.29||
+find_fr_anomalies|function|b4df3338ab9283bc
