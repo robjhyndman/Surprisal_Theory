@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{7 October 2025}
+\date{9 October 2025}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 7 October 2025}
+   \lfoot{\sf Hyndman, Frazier: 9 October 2025}
 
 % Keywords
 
@@ -496,7 +496,7 @@ It can also be seen as a generalization of other anomaly detection
 methods. For example, the Hampel identifier, due to a proposal of Frank
 Hampel \autocite{Davies1993}, is designed to identify anomalies in a
 time series based on whether an observation is very different from the
-neighbouring observations. It denotes an observation as an anomaly if
+neighboring observations. It denotes an observation as an anomaly if
 \(|y_t-m_t|/a_t > \tau\), where \begin{align*}
 m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
 \text{and}\qquad
@@ -548,7 +548,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, colframe=quarto-callout-note-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, left=2mm, opacitybacktitle=0.6, opacityback=0, toptitle=1mm, colframe=quarto-callout-note-color-frame, coltitle=black, colback=white, bottomrule=.15mm, breakable, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, leftrule=.75mm, arc=.35mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}]
 
 Outline of paper TBC
 
@@ -562,7 +562,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-important-color!10!white, coltitle=black, colframe=quarto-callout-important-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacitybacktitle=0.6, opacityback=0, toptitle=1mm, colframe=quarto-callout-important-color-frame, coltitle=black, colback=white, bottomrule=.15mm, breakable, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, leftrule=.75mm, arc=.35mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}]
 
 What can we say about the quality of the approximation?
 
@@ -702,9 +702,9 @@ For any \(\lambda>0\), \begin{align}
 \Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
  & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
  & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
-\end{align} Now, we can maximise the RHS of the above bound in
-\(\lambda\), which yields the optimal value \(\lambda=(s-\mu)/\{M^2\}\).
-Plugging this in we have the bound \[
+\end{align} Now, we can maximize the right-hand side of the above bound
+in \(\lambda\), which yields the optimal value
+\(\lambda=(s-\mu)/\{M^2\}\). Plugging this in we have the bound \[
 \Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
 \] The stated result now follows by noting that \begin{align}
 \Pr\left(M_n-\mathbb{E}[S]\ge s\right) = 1-\Pr\{M_n\le s\}
@@ -732,7 +732,7 @@ This follows directly from the union bound: \begin{align}
  & \le e^{-s}
 \end{align} The first result follows from the iid assumption on \(S\)
 and the union bound, while the second from the assumption that \(S\) is
-sub-Gaussian. The remaining inequalities follow from reorganising terms.
+sub-Gaussian. The remaining inequalities follow from reorganizing terms.
 \end{proof}
 
 Corollary~\ref{cor-one} is useful as it clarifies that if the surprisal
@@ -803,7 +803,7 @@ until we maximize the tail bound. In particular, for any \(\lambda>0\),
     & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
     & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
 \end{align*} Now, we must consider a constrained optimization to ensure
-the right hand side exists. In particular, we know from the proof of
+the right-hand side exists. In particular, we know from the proof of
 Lemma~\ref{lem-bounds} that the unconstrained optimum is
 \(\lambda=s/\nu^2\), which corresponds to the constrained optimum on the
 set \(0\le t<\nu^2/b\). However, when \(s\ge \nu^2/b\), the maximum is
@@ -1058,7 +1058,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, toptitle=1mm, rightrule=.15mm, opacityback=0, breakable, bottomtitle=1mm, toprule=.15mm, leftrule=.75mm, colbacktitle=quarto-callout-important-color!10!white, coltitle=black, colframe=quarto-callout-important-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, arc=.35mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacitybacktitle=0.6, opacityback=0, toptitle=1mm, colframe=quarto-callout-important-color-frame, coltitle=black, colback=white, bottomrule=.15mm, breakable, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, leftrule=.75mm, arc=.35mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
@@ -1195,20 +1195,20 @@ Binomial distribution is probably a good first approximation, it does
 assume that the probability of a batter being dismissed does not change
 over their career, which is an unlikely assumption as it does not allow
 for the development of skill, the value of experience, or the effect of
-ageing. So we will use the GPD approximation to compute the surprisal
+aging. So we will use the GPD approximation to compute the surprisal
 probabilities.
 
 The most anomalous batters are all ``tail-enders'' (i.e., not skilled
-batters) who played for a long time (so they have a large number of
-innings). Because they batted last, or nearly last, they are more likely
-to be not out at the end of the team's innings.
+batters) who played for a long time (so they have many innings). Because
+they batted last, or nearly last, they are more likely to be not out at
+the end of the team's innings.
 
 The largest surprisal is for English batter Jimmy Anderson, who has had
 114 not outs in 265 innings, which is much higher than the expected
 number of not outs of \(265 \times 0.148 = 39.3\). This anomaly is also
 seen in Figure~\ref{fig-notouts}, as being somewhat unusual for that
 part of the data. Although Jimmy Anderson was not a great batter, he was
-good at defence, and was able to bat for a long time without being
+good at defense, and was able to bat for a long time without being
 dismissed, leaving the other batter time to score runs.
 
 We have identified an anomaly that is not anomalous in the proportion of

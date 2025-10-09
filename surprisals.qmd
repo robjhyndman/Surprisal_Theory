@@ -104,7 +104,7 @@ This makes clear that the surprisal probability is related to the highest densit
 
 If $F = N(\mu, \sigma^2)$, then $p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]$, where $\Phi$ is the standard Normal distribution function. In this case, identifying anomalies as observations with $p_i < \alpha$ is equivalent to a z-score test with the threshold set to $\Phi^{-1}(1-\alpha/2)$.Hence, our approach can be seen as a generalization of anomaly detection methods based on z-scores including Grubbs' test [@Grubbs1950]. 
 
-It can also be seen as a generalization of other anomaly detection methods. For example, the Hampel identifier, due to a proposal of Frank Hampel [@Davies1993], is designed to identify anomalies in a time series based on whether an observation is very different from the neighbouring observations. It denotes an observation as an anomaly if $|y_t-m_t|/a_t > \tau$, where
+It can also be seen as a generalization of other anomaly detection methods. For example, the Hampel identifier, due to a proposal of Frank Hampel [@Davies1993], is designed to identify anomalies in a time series based on whether an observation is very different from the neighboring observations. It denotes an observation as an anomaly if $|y_t-m_t|/a_t > \tau$, where
 \begin{align*}
 m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
 \text{and}\qquad
@@ -217,7 +217,7 @@ For any $\lambda>0$,
  & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
  & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
 \end{align}
-Now, we can maximise the RHS of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
+Now, we can maximize the right-hand side of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
 $$
 \Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
 $$
@@ -247,7 +247,7 @@ This follows directly from the union bound:
  & \le e^{-\sqrt{\log(2n)s}-s} \\
  & \le e^{-s}
 \end{align}
-The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganising terms.
+The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganizing terms.
 :::
 
 @cor-one is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus is within the class of extreme value distributions.
@@ -312,7 +312,7 @@ The result follows a similar argument as for @lem-bounds, up until we maximize t
     & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
     & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
 \end{align*}
-Now, we must consider a constrained optimization to ensure the right hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
+Now, we must consider a constrained optimization to ensure the right-hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
 $$
   \Pr\left\{S-\E[S]\ge s\right\}\le
   \begin{cases}
@@ -552,11 +552,11 @@ $$
 $$
 and $g()$ is a smooth function to be estimated nonparametrically. The resulting estimate, obtained from the mgcv package with penalized regression splines [@mgcv], is shown in blue in @fig-notouts.
 
-Now we can use the fitted model to compute the surprisals from the Binomial distribution, and find the most anomalous batters. While the Binomial distribution is probably a good first approximation, it does assume that the probability of a batter being dismissed does not change over their career, which is an unlikely assumption as it does not allow for the development of skill, the value of experience, or the effect of ageing. So we will use the GPD approximation to compute the surprisal probabilities.
+Now we can use the fitted model to compute the surprisals from the Binomial distribution, and find the most anomalous batters. While the Binomial distribution is probably a good first approximation, it does assume that the probability of a batter being dismissed does not change over their career, which is an unlikely assumption as it does not allow for the development of skill, the value of experience, or the effect of aging. So we will use the GPD approximation to compute the surprisal probabilities.
 
 The most anomalous batters are all "tail-enders" (i.e., not skilled batters) who played for a long time (so they have many innings). Because they batted last, or nearly last, they are more likely to be not out at the end of the team's innings.
 
-The largest surprisal is for English batter Jimmy Anderson, who has had `r jma$NotOuts[1]` not outs in `r jma$Innings[1]` innings, which is much higher than the expected number of not outs of $`r jma$Innings[1]` \times `r sprintf("%.3f", jma$.fitted[1])` = `r sprintf("%.1f", jma$.fitted[1]*jma$Innings[1])`$. This anomaly is also seen in @fig-notouts, as being somewhat unusual for that part of the data. Although Jimmy Anderson was not a great batter, he was good at defence, and was able to bat for a long time without being dismissed, leaving the other batter time to score runs.
+The largest surprisal is for English batter Jimmy Anderson, who has had `r jma$NotOuts[1]` not outs in `r jma$Innings[1]` innings, which is much higher than the expected number of not outs of $`r jma$Innings[1]` \times `r sprintf("%.3f", jma$.fitted[1])` = `r sprintf("%.1f", jma$.fitted[1]*jma$Innings[1])`$. This anomaly is also seen in @fig-notouts, as being somewhat unusual for that part of the data. Although Jimmy Anderson was not a great batter, he was good at defense, and was able to bat for a long time without being dismissed, leaving the other batter time to score runs.
 
 We have identified an anomaly that is not anomalous in the proportion of not-outs, or in the number of innings, and the difference between the actual proportion and the predicted proportion is not anomalous either compared to some of the other values. However, because we have used a statistical model, we have been able to account for the particular features of this data set, such as the discrete nature of the data, and the changing variance, to identify an observation that is anomalous in the context of the model.
 
