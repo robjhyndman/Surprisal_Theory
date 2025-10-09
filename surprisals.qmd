@@ -146,7 +146,6 @@ Can we say anything else?
 
 Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
 
-
 # Extreme value theory for the surprisal distribution
 
 Our third approach uses extreme value theory applied to the surprisal values. We will show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities. 
@@ -523,39 +522,6 @@ We compute the surprisals using the conditional distribution ([-@eq-hampel]), an
 
 In addition, there appears to have been unusually high infant mortality in 1834, and unusually high elderly mortality in 1837. The causes of these is unknown.
 
-<!-- 
-## US COVID-19 death rates
-
-@fig-stmf shows US weekly mortality data between 2015 and 2024 across five age groups, obtained from the @HMD. There appears to be no seasonality in the 0--14 age group, but all other age groups have seasonal peaks around the start of January each year due to winter illnesses, with the seasonal strength increasing with age. There is a noticeable change in mortality rates during 2020, 2021 and the start of 2022; this is due to COVID-19.
-
-```{r}
-#| label: fig-stmf
-#| code-fold: false
-#| fig-height: 7
-#| fig-cap: Weekly mortality rates for different age groups in the United States between 2015 and 2024.
-tar_read(us_stmf_plot)
-```
-
-We wish to find anomalous weeks across all series. Because the series are on vastly different scales, we take logarithms, and then compute the first principal component of the multivariate data set. The resulting series of principal component scores is plotted in the top panel of @fig-us_stmf_pcs, and shows strong seasonality, along with large peaks during the periods of COVID outbreaks. Now we can apply a robust STL (Seasonal Trend decomposition using Loess) model due to @Cleveland1990, and extended by @mstl to handle multiple seasonal periods or series with no seasonality. The remainder series from the STL decomposition, shown in the bottom panel of @fig-us_stmf_pcs, removes the trend and seasonality, exposing any remaining signal.
-
-```{r}
-#| label: fig-us_stmf_pcs
-#| code-fold: false
-#| fig-cap: "Top: the first principal component scores calculated from the weekly US mortality rates. Bottom: the residual series computed from an STL decomposition of the first principal component scores. In both plots, the identified anomalies are shown in red."
-# Plot principal component scores
-tar_read(us_stmf_anomaly_plot)
-```
-
-Ignoring the period 2020--2022, it is clear that the remainder has a heavy tailed distribution, with large negative or positive values around the start of the year, 
-
-Let $\{y_t\}$ denotes the remainder series from the STL decomposition. We model this using a Gaussian autoregressive model of order 3:
-$$
-  y_t \mid y_{t-1}, y_{t-2}, y_{t-3} \sim N(\phi_1 y_{t-1} + \phi_2 y_{t-2} + \phi_3 y_{t-3}, \sigma^2),
-$$
-where the order was selected by minimizing Akaike's Information Criterion. Surprisals are computed using this conditional distribution.
- -->
-
-
 ## Test cricket not outs
 
 ```{r}
@@ -588,13 +554,11 @@ and $g()$ is a smooth function to be estimated nonparametrically. The resulting 
 
 Now we can use the fitted model to compute the surprisals from the Binomial distribution, and find the most anomalous batters. While the Binomial distribution is probably a good first approximation, it does assume that the probability of a batter being dismissed does not change over their career, which is an unlikely assumption as it does not allow for the development of skill, the value of experience, or the effect of ageing. So we will use the GPD approximation to compute the surprisal probabilities.
 
-The most anomalous batters are all "tail-enders" (i.e., not skilled batters) who played for a long time (so they have a large number of innings). Because they batted last, or nearly last, they are more likely to be not out at the end of the team's innings.
+The most anomalous batters are all "tail-enders" (i.e., not skilled batters) who played for a long time (so they have many innings). Because they batted last, or nearly last, they are more likely to be not out at the end of the team's innings.
 
 The largest surprisal is for English batter Jimmy Anderson, who has had `r jma$NotOuts[1]` not outs in `r jma$Innings[1]` innings, which is much higher than the expected number of not outs of $`r jma$Innings[1]` \times `r sprintf("%.3f", jma$.fitted[1])` = `r sprintf("%.1f", jma$.fitted[1]*jma$Innings[1])`$. This anomaly is also seen in @fig-notouts, as being somewhat unusual for that part of the data. Although Jimmy Anderson was not a great batter, he was good at defence, and was able to bat for a long time without being dismissed, leaving the other batter time to score runs.
 
 We have identified an anomaly that is not anomalous in the proportion of not-outs, or in the number of innings, and the difference between the actual proportion and the predicted proportion is not anomalous either compared to some of the other values. However, because we have used a statistical model, we have been able to account for the particular features of this data set, such as the discrete nature of the data, and the changing variance, to identify an observation that is anomalous in the context of the model.
-
-
 
 # Discussion
 
