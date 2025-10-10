@@ -144,10 +144,10 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
 \theoremstyle{plain}
@@ -548,7 +548,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0, toprule=.15mm, colframe=quarto-callout-note-color-frame, rightrule=.15mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white, breakable, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colback=white, coltitle=black, breakable, opacityback=0, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, titlerule=0mm, arc=.35mm, left=2mm]
 
 Outline of paper TBC
 
@@ -562,7 +562,7 @@ surprisals larger than \(s_i\). For large \(n\), this provides a quick
 and convenient estimate of \(p_i\) that is accurate even when the
 assumed distribution \(F\) is not.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0, toprule=.15mm, colframe=quarto-callout-important-color-frame, rightrule=.15mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, coltitle=black, breakable, opacityback=0, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, titlerule=0mm, arc=.35mm, left=2mm]
 
 What can we say about the quality of the approximation?
 
@@ -714,7 +714,7 @@ provided the tail of the surprisal distribution satisfies one of the
 three assumptions, we can still fit a GPD to the largest surprisal
 values, and use this to estimate the tail probabilities.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0, toprule=.15mm, colframe=quarto-callout-note-color-frame, rightrule=.15mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white, breakable, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colback=white, coltitle=black, breakable, opacityback=0, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, titlerule=0mm, arc=.35mm, left=2mm]
 
 Add something about what kinds of distributions do not satisfy any of
 the three assumptions?
@@ -823,7 +823,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0, toprule=.15mm, colframe=quarto-callout-important-color-frame, rightrule=.15mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, coltitle=black, breakable, opacityback=0, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, titlerule=0mm, arc=.35mm, left=2mm]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.

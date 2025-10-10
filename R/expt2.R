@@ -1,12 +1,13 @@
 get_expt2_prob_single <- function(n) {
   data <- matrix(rgamma(2 * n, 2, 2), n, 2)
+  df <- 4
   tibble(
     s1 = -dgamma(data[, 1], 2, 2, log = TRUE) -
       dgamma(data[, 2], 2, 2, log = TRUE),
     s2 = -dnorm(data[, 1], 1, 1 / sqrt(2), log = TRUE) -
       dnorm(data[, 2], 1, 1 / sqrt(2), log = TRUE),
-    s3 = -dt(data[, 1], df=4, ncp=1, log = TRUE) -
-      dt(data[, 2], df=4, ncp=1, log = TRUE),
+    s3 = -dt(data[, 1], df = df, ncp = 1 - 3 / (4 * df - 1), log = TRUE) -
+      dt(data[, 2], df = df, ncp = 1 - 3 / (4 * df - 1), log = TRUE),
     Empirical1 = rank(-s1) / n,
     GPD1 = weird:::surprisal_gpd_prob(s1, 0.10),
     Empirical2 = rank(-s2) / n,
@@ -49,9 +50,10 @@ create_fig_expt2 <- function(expt2_prob) {
         GPD3 = "GPD (t)"
       )
     ) |>
-    ggplot(aes(x = n, y = anomaly_rate, col = Method)) +
+    ungroup() |>
+    ggplot(aes(x = log10(n), y = anomaly_rate, col = Method)) +
     geom_smooth(method = "loess", span = 0.6) +
     geom_hline(aes(yintercept = 0.01)) +
-    scale_x_log10() +
+    scale_x_continuous(breaks = 2:5, labels = sprintf("%d", 10^(2:5))) +
     labs(x = "Sample size n", y = "Anomaly rate")
 }
