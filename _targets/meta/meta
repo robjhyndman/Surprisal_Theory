@@ -14,7 +14,6 @@ expt2_prob|stem|5506215cc27ba285|d0dc683deb3d5abe|dba35426179ec311|428414524||t2
 cricket_batting|stem|c77bc1305bfe71b1|f0b5df2249414851|2c530c1562a7fbd1|1545454860||t20370.1358981062s|s84964b|84964|rds|local|vector|||0.72||
 fr_mortality|stem|1a6facab860d15ab|b80d086a10275110|2c530c1562a7fbd1|-841661118||t20370.1358990671s|s176946b|176946|rds|local|vector|||0.018||
 fig_expt1|stem|2d6fce803222c4a5|21003c6016fa5f81|ff11b651e77bdcd4|2047858171||t20370.1359155296s|s1668326b|1668326|rds|local|vector|||0.383||
-fig_expt2|stem|ef93f703ca126877|ec7e77e02ec1fb83|c23306bae0c1aa38|561529773||t20370.1359398992s|s2850904b|2850904|rds|local|vector|||0.247||
 not_outs|stem|579a9b23e1e65534|bd3772fa630134d6|5fb3475ee23871ee|1846917439||t20370.1359408485s|s91709b|91709|rds|local|vector|||0.005||
 fr_anomalies|stem|d1ae3266b4067f27|59353db7eff907e3|12f4cea9f8088930|1211319699||t20370.1359580082s|s2941b|2941|rds|local|vector|||1.45|There were 8 warnings in `mutate()`. The first warning was: ℹ In argument: `hampel = hampel_anomalies(Mortality, bandwidth = 7, alpha =   0.01, approximation = 'gpd')`. ℹ In group 46: `Age = 22` `Sex = 'Male'`. Caused by warning in `fpot.norm()`: ! optimization may not have succeeded ℹ Run `dplyr::last_dplyr_warnings()` to see the 7 remaining warnings.|
 fr_mortality_plot|stem|9562ec79c6f80dd9|ca57af3d56a95048|4e9326d7e37d0d79|1588448204||t20370.1359794232s|s4419819b|4419819|rds|local|vector|||0.021||
@@ -22,13 +21,14 @@ fit_no|stem|85829e497ffd6508|1b8f533835546fdd|e9c5d2ca10dc7c26|690687162||t20370
 fr_anomaly_plot|stem|487bc31630b53810|7de4a73bb331bccd|cd3bcc1317f37d7f|-1428623120||t20370.1360311494s|s3493706b|3493706|rds|local|vector|||0.156||
 notouts_aug|stem|bf244abe9d489578|b9d8d85659dab814|bf987adebb153983|-76025296||t20370.1360331406s|s138738b|138738|rds|local|vector|||0.063||
 not_outs_plot|stem|8b8927455d14675e|b277edfac8920749|656ae9e19a57a8f2|167166307||t20370.1360579271s|s3927456b|3927456|rds|local|vector|||0.033||
+fig_expt2|stem|6189f0434561f62d|ec7e77e02ec1fb83|7be09a11ceeec068|561529773||t20371.0340561616s|s2788273b|2788273|rds|local|vector|||0.294||
 fit_notouts|function|02b1342331ef627b
 create_notouts_plot|function|fa4bc39f250a74a1
 noutouts_anomalies|function|87a06cc95c72f089
 get_expt1_prob|function|54559921f5edef0c
 get_expt2_prob_single|function|f664403ff35c4648
 create_fr_mortality_plot|function|f01aab782c2df0d7
-create_fig_expt2|function|0dc7c327c019b175
+create_fig_expt2|function|7dc2b9864cb77227
 create_stmf_plot|function|4a10cc49d1a4dd3d
 hampel_anomalies|function|81d72d540552bfc6
 create_fr_anomaly_plot|function|28e72f88ffd2bf2f
@@ -40,4 +40,4 @@ get_stmf_anomalies|function|17306a531763177e
 create_fig_expt1|function|f48dc0298ae6aff6
 get_expt2_prob|function|b575e309c59230e1
 find_fr_anomalies|function|b4df3338ab9283bc
-paper|stem|b53cbaed05e53de3|03e75cb424023dec|db09673c0e035913|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20370.1506052684s|s984849b|984849|file|local|vector|||105.337||
+paper|stem|69cd6dc52a6b180b|03e75cb424023dec|e68450f5c80eaa03|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20371.0363067469s|s1296627b|1296627|file|local|vector|||70.8||

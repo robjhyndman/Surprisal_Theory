@@ -183,259 +183,20 @@ $$
 The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\mathbb{E}[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
 :::
 
-Under each of Assumptions [-@def-bounded]--[-@def-polybounded], we seek a result on the limiting distribution of the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$. If we can show that this distribution falls within the class of extreme value distributions, then we can fit a Generalized Pareto Distribution (GPD) to the largest surprisal values [@coles2001introduction].
+@def-bounded will be satisfied in cases where the density $f$ is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound.
 
-## $S$ has sub-Gaussian tails
+@def-subbounded will be satisfied when $f$ has full support on $\mathbb{R}^d$ and the log density is unbounded below, such as with a Gaussian distribution.
 
-Let's first assume that the surprisals are well-behaved and have a sub-Gaussian tail. @def-bounded will be satisfied in cases where the density $f$ is bounded both above and below, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound.
+@def-polybounded will be satisfied when $f$ has polynomial tails, such as with a Student-t distribution.
 
-For example, consider the truncated normal distribution on $[a,b]$, where $Y\sim TN(a,b,\mu,\sigma^2)$ and $-\infty < a < b < \infty$. Then
-$$
-S=-\log(2\pi\sigma^2)/2-\frac{1}{2\sigma^2}(Y-\mu)^2-\log\{\Phi(b)-\Phi(a)\},
-$$
-where $\Phi$ is the standard normal distribution function. Since $Y\in[a,b]$, $S$ is bounded for all $\sigma>0$ and hence $S$ satisfies @def-bounded.
-
-Under @def-bounded, we have the following result on the maximum of the surprisals.
-
-::: {#lem-bounds}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$.
-If $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
-$$
-\mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
-$$,
-then, for $s\in\mathbb{R}_+$,
-$$
-\Pr\{M_n-\mathbb{E}[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
-$$
-:::
-
-::: {.proof}
-For any $\lambda>0$,
-\begin{align}
-\Pr\{S\ge s\} =
-\Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
- & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
- & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
-\end{align}
-Now, we can maximize the right-hand side of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
-$$
-\Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
-$$
-The stated result now follows by noting that
-\begin{align}
-\Pr\left(M_n-\mathbb{E}[S]\ge s\right) = 1-\Pr\{M_n\le s\}
- & = 1-\Pr\{S\le s\}^n                       \\
- & = 1-(1-\Pr\{S\ge s\})^n                           \\
- & \le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
-\end{align}
-:::
-
-::: {#cor-one}
-If @def-bounded is satisfied, then, for all $s>0$,
-$$
-\Pr\Big(|M_n-\mathbb{E}[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
-$$
-:::
-
-::: {.proof}
-This follows directly from the union bound:
-\begin{align}
-\Pr\Big(|M_n|\ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(n)}\Big)
- & \le n \Pr\Big\{|S|\ge \sqrt{2}\nu^2s + \sqrt{2\nu^2\log(n)}\Big\} \\
- & \le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)} \\
- & = 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}} \\
- & \le e^{-\sqrt{\log(2n)s}-s} \\
- & \le e^{-s}
-\end{align}
-The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganizing terms.
-:::
-
-@cor-one is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus is within the class of extreme value distributions.
-
-## $S$ has an exponential moment
-
-In cases where the underlying density has full support on $\mathbb{R}$ and the log density cannot be bounded from below, then the sub-Gaussianity condition in @def-bounded may be violated, as the following result illustrates.
-
-::: {#lem-normal}
-If $Y\sim N(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential. In particular,
-$$
-\mathbb{E} e^{\lambda(S-1/2)+(\lambda/2)\log(2\pi\sigma^2)}\le e^{\lambda^2/2+(\lambda/2)\log(2\pi\sigma^2)},\quad \forall |\lambda|<1/2.
-$$
-:::
-
-::: {.proof}
-Firstly, note that
-$$
-S=-\log f(Y)= \frac{1}{2}\log (2\pi\sigma^2)+\frac{(Y-\mu)^2}{2\sigma^2}.
-$$
-and that
-$$
-\mu_S=\mathbb{E}[S]=-\int f(y)\log f(y)\mathrm{d} y=\frac{1}{2}\{1+\log (2\pi\sigma^2)\}.
-$$
-Define
-$$
-X=\frac{1}{2}\frac{(Y-\mu)^2}{\sigma^2}-\frac{1}{2},
-$$
-then $\mathbb{E}[X]=0$. Now, note that
-$$
-\mathbb{E} e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi\sigma^2}}\int e^{\frac{\lambda}{2}\left[\frac{(y-\mu)^2}{\sigma^2}-1\right]}e^{-\frac{(y-\mu)^2}{2\sigma^2}}\mathrm{d} y.
-$$
-Consider the change of variables $z=(y-\mu)/\sigma$ so that we have
-$$
-\E e^{\frac{\lambda}{2}(S-1)}={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{1}{\sqrt{2\pi}}\int e^{\frac{\lambda}{2}[z^2-1]}e^{-z^2/2}\dt y={e^{\lambda/2\{\log(2\pi\sigma^2)\}}}\frac{e^{-2(\lambda/2)}}{\sqrt{1-2(\lambda/2)}}
-$$
-for all $\lambda<1$. Further, it can be verified that
-$$
-\frac{e^{-\lambda/2}}{\sqrt{1-2(\lambda/2)}}\le e^{\lambda^2/2},\quad \forall |\lambda|<1/2.
-$$
-Hence, when we have $Y\sim N(\mu,\sigma^2)$, then $S=-\log f(Y)$ is sub-exponential with parameter $\nu=1$ and $b=2$.
-:::
-
-Therefore, to be able to apply extreme value theory to the surprisal values, we need a version of @lem-bounds that uses sub-exponentiality.
-
-::: {#lem-bounds_sub}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-subbounded is satisfied, then, for $s\in\mathbb{R}_+$,
-$$
-	\Pr\left(M_n-\E[S]\ge s\right)\le 1-
-	\begin{cases}
-		(1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
-		(1-e^{-s/2b})^n                 & \text{ if }s>\nu^2/b
-	\end{cases}.
-$$
-:::
-
-::: {.proof}
-The result follows a similar argument as for @lem-bounds, up until we maximize the tail bound. In particular, for any $\lambda>0$,
-\begin{align*}
-  \Pr\left\{ S-\E[S]\ge s\right\} =
-  \Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}
-    & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
-    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
-\end{align*}
-Now, we must consider a constrained optimization to ensure the right-hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
-$$
-  \Pr\left\{S-\E[S]\ge s\right\}\le
-  \begin{cases}
-    e^{-\frac{1}{2}s^2/\nu^2} & \text{ if }0\le s\le \nu^2/b; \\
-    e^{-s/2b}                 & \text{ if } s>\nu^2/b.
-  \end{cases}
-$$
-The stated result again follows by noting that
-\begin{align*}
-  \Pr\left\{M_n-\E[S]\ge s\right\}
-    & = 1-\Pr\left\{M_n\le s\right\} \\
-    & = 1-\Pr\left\{S\le s\right\}^n \\
-    & \le 1-
-  \begin{cases}
-    (1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if } 0\le s\le \nu^2/b; \\
-    (1-e^{-s/2b})^n                 & \text{ if } s>\nu^2/b.
-  \end{cases}
-\end{align*}
-:::
-
-Results similar to @lem-bounds_sub also hold for $\Pr\left\{M_n-\E[S]\le s\right\}$, and for $\Pr\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e.,
-$$
-\Pr\left\{|M_n-\E[S]|\ge s\right\}\le 1-
-\begin{cases}
-  (1-2e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
-  (1-2e^{-s/2b})^n                 & \text{ if }s>\nu^2/b.
-\end{cases}
-$$
-
-::: {#cor-two}
-Under @def-subbounded, for $s>\nu^2/b$, as $n\rightarrow\infty$
-$$
-	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
-$$
-:::
-
-::: {.proof}
-Apply @def-subbounded to see that
-\begin{align*}
-	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
-	 & \le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n                       \\
-	 & = 1-\big(1-e^{-s}/n\big)^n                                     \\
-	 & = 1-e^{e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
-\end{align*}
-The result now follows by noting that, for all $s>0$,
-$$
-	\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right]= o(1)\le 0.
-$$
-:::
-
-@cor-two is useful as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that @cor-two implies
-$$
-	\sup_{s:s>\nu^2/b}\left|\Pr\Big\{|M_n-\mu|\ge \big[2bs+2b\log(2n)\big]\Big\}-\big(1-e^{e^{-s}}\big)\right| = o(1).
-$$
-To see that this implies that $M_n-\E[S]$, appropriately standardized, converges to an extreme value distribution, we first recall that
-$$
-	\Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
-$$
-Hence,
-$$
-	\sup_{x\in\mathcal{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathcal{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
-$$
-so that when $X_n$ and $X$ are both continuous we see that @cor-two implies that the CDF of $(M_n-\E[S]-2b\log(2n))/2b$ converges to that of the Type-1 extreme value distribution (i.e., Gumbel distribution); i.e., using @cor-two and the above we have that
-$$
-	\sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\le [2bs+2b\log(2n)]\right\}-e^{e^{-s}}\right|=o(1).
-$$
-This is one notion of convergence in distribution.
-
-## $S$ has a polynomial moment
-
-Finally, we consider the case where the surprisal has a polynomial moment (e.g., Student-t random variables), and derive a corresponding result to @lem-bounds.
-
-::: {@lem:bounds_poly}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-polybounded is satisfied, then, for $s>0$ and such that $s>C>0$,
-$$
-  \Pr\left(|M_n-\E[S]|\ge s\right) \le 1- (1-C^p/s^p)^n.
-$$
-Hence,
-$$
-	\sup_{s:s>C} \left|\Pr\big(|M_n-\E[S]|\le (s\cdot n^{1/p})\big)-e^{-s^{-p}}\right|=o(1).
-$$
-:::
-
-::: {.proof}
-By Markov's inequality,
-$$
-	\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
-$$
-To derive the first stated result, again note that
-\begin{align*}
-\Pr\left\{|M_n-\E[S]|\ge s\right\}
-& = 1 -\Pr\left\{|M_n-\E[S]|\le s\right\}               \\
-& = 1-\Pr\left\{|S-\E[S]|\le s\right\}^n                \\
-& = 1-\left(1-\Pr\left\{|S-\E[S]|\ge s\right\}\right)^n \\
-& \le 1-(1-C^p/s^p)^n.
-\end{align*}
-
-To derive the second stated result, apply the first result with $t=sn^{1/p}C>1$, which clearly holds for some $n$ large enough, to see that
-$$
-	\Pr\left\{|M_n-\E[S]|\ge t\right\}
-	\le 1- \left(1-\frac{C^p}{(Csn^{1/p})^p}\right)^n \\
-	= 1-\left(1-s^{-p}/n\right)^n.
-$$
-Now, recall that, for $x\ge0$,
-$$
-	\lim_{n\rightarrow\infty}(1-x/n)^n=e^{-x}.
-$$
-Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
-$$
-	\sup_{s:s>C}\left|\Pr\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}\right|=o(1).
-$$
-:::
-
-## Three types theorem
-
-Placing the three lemmas together gives the following "three types" Theorem.
+Under each of Assumptions [-@def-bounded]--[-@def-polybounded], we seek a result on the limiting distribution of the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$. This is provided in @thm-three_types, with the proof given in the Appendix.
 
 ::: {#thm-three_types}
 Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $Y\sim \bm{F}$. Further, let $M_n=\max\{s_1,\dots,s_n\}$, where $s_i=-\log f(y_i)$.
 
 1. If the surprisal satisfies @def-bounded, then
 $$
-  \sup_{s:s>0}\left|\Pr\left\{\Big|M_n-\E[S]\Big|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
+  \sup_{s:s>0}\left|\Pr\left\{\big|M_n-\E[S]\big|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
 $$
 2. If the surprisal satisfies @def-subbounded, then
 $$
@@ -447,7 +208,13 @@ $$
 $$
 :::
 
-@thm-three_types gives a corresponding 'three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
+@thm-three_types shows that the limiting distribution of $M_n$ falls within the class of extreme value distributions, for each of the three assumptions. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
+
+In particular, even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the three assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities.
+
+::: {.callout-note}
+Add something about what kinds of distributions do not satisfy any of the three assumptions?
+:::
 
 # Experiments
 
@@ -569,3 +336,208 @@ All results presented here can be reproduced using the code available at <https:
 ## Acknowledgements {.unnumbered}
 
 Both authors are funded by the Australian Research Council through Discovery Project DP250100702. Rob Hyndman is a member of the Australian Research Council Industrial Transformation Training Centre in Optimisation Technologies, Integrated Methodologies, and Applications (OPTIMA), Project ID IC200100009.
+
+
+## References {.unnumbered}
+
+:::{#refs}
+
+:::
+
+{{< pagebreak >}}
+
+`\appendix`{=latex}
+
+# Proof of @thm-three_types
+
+We prove each of the three cases in turn.
+
+## $S$ has sub-Gaussian tails
+
+::: {#lem-bounds}
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$.
+If $S =-\log f(Y)\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
+$$
+\mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
+$$,
+then, for $s\in\mathbb{R}_+$,
+$$
+\Pr\{M_n-\mathbb{E}[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+$$
+:::
+
+::: {.proof}
+For any $\lambda>0$,
+\begin{align}
+\Pr\{S\ge s\} =
+\Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
+ & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
+ & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
+\end{align}
+Now, we can maximize the right-hand side of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
+$$
+\Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
+$$
+The stated result now follows by noting that
+\begin{align}
+\Pr\left(M_n-\mathbb{E}[S]\ge s\right) = 1-\Pr\{M_n\le s\}
+ & = 1-\Pr\{S\le s\}^n                       \\
+ & = 1-(1-\Pr\{S\ge s\})^n                           \\
+ & \le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+\end{align}
+:::
+
+::: {#cor-one}
+If @def-bounded is satisfied, then, for all $s>0$,
+$$
+\Pr\Big(|M_n-\mathbb{E}[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
+$$
+:::
+
+::: {.proof}
+This follows directly from the union bound:
+\begin{align}
+\Pr\Big(|M_n|\ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(n)}\Big)
+ & \le n \Pr\Big\{|S|\ge \sqrt{2}\nu^2s + \sqrt{2\nu^2\log(n)}\Big\} \\
+ & \le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)} \\
+ & = 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}} \\
+ & \le e^{-\sqrt{\log(2n)s}-s} \\
+ & \le e^{-s}
+\end{align}
+The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganizing terms.
+:::
+
+@cor-one is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus is within the class of extreme value distributions.
+
+## $S$ has an exponential moment
+
+::: {#lem-bounds_sub}
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-subbounded is satisfied, then, for $s\in\mathbb{R}_+$,
+$$
+	\Pr\left(M_n-\E[S]\ge s\right)\le 1-
+	\begin{cases}
+		(1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
+		(1-e^{-s/2b})^n                 & \text{ if }s>\nu^2/b
+	\end{cases}.
+$$
+:::
+
+::: {.proof}
+The result follows a similar argument as for @lem-bounds, up until we maximize the tail bound. In particular, for any $\lambda>0$,
+\begin{align*}
+  \Pr\left\{ S-\E[S]\ge s\right\} =
+  \Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}
+    & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
+    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
+\end{align*}
+Now, we must consider a constrained optimization to ensure the right-hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
+$$
+  \Pr\left\{S-\E[S]\ge s\right\}\le
+  \begin{cases}
+    e^{-\frac{1}{2}s^2/\nu^2} & \text{ if }0\le s\le \nu^2/b; \\
+    e^{-s/2b}                 & \text{ if } s>\nu^2/b.
+  \end{cases}
+$$
+The stated result again follows by noting that
+\begin{align*}
+  \Pr\left\{M_n-\E[S]\ge s\right\}
+    & = 1-\Pr\left\{M_n\le s\right\} \\
+    & = 1-\Pr\left\{S\le s\right\}^n \\
+    & \le 1-
+  \begin{cases}
+    (1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if } 0\le s\le \nu^2/b; \\
+    (1-e^{-s/2b})^n                 & \text{ if } s>\nu^2/b.
+  \end{cases}
+\end{align*}
+:::
+
+Results similar to @lem-bounds_sub also hold for $\Pr\left\{M_n-\E[S]\le s\right\}$, and for $\Pr\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e.,
+$$
+\Pr\left\{|M_n-\E[S]|\ge s\right\}\le 1-
+\begin{cases}
+  (1-2e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
+  (1-2e^{-s/2b})^n                 & \text{ if }s>\nu^2/b.
+\end{cases}
+$$
+
+::: {#cor-two}
+Under @def-subbounded, for $s>\nu^2/b$, as $n\rightarrow\infty$
+$$
+	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
+$$
+:::
+
+::: {.proof}
+Apply @def-subbounded to see that
+\begin{align*}
+	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
+	 & \le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n                       \\
+	 & = 1-\big(1-e^{-s}/n\big)^n                                     \\
+	 & = 1-e^{e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
+\end{align*}
+The result now follows by noting that, for all $s>0$,
+$$
+	\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right]= o(1)\le 0.
+$$
+:::
+
+@cor-two is useful as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that @cor-two implies
+$$
+	\sup_{s:s>\nu^2/b}\left|\Pr\Big\{|M_n-\mu|\ge \big[2bs+2b\log(2n)\big]\Big\}-\big(1-e^{e^{-s}}\big)\right| = o(1).
+$$
+To see that this implies that $M_n-\E[S]$, appropriately standardized, converges to an extreme value distribution, we first recall that
+$$
+	\Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
+$$
+Hence,
+$$
+	\sup_{x\in\mathcal{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathcal{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
+$$
+so that when $X_n$ and $X$ are both continuous we see that @cor-two implies that the CDF of $(M_n-\E[S]-2b\log(2n))/2b$ converges to that of the Type-1 extreme value distribution (i.e., Gumbel distribution); i.e., using @cor-two and the above we have that
+$$
+	\sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\le [2bs+2b\log(2n)]\right\}-e^{e^{-s}}\right|=o(1).
+$$
+This is one notion of convergence in distribution.
+
+## $S$ has a polynomial moment
+
+::: {@lem:bounds_poly}
+Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-polybounded is satisfied, then, for $s>0$ and such that $s>C>0$,
+$$
+  \Pr\left(|M_n-\E[S]|\ge s\right) \le 1- (1-C^p/s^p)^n.
+$$
+Hence,
+$$
+	\sup_{s:s>C} \left|\Pr\big(|M_n-\E[S]|\le (s\cdot n^{1/p})\big)-e^{-s^{-p}}\right|=o(1).
+$$
+:::
+
+::: {.proof}
+By Markov's inequality,
+$$
+	\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
+$$
+To derive the first stated result, again note that
+\begin{align*}
+\Pr\left\{|M_n-\E[S]|\ge s\right\}
+& = 1 -\Pr\left\{|M_n-\E[S]|\le s\right\}               \\
+& = 1-\Pr\left\{|S-\E[S]|\le s\right\}^n                \\
+& = 1-\left(1-\Pr\left\{|S-\E[S]|\ge s\right\}\right)^n \\
+& \le 1-(1-C^p/s^p)^n.
+\end{align*}
+
+To derive the second stated result, apply the first result with $t=sn^{1/p}C>1$, which clearly holds for some $n$ large enough, to see that
+$$
+	\Pr\left\{|M_n-\E[S]|\ge t\right\}
+	\le 1- \left(1-\frac{C^p}{(Csn^{1/p})^p}\right)^n \\
+	= 1-\left(1-s^{-p}/n\right)^n.
+$$
+Now, recall that, for $x\ge0$,
+$$
+	\lim_{n\rightarrow\infty}(1-x/n)^n=e^{-x}.
+$$
+Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
+$$
+	\sup_{s:s>C}\left|\Pr\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}\right|=o(1).
+$$
+:::
