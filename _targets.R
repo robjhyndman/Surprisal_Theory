@@ -33,6 +33,10 @@ list(
     fig_expt2,
     create_fig_expt2(expt2_prob)
   ),
+  tar_target(
+    gpd_shape_estimates,
+    get_gpd_shape()
+  ),
   # French mortality
   tar_target(
     fr_mortality,
