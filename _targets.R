@@ -33,33 +33,6 @@ list(
     fig_expt2,
     create_fig_expt2(expt2_prob)
   ),
-  # # US STMF application
-  # tar_target(
-  #   us_stmf_data,
-  #   "data/USAstmfout.csv",
-  #   format = "file"
-  # ),
-  # tar_target(
-  #   us_stmf,
-  #   read_stmf_data(us_stmf_data)
-  # ),
-  # tar_target(
-  #   us_stmf_plot,
-  #   create_stmf_plot(us_stmf)
-  # ),
-  # tar_target(
-  #   pcs_us_stmf,
-  #   us_stmf_pca(us_stmf)
-  # ),
-  # tar_target(
-  #   us_stmf_anomalies,
-  #   get_stmf_anomalies(pcs_us_stmf)
-  # ),
-  # tar_target(
-  #   us_stmf_anomaly_plot,
-  #   create_stmf_anomaly_plot(us_stmf_anomalies)
-  # ),
-
   # French mortality
   tar_target(
     fr_mortality,
