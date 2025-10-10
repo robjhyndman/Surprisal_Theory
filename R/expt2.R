@@ -43,9 +43,9 @@ create_fig_expt2 <- function(expt2_prob) {
         GDP2 = "GDP (Normal)"
       )
     ) |>
-    ggplot(aes(x = n, y = anomaly_rate * 100, col = Method)) +
+    ggplot(aes(x = n, y = anomaly_rate, col = Method)) +
     geom_smooth(method = "loess", span = 0.6) +
-    geom_hline(aes(yintercept = 1)) +
+    geom_hline(aes(yintercept = 0.01)) +
     scale_x_log10() +
     labs(x = "Sample size n", y = "Anomaly rate")
 }
