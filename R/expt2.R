@@ -5,12 +5,16 @@ get_expt2_prob_single <- function(n) {
       dgamma(data[, 2], 2, 2, log = TRUE),
     s2 = -dnorm(data[, 1], 1, 1 / sqrt(2), log = TRUE) -
       dnorm(data[, 2], 1, 1 / sqrt(2), log = TRUE),
+    s3 = -dt(data[, 1], df=4, ncp=1, log = TRUE) -
+      dt(data[, 2], df=4, ncp=1, log = TRUE),
     Empirical1 = rank(-s1) / n,
-    GDP1 = weird:::surprisal_gpd_prob(s1, 0.10),
+    GPD1 = weird:::surprisal_gpd_prob(s1, 0.10),
     Empirical2 = rank(-s2) / n,
-    GDP2 = weird:::surprisal_gpd_prob(s2, 0.10),
+    GPD2 = weird:::surprisal_gpd_prob(s2, 0.10),
+    Empirical3 = rank(-s3) / n,
+    GPD3 = weird:::surprisal_gpd_prob(s3, 0.10),
   ) |>
-    select(-s1, -s2) |>
+    select(-s1, -s2, -s3) |>
     tidyr::pivot_longer(
       everything(),
       names_to = "Method",
@@ -38,9 +42,11 @@ create_fig_expt2 <- function(expt2_prob) {
       Method = recode(
         Method,
         Empirical1 = "Empirical (Gamma)",
-        GDP1 = "GDP (Gamma)",
+        GPD1 = "GPD (Gamma)",
         Empirical2 = "Empirical (Normal)",
-        GDP2 = "GDP (Normal)"
+        GPD2 = "GPD (Normal)",
+        Empirical3 = "Empirical (t)",
+        GPD3 = "GPD (t)"
       )
     ) |>
     ggplot(aes(x = n, y = anomaly_rate, col = Method)) +
