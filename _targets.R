@@ -5,11 +5,8 @@ tar_option_set(
   packages = c("weird", "tsibble", "tibble", "feasts")
 )
 tar_option_set(seed = 2025)
-
 tar_source()
-# tar_source("other_functions.R") # Source other scripts as needed.
 
-# Replace the target list below with your own:
 list(
   # Experiment 1
   tar_target(
@@ -54,7 +51,6 @@ list(
     fr_anomaly_plot,
     create_fr_anomaly_plot(fr_anomalies)
   ),
-
   # Cricket not-outs
   tar_target(
     cricket_batting,
@@ -78,7 +74,6 @@ list(
     not_outs_plot,
     create_notouts_plot(notouts_aug)
   ),
-
   # Paper
   tar_quarto(
     paper,
