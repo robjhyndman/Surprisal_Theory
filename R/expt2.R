@@ -8,14 +8,18 @@ get_expt2_prob_single <- function(n) {
       dnorm(data[, 2], 1, 1 / sqrt(2), log = TRUE),
     s3 = -dt(data[, 1], df = df, ncp = 1 - 3 / (4 * df - 1), log = TRUE) -
       dt(data[, 2], df = df, ncp = 1 - 3 / (4 * df - 1), log = TRUE),
+    s4 = -dgamma(data[, 1], 1, 1, log = TRUE) -
+      dgamma(data[, 2], 1, 1, log = TRUE),
     Empirical1 = rank(-s1) / n,
     GPD1 = weird:::surprisal_gpd_prob(s1, 0.10),
     Empirical2 = rank(-s2) / n,
     GPD2 = weird:::surprisal_gpd_prob(s2, 0.10),
     Empirical3 = rank(-s3) / n,
     GPD3 = weird:::surprisal_gpd_prob(s3, 0.10),
+    Empirical4 = rank(-s4) / n,
+    GPD4 = weird:::surprisal_gpd_prob(s4, 0.10),
   ) |>
-    select(-s1, -s2, -s3) |>
+    select(-s1, -s2, -s3, -s4) |>
     tidyr::pivot_longer(
       everything(),
       names_to = "Method",
@@ -42,12 +46,14 @@ create_fig_expt2 <- function(expt2_prob) {
     mutate(
       Method = recode(
         Method,
-        Empirical1 = "Empirical (Gamma)",
-        GPD1 = "GPD (Gamma)",
+        Empirical1 = "Empirical (Gamma22)",
+        GPD1 = "GPD (Gamma22)",
         Empirical2 = "Empirical (Normal)",
         GPD2 = "GPD (Normal)",
         Empirical3 = "Empirical (t)",
-        GPD3 = "GPD (t)"
+        GPD3 = "GPD (t)",
+        Empirical4 = "Empirical (Gamma11)",
+        GPD4 = "GPD (Gamma11)"
       )
     ) |>
     ungroup() |>

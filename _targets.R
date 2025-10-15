@@ -34,6 +34,10 @@ list(
     gpd_shape_estimates,
     get_gpd_shape()
   ),
+  tar_target(
+    fig_gpd_shape,
+    create_gpd_shape_fig(gpd_shape_estimates)
+  ),
   # French mortality
   tar_target(
     fr_mortality,
