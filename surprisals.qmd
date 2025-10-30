@@ -134,9 +134,11 @@ Outline of paper TBC
 
 # Empirical surprisal probabilities
 
-Under approach (2) above, we estimate $p_i$ as the proportion of surprisals larger than $s_i$. For large $n$, this provides a quick and convenient estimate of $p_i$ that is accurate even when the assumed distribution $F$ is not. 
+Under approach (2) above, we estimate $p_i$ as the proportion of surprisals larger than $s_i$. Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
 
-To make sure a result formal, recall that the surprisal is defined as $S=-\log f(Y)$, for some assumed distribution $F$ with density/mass function $f(\cdot)$, and recall that $G(s)=\Pr(S\le s)$ denotes the CDF of $S$ at $s\in\mathbb{S}\subseteq\mathbb{R}$, where $\mathcal{S}$ denotes the support of the surprisals. Let $\mathbb{P}_n(s):=n^{-1}\sum_{i=1}^{n}1[s_i\le s]$ denote the empirical CDF (eCDF) of the realized sample $s_1,\dots,s_n$. The following result shows that the eCDF of the surprisals $\mathbb{P}_n(s)$ can be used to to consistently detect surprisals even thought $G$ is unknown and $Y$ may not be distributed according to $F$. 
+Note that this approach assumes only that the surprisal ranks are similar under the true distribution and the estimated distribution. In fact, we only need the surprisal ranks to be similar in the upper tail of the surprisal distribution, since we are only interested in large surprisal values, but we can show that it is true everywhere using the Dvoretzky-Kiefer-Wolfowitz inequality [@DKW56].
+
+Recall that the surprisal is defined as $S=-\log f(Y)$ for some assumed distribution $F$ with generalized density function $f(\cdot)$, and recall that $G(s)=\Pr(S\le s)$ denotes the CDF of $S$ at $s\in\mathbb{S}\subseteq\mathbb{R}$, where $\mathcal{S}$ denotes the support of the surprisals. Let $\mathbb{P}_n(s):=n^{-1}\sum_{i=1}^{n}1[s_i\le s]$ denote the empirical CDF (eCDF) of the realized sample $s_1,\dots,s_n$. The following result shows that the eCDF of the surprisals $\mathbb{P}_n(s)$ can be used to to consistently detect surprisals even though $G$ is unknown and $Y$ may not be distributed according to $F$. 
 
 \begin{lemma}\label{lem:ecdf}
 Assume that $s_1,\dots,s_n$ are iid realization from $S\sim G$. Let $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$. For $\alpha\in(0,1)$, with probability at least $1-\alpha$, for any $s\in\mathbb{S}$,
@@ -149,32 +151,20 @@ From the Dvoretzky-Kiefer-Wolfowitz inequality, for every $\epsilon>0$, we have
 $$
 \Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}\le 2e^{-2n\epsilon^2}.
 $$
-Taking $\epsilon$ as in the statement of the result we see that
+Taking $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$, we see that
 \begin{align*}
-\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
+\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
 \end{align*}
 Hence, with probability at least $1-\alpha$, $\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|\le\epsilon$. Fixing an $s\in\mathcal{S}$ and re-arranging terms yields the stated inequality
 $$
-\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n(s)+\epsilon,
+\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n(s)+\epsilon.
 $$
-where $\epsilon$ is as stated in the result.
 \end{proof}
 
 Since $p_i=1-G(s_i)=\Pr[S>s_i]$, Lemma \ref{lem:ecdf} gives us an immediate bound on the accuracy of $p_i$. Namely, if we choose $\epsilon$ as in Lemma \ref{lem:ecdf}, then with probability at least $1-\alpha$
 $$
 1-\mathbb{P}_n(s_i)-\epsilon\le p_i\le 1-\mathbb{P}_n(s_i)+\epsilon
 $$
-
-
-::: {.callout-important}
-What can we say about the quality of the approximation?
-
-If the surprisal ranks under the true and estimated $F$ distributions are equal, this is obviously ok. That should be true in the tails of any distribution --- i.e., when $y_i$ is greater than the largest mode of $f$, or less than the smallest mode of $f$.
-
-Can we say anything else?
-:::
-
-Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
 
 # Extreme value theory for the surprisal distribution
 
