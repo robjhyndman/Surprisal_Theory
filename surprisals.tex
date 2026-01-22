@@ -144,14 +144,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
-\theoremstyle{definition}
-\newtheorem{definition}{Assumption}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{30 October 2025}
+\date{22 January 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 30 October 2025}
+   \lfoot{\sf Hyndman, Frazier: 22 January 2026}
 
 % Keywords
 
@@ -548,7 +548,7 @@ theory applies to the surprisal distribution.
 We illustrate the three approaches with several examples, including both
 simulated and real data.
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, coltitle=black, bottomtitle=1mm, breakable, left=2mm, opacityback=0, colframe=quarto-callout-note-color-frame, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, toptitle=1mm, colback=white, leftrule=.75mm, titlerule=0mm, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, toprule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-note-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
 
 Outline of paper TBC
 
@@ -557,58 +557,70 @@ Outline of paper TBC
 \section{Empirical surprisal
 probabilities}\label{empirical-surprisal-probabilities}
 
-Under approach (2) above, we estimate \(p_i\) as the proportion of
-surprisals larger than \(s_i\). Using this approach, the anomaly
-boundary for a threshold of \(\alpha\) corresponds to the
-\(100(1-\alpha)\)\% highest density region computed using the quantile
-density approach of \textcite{HDR96}.
+Under approach (2) above, we estimate \(p_i=\Pr[S> S_i]\) as the
+proportion of observed surprisals larger than \(s_i\). Using this
+approach, the anomaly boundary for a threshold of \(\alpha\) corresponds
+to the \(100(1-\alpha)\)\% highest density region computed using the
+quantile density approach of \textcite{HDR96}.
 
-Note that this approach assumes only that the surprisal ranks are
-similar under the true distribution and the estimated distribution. In
-fact, we only need the surprisal ranks to be similar in the upper tail
-of the surprisal distribution, since we are only interested in large
-surprisal values, but we can show that it is true everywhere using the
-Dvoretzky-Kiefer-Wolfowitz inequality \autocite{DKW56}.
+For this approach to be accurate the surprisal ranks under the actual
+distribution generating \(Y\), denoted by \(F(\cdot)\) with generalized
+density function \(f(\cdot)\), and the distribution used to model \(Y\),
+which is denoted by \(\widehat{F}\) with generalized density function
+\(\widehat{f}(\cdot)\), must behave similarly. In particular,
+\textit{it is both necessary and sufficient} that the surprisal ranks in
+the upper tail of the surprisal distribution, since we are only
+interested in large surprisal values, can be related through a monotone
+transformation.
 
-Recall that the surprisal is defined as \(S=-\log f(Y)\) for some
-assumed distribution \(F\) with generalized density function
-\(f(\cdot)\), and recall that \(G(s)=\Pr(S\le s)\) denotes the CDF of
-\(S\) at \(s\in\mathbb{S}\subseteq\mathbb{R}\), where \(\mathcal{S}\)
-denotes the support of the surprisals. Let
-\(\mathbb{P}_n(s):=n^{-1}\sum_{i=1}^{n}1[s_i\le s]\) denote the
-empirical CDF (eCDF) of the realized sample \(s_1,\dots,s_n\). The
-following result shows that the eCDF of the surprisals
-\(\mathbb{P}_n(s)\) can be used to to consistently detect surprisals
-even though \(G\) is unknown and \(Y\) may not be distributed according
-to \(F\).
+Recall that the surprisal under the true distribution is defined as
+\(S=-\log f(Y)\), and recall that \(G(s)=\Pr(S\le s)\) denotes the CDF
+of \(S\) at \(s\in\mathbb{S}\subseteq\mathbb{R}\), where \(\mathcal{S}\)
+denotes the support of the surprisals. Likewise, let
+\(\widehat{S}=-\log \widehat{f}(Y)\) denote the surprisal under the
+fitted distribution, and let
+\(\widehat{\mathbb{P}}_n(s):=n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i\le s]\)
+denote the empirical CDF (eCDF) of the fitted sample
+\(\widehat{S}_1,\dots,\widehat{S}_n\).
 
-\begin{lemma}\label{lem:ecdf}
-Assume that $s_1,\dots,s_n$ are iid realization from $S\sim G$. Let $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$. For $\alpha\in(0,1)$, with probability at least $1-\alpha$, for any $s\in\mathbb{S}$,
-$
-\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n+\epsilon.
-$
+For \(\widehat{\mathbb{P}}_n(s)\) to be an accurate estimate of \(G(s)\)
+in any given sample, the following condition turns out to be both
+necessary and sufficient.
+
+\begin{definition}[]\protect\hypertarget{def-empirical_pis}{}\label{def-empirical_pis}
+
+There exists an \(s_\star\) such that, for all \(s\ge s_\star\) and a
+function \(h(\cdot)\), strictly increasing on \(s\ge s_\star\), such
+that \(S=h(\widehat{S})\) almost surely.
+
+\end{definition}
+
+\begin{lemma}[]\protect\hypertarget{lem-confident}{}\label{lem-confident}
+
+Assume that \(S_1,\dots, S_n\) are iid realizations from \(G\). For
+\(\alpha \in(0,1)\), with probability at least \(1-\alpha\), for any
+\(s \ge s_\star\),
+\(\widehat{\mathbb{P}}_n(s)-\epsilon \leq G(s) \leq \widehat{\mathbb{P}}_n+\epsilon\)
+if an only if Assumption~\ref{def-empirical_pis} is satisfied.
+
 \end{lemma}
-\begin{proof}
-From the Dvoretzky-Kiefer-Wolfowitz inequality, for every $\epsilon>0$, we have
-$$
-\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}\le 2e^{-2n\epsilon^2}.
-$$
-Taking $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$, we see that
-\begin{align*}
-\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
-\end{align*}
-Hence, with probability at least $1-\alpha$, $\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|\le\epsilon$. Fixing an $s\in\mathcal{S}$ and re-arranging terms yields the stated inequality
-$$
-\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n(s)+\epsilon.
-$$
-\end{proof}
 
-Since \(p_i=1-G(s_i)=\Pr[S>s_i]\), Lemma \ref{lem:ecdf} gives us an
-immediate bound on the accuracy of \(p_i\). Namely, if we choose
-\(\epsilon\) as in Lemma \ref{lem:ecdf}, then with probability at least
-\(1-\alpha\) \[
-1-\mathbb{P}_n(s_i)-\epsilon\le p_i\le 1-\mathbb{P}_n(s_i)+\epsilon
-\]
+Lemma~\ref{lem-confident} implies that if the fitted distribution has
+tails that are similarly located to the actual data distribution, then
+the fitted empirical surprisal probabilities are very accurate measures
+of the true surprisal probability, \(G(s)\). Critically, this does not
+require that the tails of the fitted distribution are the same as the
+actual data distribution, and only requires that they be related through
+a monotone transformation. That is, for this approach to be accurate, we
+must be confident that the fitted distribution has regions of low
+density in the same location as the true distribution.
+
+Importantly, Assumption~\ref{def-empirical_pis} is not be satisfied by
+all pairs of distributions: if the true data has skewness but the fitted
+model assumes symmetry, or if there is bimodality in the observed data
+that is not modeled, then Assumption~\ref{def-empirical_pis} will not be
+satisfied. We forego a detailed example of the success and failure of
+this approach until Section xxx.
 
 \section{Extreme value theory for the surprisal
 distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
@@ -745,7 +757,7 @@ provided the tail of the surprisal distribution satisfies one of the
 three assumptions, we can still fit a GPD to the largest surprisal
 values, and use this to estimate the tail probabilities.
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, coltitle=black, bottomtitle=1mm, breakable, left=2mm, opacityback=0, colframe=quarto-callout-note-color-frame, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, bottomrule=.15mm, toptitle=1mm, colback=white, leftrule=.75mm, titlerule=0mm, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, toprule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-note-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
 
 Add something about what kinds of distributions do not satisfy any of
 the three assumptions?
@@ -854,7 +866,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, coltitle=black, bottomtitle=1mm, breakable, left=2mm, opacityback=0, colframe=quarto-callout-important-color-frame, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, bottomrule=.15mm, toptitle=1mm, colback=white, leftrule=.75mm, titlerule=0mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, toprule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
@@ -1048,9 +1060,56 @@ Optimisation Technologies, Integrated Methodologies, and Applications
 \appendix
 
 \section{\texorpdfstring{Proof of
+Lemma~\ref{lem-confident}}{Proof of Lemma~}}\label{proof-of-lem-confident}
+
+\section{\texorpdfstring{Proof of
 Theorem~\ref{thm-three_types}}{Proof of Theorem~}}\label{proof-of-thm-three_types}
 
 We prove each of the three cases in turn.
+
+\begin{proof}
+Define \(\mathbb{P}_n(s)=n^{-1}\sum_{i=1}^{n}1[S_i\le s]\). For now,
+assume that, on the set \(s\ge s_\star\),
+\(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) almost surely. If this
+is satisfied, then \begin{flalign}
+\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\widehat{\mathbb{P}}_n(s)-G(s)\right|>\epsilon\right\}&=\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\mathbb{P}_n(s)-G(s)\right|>\epsilon\right\}\nonumber\\&\le \operatorname{Pr}\left\{\sup _{s \in \mathbb{S}}\left|\mathbb{P}_n(s)-G(s)\right|>\epsilon\right\} \nonumber\\&=2 e^{-2 n \epsilon^2},\label{eq:result}
+\end{flalign}where the last inequality follows from the
+Dvoretzky-Kiefer-Wolfowitz theorem, for every \(\epsilon>0\). Taking
+\(\epsilon=\sqrt{\log (2/\alpha)/(2n)}\), we see that \begin{align*}
+\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
+\end{align*} Hence, with probability at least \(1-\alpha\),
+\(\sup_{s \ge s_\star}|\widehat{\mathbb{P}}_n(s)-G(s)|\le\epsilon\).
+Fixing an \(s\ge s_\star\) and re-arranging terms yields the stated
+inequality \[
+\widehat{\mathbb{P}}_n(s)-\epsilon\le G(s)\le \widehat{\mathbb{P}}_n(s)+\epsilon.
+\]
+
+For the above argument to hold, it must be that, on the set
+\(s\ge s_\star\), \(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) almost
+surely. We now show that this is satisfied if and only if
+Assumption~\ref{def-empirical_pis} is satisfied.
+
+\noindent\textbf{Case 1: $\Rightarrow$.} Take \(s\ge s_\star\). Consider
+the random variable \(1[S_i\le s]=1\) and note that, by Assumption
+Assumption~\ref{def-empirical_pis}, it must be that
+\(1[h(\widehat{S}_i)\le h(s)]=1[S_i\le s]\) almost surely. However,
+since \(h(\cdot)\) is strictly increasing, it has an inverse that is
+also strictly increasing, so that (almost surely) \[
+1[h(\widehat{S}_i)\le h(s)]=1[\widehat{S}_i\le s].
+\] Hence, for \(s\ge s_\star\),
+\(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) and \eqref{eq:result} is
+satisfied.
+
+\noindent\textbf{Case 2: $\Leftarrow$.} Now, assume that
+\(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) for all
+\(s\ge s_\star\). Then, the sets \[
+\mathcal{S}:=\{S_1,\dots,S_n:S_i>s_\star\}\text{ and }\widehat{\mathcal{S}}:=\{\widehat{S}_1,\dots,\widehat{S}_n:\widehat{S}_i>s_\star\}
+\]must satisfy \(|\mathcal{S}|=|\widehat{\mathcal{S}}|\), since
+\(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\). Thus, the values in
+\(\widehat{\mathcal{S}}\) and \(\mathcal{S}\) must be the same up to a
+re-ordering of elements. Hence, there exists a bijection such that
+\(S_i=h(\widehat{S}_i)\) for all \(s>s_\star\).
+\end{proof}
 
 \subsection{\texorpdfstring{\(S\) has sub-Gaussian
 tails}{S has sub-Gaussian tails}}\label{s-has-sub-gaussian-tails}
@@ -1062,7 +1121,7 @@ let \(M_n = \max\{s_1,\dots,s_n\}\) where \(s_i = -\log f(\bm{y}_i)\).
 If \(S =-\log f(Y)\in\mathbb{R}\), and satisfies, for all
 \(\lambda\in\mathbb{R}\), and some \(\nu>0\), \[
 \mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
-\], then, for \(s\in\mathbb{R}_+\), \[
+\] then, for \(s\in\mathbb{R}_+\), \[
 \Pr\{M_n-\mathbb{E}[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
 \]
 
@@ -1214,6 +1273,7 @@ Corollary~\ref{cor-two} and the above we have that \[
 \subsection{\texorpdfstring{\(S\) has a polynomial
 moment}{S has a polynomial moment}}\label{s-has-a-polynomial-moment}
 
+\phantomsection\label{lem:bounds_poly}
 Suppose \(\bm{y}_1,\dots,\bm{y}_n\) are iid from a density \(f\), and
 let \(M_n = \max\{s_1,\dots,s_n\}\) where \(s_i = -\log f(\bm{y}_i)\).
 If Assumption~\ref{def-polybounded} is satisfied, then, for \(s>0\) and
