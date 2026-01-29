@@ -19,31 +19,31 @@ expt2_prob|stem|a9a3f1183a547b29|d0dc683deb3d5abe|82f90fa9dfebd1b8|428414524||t2
 cricket_batting|stem|ddaf4f7f3f408c06|f0b5df2249414851|2c530c1562a7fbd1|1545454860||t20475.1471779979s|s84964b|84964|rds|local|vector|||0.003||
 fr_mortality|stem|1444192ff30a5b62|b80d086a10275110|2c530c1562a7fbd1|-841661118||t20475.1471781946s|s176946b|176946|rds|local|vector|||0.005||
 gpd_shape_estimates|stem|01cbcb04af1fc8d8|fcae45ca790bf1f7|0fe11c199cc20e09|542623660||t20475.1518864421s|s477959b|477959|rds|local|vector|||406.771|data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is not a sub-multiple or multiple of the number of rows [125]. data length [251] is no|
-fig_expt1|stem|5c7def6b7a677de2|21003c6016fa5f81|7fc3d07918e73ef7|2047858171||t20475.1518910949s|s1394104b|1394104|rds|local|vector|||0.098||
 fig_expt2|stem|12b713011fb11e92|ec7e77e02ec1fb83|29184f3733ec9def|561529773||t20475.1518982362s|s2216397b|2216397|rds|local|vector|||0.13||
 not_outs|stem|6fa3e571579eff40|bd3772fa630134d6|20fae11c7ea5cb6f|1846917439||t20475.1518985024s|s91709b|91709|rds|local|vector|||0.002||
-fr_anomalies|stem|5f0ea9c337edbdad|59353db7eff907e3|5f6aac4fa5746115|1211319699||t20475.1519052889s|s2940b|2940|rds|local|vector|||0.575|There were 8 warnings in `mutate()`. The first warning was: ℹ In argument: `hampel = hampel_anomalies(Mortality, bandwidth = 7, alpha =   0.01, approximation = 'gpd')`. ℹ In group 46: `Age = 22` `Sex = 'Male'`. Caused by warning in `fpot.norm()`: ! optimization may not have succeeded ℹ Run `dplyr::last_dplyr_warnings()` to see the 7 remaining warnings.|
 fr_mortality_plot|stem|b38c98a4372f78be|ca57af3d56a95048|ff408e20393c54a1|1588448204||t20475.1519112571s|s3516417b|3516417|rds|local|vector|||0.007||
 fig_gpd_shape|stem|cd737f4be04050b8|ceb7bee0f3c4fcd9|0c0de5616c560828|-858710482||t20475.1519175303s|s3723614b|3723614|rds|local|vector|||0.033||
 fit_no|stem|6597148fee74c5d5|1b8f533835546fdd|234096190770def6|690687162||t20475.1519261067s|s337951b|337951|rds|local|vector|||0.702||
 fr_anomaly_plot|stem|7c0efa3f6b1b46bd|7de4a73bb331bccd|792a52ed1a5239af|-1428623120||t20475.1519323568s|s2405447b|2405447|rds|local|vector|||0.055||
 notouts_aug|stem|5014f12aa470b7bc|b9d8d85659dab814|03299e6e874eff40|-76025296||t20475.1519329702s|s138693b|138693|rds|local|vector|||0.025||
 not_outs_plot|stem|a8769d2b09b5e792|b277edfac8920749|613a6f7e327474f5|167166307||t20475.1519393707s|s3284096b|3284096|rds|local|vector|||0.01||
+fig_expt1|stem|a4ab682f1c7acbda|21003c6016fa5f81|112ef67e35890525|2047858171||t20482.170425558s|s154776b|154776|rds|local|vector|||0.086||
+fr_anomalies|stem|5f0ea9c337edbdad|59353db7eff907e3|07af043b66aecf49|1211319699||t20482.1704323913s|s2940b|2940|rds|local|vector|||0.562|There were 8 warnings in `mutate()`. The first warning was: ℹ In argument: `hampel = hampel_anomalies(Mortality, bandwidth = 7, alpha =   0.01, approximation = 'gpd')`. ℹ In group 46: `Age = 22` `Sex = 'Male'`. Caused by warning in `fpot.norm()`: ! optimization may not have succeeded ℹ Run `dplyr::last_dplyr_warnings()` to see the 7 remaining warnings.|
 fit_notouts|function|02b1342331ef627b
 create_notouts_plot|function|fa4bc39f250a74a1
-noutouts_anomalies|function|87a06cc95c72f089
-get_expt1_prob|function|54559921f5edef0c
+noutouts_anomalies|function|eae4be346b897d53
+get_expt1_prob|function|a538cc5bbce8c132
 get_expt2_prob_single|function|e59c7cf56bb14731
 create_fr_mortality_plot|function|f01aab782c2df0d7
 gpd_shape|function|0a6db284fcb2693c
 create_fig_expt2|function|cbb916fa982460ca
-hampel_anomalies|function|81d72d540552bfc6
+hampel_anomalies|function|4d7c5cfba53ae8aa
 create_fr_anomaly_plot|function|28e72f88ffd2bf2f
 augment_notouts|function|120c6b036fc687e5
 create_gpd_shape_fig|function|fdbcc432fcd3fbc4
-create_fig_expt1|function|f48dc0298ae6aff6
+create_fig_expt1|function|6f332f803c771ec6
 get_expt2_prob|function|407cd187893abbfb
 get_gpd_shape_single|function|4a9e3ea9a95f9a60
-find_fr_anomalies|function|b4df3338ab9283bc
+find_fr_anomalies|function|a6b7365c6015044c
 get_gpd_shape|function|0a98f77fe790965a
-paper|stem|253eaeb7b5b40f58|03e75cb424023dec|609955b2fbcb91ba|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20475.1702815939s||1303228|file|local|vector|||50.55||! Error running quarto CLI from R. Caused by error: ! Could not evaluate cli `{}` expression: `orcidlink`. Caused by error: ! object 'orcidlink' not found
+paper|stem|91730f76211930ba|03e75cb424023dec|ff85dee7070bf401|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20482.3036231173s|s1317854b|1317854|file|local|vector|||9.607||

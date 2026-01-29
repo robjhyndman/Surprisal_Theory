@@ -89,7 +89,7 @@
 
 \newcommand{\dt}{\text{d}}
 \newcommand{\E}{\mathbb{E}}
-\usepackage{mathtools}
+\usepackage{mathtools,todonotes}
 \mathtoolsset{showonlyrefs,mathic=true}
 \usepackage{orcidlink}
 \definecolor{mypink}{RGB}{219, 48, 122}
@@ -147,11 +147,11 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
-\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{22 January 2026}
+\date{29 January 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 22 January 2026}
+   \lfoot{\sf Hyndman, Frazier: 29 January 2026}
 
 % Keywords
 
@@ -415,14 +415,15 @@ Anomaly detection methods are often rather ad hoc and lack a solid
 theoretical foundation, or they make strong distributional assumptions
 that may not hold in practice. We aim to address this by defining an
 anomaly as a point of low probability, and proposing a general framework
-for anomaly detection by estimating the probability of each observation,
-or one more anomalous. Our approach allows for a unified treatment of
-anomaly detection that can be applied to any anomaly detection problem,
-provided a probability distribution can be defined on the space of
-observations. It allows for univariate and multivariate settings, and
-can be applied to both unconditional and conditional distributions.
-Although it requires a specified probability distribution, it is robust
-to substantial mis-specification of that distribution.
+for anomaly detection by estimating the probability of observations with
+lower density (thus more anomalous). Our approach allows for a unified
+treatment of anomaly detection that can be applied to any anomaly
+detection problem, provided a probability distribution can be defined on
+the space of observations. It allows for univariate and multivariate
+settings, and can be applied to both unconditional and conditional
+distributions. Although it requires a specified probability
+distribution, it is robust to substantial mis-specification of that
+distribution.
 
 The basic idea is to calculate the surprisal (equal to the negative log
 density) of each observation, and then estimate the tail probability
@@ -459,9 +460,9 @@ the data.
 
 Let \(G(s) = \Pr\{S\le s\}\) be the distribution function of the
 surprisal values, where \(S = -\log f(\bm{Y})\) and \(\bm{Y}\sim F\).
-Then the probability of observing a value with surprisal at least as
-large as \(s\) is given by \(1-G(s)\), which leads to a natural way of
-assigning an anomaly score to each observation \(\bm{y}_i\): \[
+Then the probability of observing a value with surprisal larger than
+\(s\) is given by \(1-G(s)\), which leads to a natural way of assigning
+an anomaly score to each observation \(\bm{y}_i\): \[
 p_i = 1-G(s_i) = 1-G(-\log f(\bm{y}_i)).
 \] We define anomalies as observations with \(p_i < \alpha\), giving a
 false positive rate of \(\alpha\) if all observations are from \(F\).
@@ -488,7 +489,7 @@ If \(F = N(\mu, \sigma^2)\), then \(p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]\),
 where \(\Phi\) is the standard Normal distribution function. In this
 case, identifying anomalies as observations with \(p_i < \alpha\) is
 equivalent to a z-score test with the threshold set to
-\(\Phi^{-1}(1-\alpha/2)\).Hence, our approach can be seen as a
+\(\Phi^{-1}(1-\alpha/2)\). Hence, our approach can be seen as a
 generalization of anomaly detection methods based on z-scores including
 Grubbs' test \autocite{Grubbs1950}.
 
@@ -504,7 +505,7 @@ a_t &= \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
 \end{align*} The threshold \(\tau\) is often set under the assumption of
 a Normal distribution. When we take a surprisal perspective, this is
 equivalent to setting \begin{equation}\phantomsection\label{eq-hampel}{
-  F  = N(m_t, a_t/\Phi^{-1}(0.75)).
+  F = N(m_t, a_t/\Phi^{-1}(0.75)).
 }\end{equation} The false anomaly rate is
 \(\alpha = 2[1 - \Phi(\tau\Phi(0.75))]\).
 
@@ -531,7 +532,7 @@ of three approaches.
 \item
   Using the empirical distribution function of the observed surprisals
   \(\{s_1,\dots,s_n\}\), so that \(p_i\) is the proportion of surprisals
-  at least as large as \(s_i\);
+  larger than \(s_i\);
 \item
   Fitting a Generalized Pareto Distribution (GPD) to the largest
   surprisal values, and using this to estimate the tail probabilities.
@@ -545,47 +546,48 @@ surprisals in the tail is similar to what would have been obtained under
 the true distribution, while approach (3) requires that extreme value
 theory applies to the surprisal distribution.
 
-We illustrate the three approaches with several examples, including both
-simulated and real data.
+In Section~\ref{sec-empirical}, we develop the necessary theory to
+support the use of empirical surprisal probabilities, and identify the
+conditions under which this will give a good estimate of the true
+surprisal probabilities. Similarly, Section~\ref{sec-gpd} provides the
+theoretical results needed to use a Generalized Pareto Distribution to
+approximate the tail of the surprisal distribution. Then we demonstrate
+the methods with several simulation experiments in
+Section~\ref{sec-experiments}, and in two applications in
+Section~\ref{sec-applications}. A discussion follows in
+Section~\ref{sec-discussion}. The appendix contains the proofs needed
+for the results in Sections \ref{sec-empirical} and \ref{sec-gpd}.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-note-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\section{Empirical surprisal probabilities}\label{sec-empirical}
 
-Outline of paper TBC
+Under approach (2) above, we estimate \(p_i=\Pr[S> s_i]\) as the
+proportion of observed surprisals larger than \(s_i\) (equal to
+\(1 - \text{rank}(s_i)/n\)). Using this approach, the anomaly boundary
+for a threshold of \(\alpha\) corresponds to the \(100(1-\alpha)\)\%
+highest density region computed using the quantile density approach of
+\textcite{HDR96}.
 
-\end{tcolorbox}
-
-\section{Empirical surprisal
-probabilities}\label{empirical-surprisal-probabilities}
-
-Under approach (2) above, we estimate \(p_i=\Pr[S> S_i]\) as the
-proportion of observed surprisals larger than \(s_i\). Using this
-approach, the anomaly boundary for a threshold of \(\alpha\) corresponds
-to the \(100(1-\alpha)\)\% highest density region computed using the
-quantile density approach of \textcite{HDR96}.
-
-For this approach to be accurate the surprisal ranks under the actual
-distribution generating \(Y\), denoted by \(F(\cdot)\) with generalized
-density function \(f(\cdot)\), and the distribution used to model \(Y\),
-which is denoted by \(\widehat{F}\) with generalized density function
-\(\widehat{f}(\cdot)\), must behave similarly. In particular,
-\textit{it is both necessary and sufficient} that the surprisal ranks in
-the upper tail of the surprisal distribution, since we are only
-interested in large surprisal values, can be related through a monotone
-transformation.
+Let \(F(\cdot)\) denote the true distribution function of \(\bm{Y}\),
+and suppose we use \(\widehat{F}\) to model \(\bm{Y}\). Their
+generalized density functions will be denoted by \(f(\cdot)\) and
+\(\widehat{f}(\cdot)\) respectively. Then, for this approach to be
+accurate, the surprisal ranks under \(f(\cdot)\) must behave similarly
+to those obtained under \(\widehat{f}\). In particular, since we are
+only interested in large surprisal values, \emph{it is both necessary
+and sufficient} that the surprisal ranks in the upper tail of the
+surprisal distribution can be related through a monotone transformation.
 
 Recall that the surprisal under the true distribution is defined as
-\(S=-\log f(Y)\), and recall that \(G(s)=\Pr(S\le s)\) denotes the CDF
-of \(S\) at \(s\in\mathbb{S}\subseteq\mathbb{R}\), where \(\mathcal{S}\)
-denotes the support of the surprisals. Likewise, let
-\(\widehat{S}=-\log \widehat{f}(Y)\) denote the surprisal under the
+\(S=-\log f(\bm{Y})\), and recall that \(G(s)=\Pr(S\le s)\) denotes the
+CDF of \(S\) at \(s\in\mathbb{S}\subseteq\mathbb{R}\), where
+\(\mathbb{S}\) denotes the support of the surprisals. Likewise, let
+\(\widehat{S}=-\log \widehat{f}(\bm{Y})\) denote the surprisal under the
 fitted distribution, and let
 \(\widehat{\mathbb{P}}_n(s):=n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i\le s]\)
 denote the empirical CDF (eCDF) of the fitted sample
-\(\widehat{S}_1,\dots,\widehat{S}_n\).
-
-For \(\widehat{\mathbb{P}}_n(s)\) to be an accurate estimate of \(G(s)\)
-in any given sample, the following condition turns out to be both
-necessary and sufficient.
+\(\widehat{S}_1,\dots,\widehat{S}_n\). For \(\widehat{\mathbb{P}}_n(s)\)
+to be an accurate estimate of \(G(s)\) in any given sample, the
+following condition turns out to be both necessary and sufficient.
 
 \begin{definition}[]\protect\hypertarget{def-empirical_pis}{}\label{def-empirical_pis}
 
@@ -601,7 +603,8 @@ Assume that \(S_1,\dots, S_n\) are iid realizations from \(G\). For
 \(\alpha \in(0,1)\), with probability at least \(1-\alpha\), for any
 \(s \ge s_\star\),
 \(\widehat{\mathbb{P}}_n(s)-\epsilon \leq G(s) \leq \widehat{\mathbb{P}}_n+\epsilon\)
-if an only if Assumption~\ref{def-empirical_pis} is satisfied.
+if and only if Assumption~\ref{def-empirical_pis} is
+satisfied.\todo{Check notation}
 
 \end{lemma}
 
@@ -613,17 +616,17 @@ require that the tails of the fitted distribution are the same as the
 actual data distribution, and only requires that they be related through
 a monotone transformation. That is, for this approach to be accurate, we
 must be confident that the fitted distribution has regions of low
-density in the same location as the true distribution.
+density in the same locations as the true distribution.
 
-Importantly, Assumption~\ref{def-empirical_pis} is not be satisfied by
-all pairs of distributions: if the true data has skewness but the fitted
+Importantly, Assumption~\ref{def-empirical_pis} is not satisfied by all
+pairs of distributions: if the true data has skewness but the fitted
 model assumes symmetry, or if there is bimodality in the observed data
-that is not modeled, then Assumption~\ref{def-empirical_pis} will not be
-satisfied. We forego a detailed example of the success and failure of
-this approach until Section xxx.
+that is not modeled, then Assumption~\ref{def-empirical_pis} will not
+necessarily be satisfied. We forego a detailed example of the success
+and failure of this approach until Section ???.
 
 \section{Extreme value theory for the surprisal
-distribution}\label{extreme-value-theory-for-the-surprisal-distribution}
+distribution}\label{sec-gpd}
 
 Our third approach uses extreme value theory applied to the surprisal
 values. We will show that under weak conditions on the tail of the
@@ -645,19 +648,19 @@ Here we extend that idea to allow \(F\) to be any well-behaved
 distribution, including conditional distributions. Specifically, we fit
 a GPD to the largest \(\beta\) of \(\{s_i\}_{i=1}^n\), obtaining
 estimates of the location, scale and shape parameters,
-\((\mu,\sigma,\xi)\). We calculate the probability of each observation
-or one more extreme,
+\((\mu,\sigma,\xi)\). We calculate the probability of a surprisal more
+extreme than each observation,
 \(p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]\),
 where \(P\) is the distribution function of the GPD. Observations not
 contained in the largest \(\beta\) of \(\{s_i\}_{i=1}^n\) are assigned
 \(p_i = \beta\). To justify this approach, we seek conditions on the
 surprisal distribution of \(S = -\log f(\bm{Y})\), where
-\(\bm{Y}\sim F\), similar to the Fisher-Tippett-Gnedenko (FTG) theorem
+\(\bm{Y}\sim F\), and \(f\) is corresponding generalized density
+function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem
 \autocite{coles2001introduction}.
 
 We consider three possible conditions on the surprisal distribution of
-\(S = -\log f(\bm{Y})\) where \(f\) is the density of \(\bm{Y}\). These
-conditions describe increasingly heavy tails:
+\(S = -\log f(\bm{Y})\), describing increasingly heavy tails:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -675,8 +678,8 @@ We state these as three alternative assumptions.
 
 \begin{definition}[Sub-Gaussian]\protect\hypertarget{def-bounded}{}\label{def-bounded}
 
-The random variable \(S =-\log f(Y)\in\mathbb{R}\), and satisfies, for
-all \(\lambda\in\mathbb{R}\), and some \(\nu>0\), \[
+The random variable \(S =-\log f(\bm{Y})\in\mathbb{R}\), and satisfies,
+for all \(\lambda\in\mathbb{R}\), and some \(\nu>0\), \[
     \E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\}.
 \]
 
@@ -700,9 +703,10 @@ such that \(C^p-1>0\).
 \end{definition}
 
 Assumption~\ref{def-bounded} will be satisfied in cases where the
-density \(f\) is bounded both above and below, such as with mass
-functions on a finite set. However, it may not be satisfied if the log
-density has no lower bound.
+density \(f\) is bounded both above and below over the support of \(f\),
+such as with mass functions on a finite set. However, it may not be
+satisfied if the log density has no lower bound over the support of
+\(f\).
 
 Assumption~\ref{def-subbounded} will be satisfied when \(f\) has full
 support on \(\mathbb{R}^d\) and the log density is unbounded below, such
@@ -719,7 +723,7 @@ Theorem~\ref{thm-three_types}, with the proof given in the Appendix.
 \begin{theorem}[]\protect\hypertarget{thm-three_types}{}\label{thm-three_types}
 
 Let \(\bm{y}_1,\dots,\bm{y}_n\) be an iid sequence from \(F\), and let
-\(S =-\log f(\bm{Y})\), where \(Y\sim \bm{F}\). Further, let
+\(S =-\log f(\bm{Y})\), where \(\bm{Y}\sim F\). Further, let
 \(M_n=\max\{s_1,\dots,s_n\}\), where \(s_i=-\log f(y_i)\).
 
 \begin{enumerate}
@@ -757,14 +761,14 @@ provided the tail of the surprisal distribution satisfies one of the
 three assumptions, we can still fit a GPD to the largest surprisal
 values, and use this to estimate the tail probabilities.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-note-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, breakable, coltitle=black, colback=white, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, toprule=.15mm, opacityback=0, leftrule=.75mm, rightrule=.15mm, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, arc=.35mm, colframe=quarto-callout-note-color-frame, bottomrule=.15mm]
 
 Add something about what kinds of distributions do not satisfy any of
 the three assumptions?
 
 \end{tcolorbox}
 
-\section{Experiments}\label{experiments}
+\section{Experiments}\label{sec-experiments}
 
 \subsection{Standard univariate normal
 values}\label{standard-univariate-normal-values}
@@ -795,7 +799,7 @@ surprisal values.
 }
 
 \caption{\label{fig-expt1}Left: Observations are computed from a
-\(\mathcal{N(0,1)}\) distribution. Right: Observations are computed from
+\(\mathbb{N(0,1)}\) distribution. Right: Observations are computed from
 a \(t(4)\) distribution. Distribution indicates which distribution was
 used to compute the surprisal values. Estimate shows how the tail
 probabilities were computed. This demonstrates that the surprisal
@@ -866,14 +870,14 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, bottomrule=.15mm, opacityback=0, titlerule=0mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, rightrule=.15mm, leftrule=.75mm, bottomtitle=1mm, toprule=.15mm, toptitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, breakable, coltitle=black, colback=white, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, toprule=.15mm, opacityback=0, leftrule=.75mm, rightrule=.15mm, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomrule=.15mm]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
 
 \end{tcolorbox}
 
-\section{Applications}\label{applications}
+\section{Applications}\label{sec-applications}
 
 \subsection{French mortality rates}\label{french-mortality-rates}
 
@@ -912,7 +916,7 @@ different for different age groups.}
 
 }
 
-\caption{\label{fig-hampel_fr}Anomalies identified in the Frency
+\caption{\label{fig-hampel_fr}Anomalies identified in the French
 mortality data by year and age. Wars and epidemics in French history are
 revealed.}
 
@@ -1028,7 +1032,7 @@ features of this data set, such as the discrete nature of the data, and
 the changing variance, to identify an observation that is anomalous in
 the context of the model.
 
-\section{Discussion}\label{discussion}
+\section{Discussion}\label{sec-discussion}
 
 \subsection*{Software and
 reproducibility}\label{software-and-reproducibility}
@@ -1076,7 +1080,7 @@ is satisfied, then \begin{flalign}
 \end{flalign}where the last inequality follows from the
 Dvoretzky-Kiefer-Wolfowitz theorem, for every \(\epsilon>0\). Taking
 \(\epsilon=\sqrt{\log (2/\alpha)/(2n)}\), we see that \begin{align*}
-\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
+\Pr\left\{\sup_{s\in\mathbb{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.
 \end{align*} Hence, with probability at least \(1-\alpha\),
 \(\sup_{s \ge s_\star}|\widehat{\mathbb{P}}_n(s)-G(s)|\le\epsilon\).
 Fixing an \(s\ge s_\star\) and re-arranging terms yields the stated
@@ -1089,8 +1093,8 @@ For the above argument to hold, it must be that, on the set
 surely. We now show that this is satisfied if and only if
 Assumption~\ref{def-empirical_pis} is satisfied.
 
-\noindent\textbf{Case 1: $\Rightarrow$.} Take \(s\ge s_\star\). Consider
-the random variable \(1[S_i\le s]=1\) and note that, by Assumption
+\textbf{Case 1: \(\Rightarrow\)}. Take \(s\ge s_\star\). Consider the
+random variable \(1[S_i\le s]=1\) and note that, by Assumption
 Assumption~\ref{def-empirical_pis}, it must be that
 \(1[h(\widehat{S}_i)\le h(s)]=1[S_i\le s]\) almost surely. However,
 since \(h(\cdot)\) is strictly increasing, it has an inverse that is
@@ -1100,13 +1104,13 @@ also strictly increasing, so that (almost surely) \[
 \(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) and \eqref{eq:result} is
 satisfied.
 
-\noindent\textbf{Case 2: $\Leftarrow$.} Now, assume that
+\textbf{Case 2: \(\Leftarrow\)}. Now, assume that
 \(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\) for all
 \(s\ge s_\star\). Then, the sets \[
-\mathcal{S}:=\{S_1,\dots,S_n:S_i>s_\star\}\text{ and }\widehat{\mathcal{S}}:=\{\widehat{S}_1,\dots,\widehat{S}_n:\widehat{S}_i>s_\star\}
-\]must satisfy \(|\mathcal{S}|=|\widehat{\mathcal{S}}|\), since
+\mathbb{S}:=\{S_1,\dots,S_n:S_i>s_\star\}\text{ and }\widehat{\mathbb{S}}:=\{\widehat{S}_1,\dots,\widehat{S}_n:\widehat{S}_i>s_\star\}
+\]must satisfy \(|\mathbb{S}|=|\widehat{\mathbb{S}}|\), since
 \(\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)\). Thus, the values in
-\(\widehat{\mathcal{S}}\) and \(\mathcal{S}\) must be the same up to a
+\(\widehat{\mathbb{S}}\) and \(\mathbb{S}\) must be the same up to a
 re-ordering of elements. Hence, there exists a bijection such that
 \(S_i=h(\widehat{S}_i)\) for all \(s>s_\star\).
 \end{proof}
@@ -1118,7 +1122,7 @@ tails}{S has sub-Gaussian tails}}\label{s-has-sub-gaussian-tails}
 
 Suppose \(\bm{y}_1,\dots,\bm{y}_n\) are iid from a density \(f\), and
 let \(M_n = \max\{s_1,\dots,s_n\}\) where \(s_i = -\log f(\bm{y}_i)\).
-If \(S =-\log f(Y)\in\mathbb{R}\), and satisfies, for all
+If \(S =-\log f(\bm{Y})\in\mathbb{R}\), and satisfies, for all
 \(\lambda\in\mathbb{R}\), and some \(\nu>0\), \[
 \mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
 \] then, for \(s\in\mathbb{R}_+\), \[
@@ -1132,7 +1136,7 @@ For any \(\lambda>0\), \begin{align}
 \Pr\{S\ge s\} =
 \Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
  & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
- & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2} .
+ & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2}.
 \end{align} Now, we can maximize the right-hand side of the above bound
 in \(\lambda\), which yields the optimal value
 \(\lambda=(s-\mu)/\{M^2\}\). Plugging this in we have the bound \[
@@ -1196,7 +1200,7 @@ until we maximize the tail bound. In particular, for any \(\lambda>0\),
   \Pr\left\{ S-\E[S]\ge s\right\} =
   \Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}
     & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
-    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2} .
+    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2}.
 \end{align*} Now, we must consider a constrained optimization to ensure
 the right-hand side exists. In particular, we know from the proof of
 Lemma~\ref{lem-bounds} that the unconstrained optimum is
@@ -1261,7 +1265,7 @@ standardized, converges to an extreme value distribution, we first
 recall that \[
     \Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
 \] Hence, \[
-    \sup_{x\in\mathcal{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathcal{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
+    \sup_{x\in\mathbb{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathbb{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
 \] so that when \(X_n\) and \(X\) are both continuous we see that
 Corollary~\ref{cor-two} implies that the CDF of
 \((M_n-\E[S]-2b\log(2n))/2b\) converges to that of the Type-1 extreme
