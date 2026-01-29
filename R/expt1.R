@@ -3,20 +3,20 @@ library(weird)
 get_expt1_prob <- function(y) {
   tibble(
     y = y,
-    p = surprisals(y, distribution = dist_normal()),
-    p_emp = surprisals(
+    p = surprisals_prob(y, distribution = dist_normal()),
+    p_emp = surprisals_prob(
       y,
       distribution = dist_normal(),
-      approximation = "empirical"
+      approximation = "rank"
     ),
-    p_gpd = surprisals(y, distribution = dist_normal(), approximation = "gpd"),
-    pt = surprisals(y, distribution = dist_student_t(4)),
-    pt_emp = surprisals(
+    p_gpd = surprisals_prob(y, distribution = dist_normal(), approximation = "gpd"),
+    pt = surprisals_prob(y, distribution = dist_student_t(4)),
+    pt_emp = surprisals_prob(
       y,
       distribution = dist_student_t(4),
-      approximation = "empirical"
+      approximation = "rank"
     ),
-    pt_gpd = surprisals(
+    pt_gpd = surprisals_prob(
       y,
       distribution = dist_student_t(4),
       approximation = "gpd"

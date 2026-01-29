@@ -35,8 +35,8 @@ create_notouts_plot <- function(notouts_aug) {
 noutouts_anomalies <- function(fit_notouts, notouts_aug) {
   fit_notouts |>
     mutate(
-      surprisals = surprisals(fit_notouts, probability = FALSE),
-      prob = surprisals(fit_notouts, approximation = "gpd")
+      surprisals = surprisals(fit_notouts),
+      prob = surprisals_prob(fit_notouts, approximation = "gpd")
     ) |>
     select(Player:Country, Innings:NotOuts, prop_no:.fitted, surprisals:prob) |>
     arrange(desc(surprisals))

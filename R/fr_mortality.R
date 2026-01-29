@@ -5,7 +5,7 @@ hampel_anomalies <- function(
   y,
   bandwidth,
   alpha = 0.01,
-  approximation = c("none", "gpd", "empirical")
+  approximation = c("none", "gpd", "rank")
 ) {
   approximation = match.arg(approximation)
   if (abs(bandwidth - round(bandwidth)) > 1e-8) {
@@ -31,7 +31,7 @@ hampel_anomalies <- function(
   }
   # Find anomalies
   s <- -dnorm(abs((y - m) / mad) * qnorm(0.75), log = TRUE)
-  p <- weird:::surprisal_prob(
+  p <- weird:::surprisal_prob_from_s(
     s,
     distribution = dist_normal(),
     approximation = approximation
