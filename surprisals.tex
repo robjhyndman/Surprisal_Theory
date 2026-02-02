@@ -144,14 +144,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{29 January 2026}
+\date{2 February 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 29 January 2026}
+   \lfoot{\sf Hyndman, Frazier: 2 February 2026}
 
 % Keywords
 
@@ -413,10 +413,11 @@ detection;
 
 Anomaly detection methods are often rather ad hoc and lack a solid
 theoretical foundation, or they make strong distributional assumptions
-that may not hold in practice. We aim to address this by defining an
-anomaly as a point of low probability, and proposing a general framework
-for anomaly detection by estimating the probability of observations with
-lower density (thus more anomalous). Our approach allows for a unified
+that may not hold in practice. We aim to address this by defining
+anomalies as observations of low probability under a specified model,
+and proposing a general framework for anomaly detection that estimates
+the probability mass associated with observations of equal or lower
+density (thus more anomalous). Our approach allows for a unified
 treatment of anomaly detection that can be applied to any anomaly
 detection problem, provided a probability distribution can be defined on
 the space of observations. It allows for univariate and multivariate
@@ -428,11 +429,11 @@ distribution.
 The basic idea is to calculate the surprisal (equal to the negative log
 density) of each observation, and then estimate the tail probability
 from the surprisal distribution. This allows us to estimate the
-probability of observing a surprisal value as extreme or more extreme
-than a given observation, which can then be used to flag anomalies. The
-surprisal approach to anomaly detection provides a principled way to
-control the false positive rate when flagging anomalies, by setting a
-threshold on the estimated tail probabilities.
+probability of obtaining a surprisal at least as large as that of the
+observation, which can then be used to flag anomalies. The surprisal
+approach to anomaly detection provides a principled way to control the
+false positive rate when flagging anomalies, by setting a threshold on
+the estimated tail probabilities.
 
 Let \(\bm{y}_1,\dots,\bm{y}_n\) be iid observations from a probability
 distribution \(F\) defined on an appropriate sample space, and let \(f\)
@@ -460,20 +461,22 @@ the data.
 
 Let \(G(s) = \Pr\{S\le s\}\) be the distribution function of the
 surprisal values, where \(S = -\log f(\bm{Y})\) and \(\bm{Y}\sim F\).
-Then the probability of observing a value with surprisal larger than
-\(s\) is given by \(1-G(s)\), which leads to a natural way of assigning
-an anomaly score to each observation \(\bm{y}_i\): \[
-p_i = 1-G(s_i) = 1-G(-\log f(\bm{y}_i)).
-\] We define anomalies as observations with \(p_i < \alpha\), giving a
-false positive rate of \(\alpha\) if all observations are from \(F\).
-This is preferable to directly computing the probabilities from the tail
-of \(F\), as it allows for anomalies to occur anywhere in the
-distribution of \(F\), not just in its tails. For example, anomalies may
-lie between modes in a multimodal distribution, or in otherwise
-low-density regions of the distribution \(F\). It is also preferable to
-a distance-based approach to anomaly detection
-\autocite[e.g.,][]{hdoutliers}, as it naturally handles skewed and
-heavy-tailed distributions.
+Then the probability of observing a value with surprisal at least as
+large as \(s\) is given by \(1-G(s^-)\), where \[
+  G(s^-) = \lim_{t\uparrow s} G(t).
+\] This leads to a natural way of assigning an anomaly score to each
+observation \(\bm{y}_i\): \[
+p_i = \Pr(S \ge s_i)  = 1-G(s_i^-)
+\] where \(s_i = -\log f(\bm{y}_i)\). We define anomalies as
+observations with \(p_i < \alpha\), giving a false positive rate of
+\(\alpha\) if all observations are from \(F\). This is preferable to
+directly computing the probabilities from the tail of \(F\), as it
+allows for anomalies to occur anywhere in the distribution of \(F\), not
+just in its tails. For example, anomalies may lie between modes in a
+multimodal distribution, or in otherwise low-density regions of the
+distribution \(F\). It is also preferable to a distance-based approach
+to anomaly detection \autocite[e.g.,][]{hdoutliers}, as it naturally
+handles skewed and heavy-tailed distributions.
 
 The surprisal approach converts the problem of working with \(F\), a
 potentially multivariate distribution (or even one on a manifold or some
@@ -507,7 +510,7 @@ a Normal distribution. When we take a surprisal perspective, this is
 equivalent to setting \begin{equation}\phantomsection\label{eq-hampel}{
   F = N(m_t, a_t/\Phi^{-1}(0.75)).
 }\end{equation} The false anomaly rate is
-\(\alpha = 2[1 - \Phi(\tau\Phi(0.75))]\).
+\(\alpha = 2[1 - \Phi(\tau/\Phi^{-1}(0.75))]\).
 
 We will usually not know \(F\), and so we need to estimate it from data
 or from theory. Such estimates are particularly fragile or uncertain in
@@ -532,7 +535,7 @@ of three approaches.
 \item
   Using the empirical distribution function of the observed surprisals
   \(\{s_1,\dots,s_n\}\), so that \(p_i\) is the proportion of surprisals
-  larger than \(s_i\);
+  at least as large as \(s_i\);
 \item
   Fitting a Generalized Pareto Distribution (GPD) to the largest
   surprisal values, and using this to estimate the tail probabilities.
@@ -560,22 +563,20 @@ for the results in Sections \ref{sec-empirical} and \ref{sec-gpd}.
 
 \section{Empirical surprisal probabilities}\label{sec-empirical}
 
-Under approach (2) above, we estimate \(p_i=\Pr[S> s_i]\) as the
-proportion of observed surprisals larger than \(s_i\) (equal to
-\(1 - \text{rank}(s_i)/n\)). Using this approach, the anomaly boundary
-for a threshold of \(\alpha\) corresponds to the \(100(1-\alpha)\)\%
-highest density region computed using the quantile density approach of
-\textcite{HDR96}.
+Under approach (2) above, we estimate \(p_i=\Pr(S \ge s_i)\) as the
+proportion of observed surprisals at least as large as \(s_i\). Using
+this approach, the anomaly boundary for a threshold of \(\alpha\)
+corresponds to the \(100(1-\alpha)\)\% highest density region computed
+using the quantile density approach of \textcite{HDR96}.
 
 Let \(F(\cdot)\) denote the true distribution function of \(\bm{Y}\),
-and suppose we use \(\widehat{F}\) to model \(\bm{Y}\). Their
-generalized density functions will be denoted by \(f(\cdot)\) and
-\(\widehat{f}(\cdot)\) respectively. Then, for this approach to be
-accurate, the surprisal ranks under \(f(\cdot)\) must behave similarly
-to those obtained under \(\widehat{f}\). In particular, since we are
-only interested in large surprisal values, \emph{it is both necessary
-and sufficient} that the surprisal ranks in the upper tail of the
-surprisal distribution can be related through a monotone transformation.
+and suppose we use \(\widehat{F}\) to model \(\bm{Y}\). The
+corresponding generalized density functions will be denoted by
+\(f(\cdot)\) and \(\widehat{f}(\cdot)\) respectively. For the empirical
+approach to be accurate, the ordering of large surprisal values under
+the fitted model must match that under the true distribution. This is
+equivalent to requiring that the true and fitted surprisals are related
+by a strictly increasing transformation on the upper tail.
 
 Recall that the surprisal under the true distribution is defined as
 \(S=-\log f(\bm{Y})\), and recall that \(G(s)=\Pr(S\le s)\) denotes the
@@ -584,27 +585,29 @@ CDF of \(S\) at \(s\in\mathbb{S}\subseteq\mathbb{R}\), where
 \(\widehat{S}=-\log \widehat{f}(\bm{Y})\) denote the surprisal under the
 fitted distribution, and let
 \(\widehat{\mathbb{P}}_n(s):=n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i\le s]\)
-denote the empirical CDF (eCDF) of the fitted sample
-\(\widehat{S}_1,\dots,\widehat{S}_n\). For \(\widehat{\mathbb{P}}_n(s)\)
-to be an accurate estimate of \(G(s)\) in any given sample, the
-following condition turns out to be both necessary and sufficient.
+denote the empirical CDF of the fitted sample
+\(\widehat{S}_1,\dots,\widehat{S}_n\). For the empirical estimator
+\(\widehat{\mathbb{P}}_n(s)\) to provide an accurate estimate of the
+upper tail of \(G(s)\) in any given sample, the following condition
+turns out to be both necessary and sufficient.
 
 \begin{definition}[]\protect\hypertarget{def-empirical_pis}{}\label{def-empirical_pis}
 
-There exists an \(s_\star\) such that, for all \(s\ge s_\star\) and a
-function \(h(\cdot)\), strictly increasing on \(s\ge s_\star\), such
-that \(S=h(\widehat{S})\) almost surely.
+There exists an \(s_\star\) and a function \(h(\cdot)\) that is strictly
+increasing on \([s_\star, \infty)\), such that \(S=h(\widehat{S})\)
+almost surely for all \(\hat{S} \ge s_\star\).
 
 \end{definition}
 
 \begin{lemma}[]\protect\hypertarget{lem-confident}{}\label{lem-confident}
 
-Assume that \(S_1,\dots, S_n\) are iid realizations from \(G\). For
-\(\alpha \in(0,1)\), with probability at least \(1-\alpha\), for any
+Let \(S_1,\dots, S_n\) be iid with distribution function \(G\). Then,
+for any \(\alpha \in(0,1)\), and
+\(\epsilon = \sqrt{\log(2/\alpha)/(2n)}\), we have for all
 \(s \ge s_\star\),
 \(\widehat{\mathbb{P}}_n(s)-\epsilon \leq G(s) \leq \widehat{\mathbb{P}}_n+\epsilon\)
-if and only if Assumption~\ref{def-empirical_pis} is
-satisfied.\todo{Check notation}
+with probability at least \(1-\alpha\) if and only if
+Assumption~\ref{def-empirical_pis} is satisfied.
 
 \end{lemma}
 
@@ -648,14 +651,14 @@ Here we extend that idea to allow \(F\) to be any well-behaved
 distribution, including conditional distributions. Specifically, we fit
 a GPD to the largest \(\beta\) of \(\{s_i\}_{i=1}^n\), obtaining
 estimates of the location, scale and shape parameters,
-\((\mu,\sigma,\xi)\). We calculate the probability of a surprisal more
-extreme than each observation,
+\((\mu,\sigma,\xi)\). We calculate the probability of a surprisal at
+least as large as that of each observation,
 \(p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]\),
 where \(P\) is the distribution function of the GPD. Observations not
 contained in the largest \(\beta\) of \(\{s_i\}_{i=1}^n\) are assigned
 \(p_i = \beta\). To justify this approach, we seek conditions on the
 surprisal distribution of \(S = -\log f(\bm{Y})\), where
-\(\bm{Y}\sim F\), and \(f\) is corresponding generalized density
+\(\bm{Y}\sim F\), and \(f\) is the corresponding generalized density
 function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem
 \autocite{coles2001introduction}.
 
@@ -761,7 +764,7 @@ provided the tail of the surprisal distribution satisfies one of the
 three assumptions, we can still fit a GPD to the largest surprisal
 values, and use this to estimate the tail probabilities.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, breakable, coltitle=black, colback=white, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, toprule=.15mm, opacityback=0, leftrule=.75mm, rightrule=.15mm, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, arc=.35mm, colframe=quarto-callout-note-color-frame, bottomrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-note-color-frame, rightrule=.15mm, breakable, colback=white, coltitle=black, left=2mm, opacitybacktitle=0.6, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}]
 
 Add something about what kinds of distributions do not satisfy any of
 the three assumptions?
@@ -870,7 +873,7 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, breakable, coltitle=black, colback=white, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, toprule=.15mm, opacityback=0, leftrule=.75mm, rightrule=.15mm, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, toptitle=1mm, arc=.35mm, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, rightrule=.15mm, breakable, colback=white, coltitle=black, left=2mm, opacitybacktitle=0.6, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}]
 
 What's going on with the GPD under Gaussian? There seems to be an
 asymptotic bias.
@@ -1034,19 +1037,100 @@ the context of the model.
 
 \section{Discussion}\label{sec-discussion}
 
+The surprisal-based framework provides a flexible and principled way to
+quantify how unusual an observation is under any specified
+distributional model. A key feature of our approach is that it remains
+effective even when the assumed distribution is misspecified. This
+stands in contrast to many traditional anomaly detection methods, where
+model misspecification in the tails can lead to severe distortions in
+anomaly scores. By converting the multivariate (or otherwise complex)
+modeling problem into the univariate problem of estimating the tail of
+the surprisal distribution, we simplify the problem to a domain where
+empirical and extreme‑value techniques can be easily applied.
+
+Our theoretical results make clear what kind of misspecification can be
+tolerated. Anomalies are defined relative to regions of low density
+under an assumed distribution \(F\). For the empirical tail-probability
+estimator to be reliable, the assumed model must correctly identify the
+\emph{locations} of these low-density regions, even if it does not
+accurately capture the \emph{shape} of the tail.
+Definition\,Assumption~\ref{def-empirical_pis} formalizes this
+requirement: the true and fitted surprisals need only agree up to a
+strictly increasing transformation on the extreme tail. When this
+condition holds, Lemma\,Lemma~\ref{lem-confident} guarantees that the
+empirical surprisal probabilities form a valid uniform confidence band
+for the true tail probabilities on the upper tail. Remarkably, this does
+not require \(F\) to have the correct tail behavior or even the correct
+distributional form, only the correct tail \emph{ordering}. When the
+condition fails, such as when the assumed model imposes symmetry where
+the data are skewed, or unimodality where the data are multimodal, the
+empirical estimator no longer provides uniform guarantees. In practice,
+such gross mis-specifications should be identifiable through exploratory
+data analysis.
+
+The GPD approach offers a complementary route to estimating surprisal
+tail probabilities. Our extreme-value results show that under broad
+conditions (sub‑Gaussian, sub‑exponential, or polynomial surprisal
+tails), the maximum surprisal converges to a distribution in the
+generalized extreme‑value family. These conditions encompass almost all
+common statistical models. Thus, the GPD approximation can be expected
+to provide robust tail estimates even when the assumed distribution is
+only loosely connected to the true one. Empirically, we observe that the
+GPD and empirical approaches often perform similarly, with the GPD
+gaining an advantage when the extreme tail is sparse or extremely heavy.
+
+From a practical standpoint, users may wish to adopt a hybrid strategy:
+employ empirical tail probabilities for moderate sample sizes or when
+the tail ordering appears stable, and rely on the GPD approximation when
+the tail is very sparse or heavy. Threshold selection for the GPD
+remains an open methodological question; established techniques from the
+extreme‑value literature (such as stability plots or
+nearest‑order‑statistic heuristics) can be adapted to surprisal data,
+but a systematic study in this context is a topic for future work.
+
+The surprisal framework also brings interpretability and scalability
+benefits. Surprisals provide a single, model-based measure of
+unlikeliness that applies equally to discrete, continuous, and mixed
+distributions. This avoids the difficulties inherent in distance-based
+methods, especially in high-dimensional or highly skewed settings.
+Computationally, the method is efficient: surprisal computation is
+linear in the sample size, empirical tail estimation requires only
+sorting, and GPD fitting is fast even for very large datasets.
+
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-tip-color-frame, rightrule=.15mm, breakable, colback=white, coltitle=black, left=2mm, opacitybacktitle=0.6, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{To add}]
+
+Add something about conditional distributions
+
+\end{tcolorbox}
+
+In summary, the surprisal framework yields a robust, interpretable, and
+theoretically grounded approach to anomaly detection. By separating the
+specification of a working model from the estimation of tail
+probabilities, and by leveraging both empirical and extreme‑value
+methods, we achieve a flexible system that performs well even under
+substantial model misspecification. The applications demonstrate how
+these ideas can be used to detect meaningful anomalies in complex
+real‑world data, while the theoretical results clarify when and why the
+approach succeeds.
+
+Our methods are implemented in the \texttt{weird} R package
+\autocite{Rweird}, which provides a user-friendly interface for
+computing surprisals and estimating tail probabilities using both
+empirical and GPD approaches.
+
 \subsection*{Software and
 reproducibility}\label{software-and-reproducibility}
 \addcontentsline{toc}{subsection}{Software and reproducibility}
 
 All results presented here can be reproduced using the code available at
 \url{https://github.com/robjhyndman/Surprisal_Theory}. The analysis was
-conducted using R version 4.5.1 \autocite{R}, with the following R
+conducted using R version 4.5.2 \autocite{R}, with the following R
 packages: weird \autocite{Rweird}, tsibble \autocite{Rtsibble}, targets
 \autocite{targets,targetspaper}, ggplot2 \autocite{ggplot2,ggplotbook},
 and other tidyverse \autocite{tidyverse} packages.
 
-\subsection*{Acknowledgements}\label{acknowledgements}
-\addcontentsline{toc}{subsection}{Acknowledgements}
+\subsection*{Acknowledgments}\label{acknowledgments}
+\addcontentsline{toc}{subsection}{Acknowledgments}
 
 Both authors are funded by the Australian Research Council through
 Discovery Project DP250100702. Rob Hyndman is a member of the Australian
@@ -1065,11 +1149,6 @@ Optimisation Technologies, Integrated Methodologies, and Applications
 
 \section{\texorpdfstring{Proof of
 Lemma~\ref{lem-confident}}{Proof of Lemma~}}\label{proof-of-lem-confident}
-
-\section{\texorpdfstring{Proof of
-Theorem~\ref{thm-three_types}}{Proof of Theorem~}}\label{proof-of-thm-three_types}
-
-We prove each of the three cases in turn.
 
 \begin{proof}
 Define \(\mathbb{P}_n(s)=n^{-1}\sum_{i=1}^{n}1[S_i\le s]\). For now,
@@ -1114,6 +1193,11 @@ satisfied.
 re-ordering of elements. Hence, there exists a bijection such that
 \(S_i=h(\widehat{S}_i)\) for all \(s>s_\star\).
 \end{proof}
+
+\section{\texorpdfstring{Proof of
+Theorem~\ref{thm-three_types}}{Proof of Theorem~}}\label{proof-of-thm-three_types}
+
+We prove each of the three cases in turn.
 
 \subsection{\texorpdfstring{\(S\) has sub-Gaussian
 tails}{S has sub-Gaussian tails}}\label{s-has-sub-gaussian-tails}
@@ -1249,9 +1333,9 @@ Apply Assumption~\ref{def-subbounded} to see that \begin{align*}
     \Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
      & \le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n                       \\
      & = 1-\big(1-e^{-s}/n\big)^n                                     \\
-     & = 1-e^{e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
+     & = 1-e^{-e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
 \end{align*} The result now follows by noting that, for all \(s>0\), \[
-    \left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right]= o(1)\le 0.
+    \left[\big(1-e^{-s}/n\big)^n-e^{-e^{-s}}\right]= o(1)\le 0.
 \]
 \end{proof}
 
