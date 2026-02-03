@@ -90,11 +90,7 @@ s_i=-\log f(\bm{y}_i).
 $$
 While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density. A large value of $s_i$ indicates that $\bm{y}_i$ is an unlikely value, and so is a potential anomaly. On the other hand, typical values will have low surprisals. In information theory, the average surprisal is known as the entropy of a random variable [@Cover2006;@Stone2022] and provides a measure of uncertainty. If $f$ is obtained from a parametric model, then the sum of the surprisals is equal to minus the log likelihood of the data.
 
-Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then the probability of observing a value with surprisal at least as large as $s$ is given by $1-G(s^-)$, where
-$$
-  G(s^-) = \lim_{t\uparrow s} G(t).
-$$
-This leads to a natural way of assigning an anomaly score to each observation $\bm{y}_i$:
+Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then the probability of observing a value with surprisal at least as large as $s$ is given by $\Pr(S\ge s) = 1-G(s^-)$, where $G(s^-) = \lim_{t\uparrow s} G(t)$. This leads to a natural way of assigning an anomaly score to each observation $\bm{y}_i$:
 $$
 p_i = \Pr(S \ge s_i)  = 1-G(s_i^-)
 $$
@@ -116,7 +112,7 @@ a_t &= \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
 \end{align*}
 The threshold $\tau$ is often set under the assumption of a Normal distribution. When we take a surprisal perspective, this is equivalent to setting
 $$
-  F = N(m_t, a_t/\Phi^{-1}(0.75)).
+  F = N(m_t, a^2_t/\Phi^{-2}(0.75)).
 $$ {#eq-hampel}
 The false anomaly rate is $\alpha = 2[1 - \Phi(\tau/\Phi^{-1}(0.75))]$.
 
