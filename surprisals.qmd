@@ -186,7 +186,7 @@ $$
 
 ::: {#def-polybounded}
 #### Polynomial
-The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\mathbb{E}[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
+The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\E[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
 :::
 
 @def-bounded will be satisfied in cases where the density $f$ is bounded both above and below over the support of $f$, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound over the support of $f$.
@@ -413,11 +413,11 @@ We prove each of the three cases in turn.
 Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$.
 If $S =-\log f(\bm{Y})\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
 $$
-\mathbb{E} \exp\{\lambda (S-\mathbb{E}[S])\}\le \exp\{\lambda^2 \nu^2/2\},
+\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\},
 $$
 then, for $s\in\mathbb{R}_+$,
 $$
-\Pr\{M_n-\mathbb{E}[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+\Pr\{M_n-\E[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
 $$
 :::
 
@@ -425,8 +425,8 @@ $$
 For any $\lambda>0$,
 \begin{align}
 \Pr\{S\ge s\} =
-\Pr\left\{e^{\lambda (S-\mathbb{E}[S])}\ge e^{\lambda (s-\mathbb{E}[S])}\right\}
- & \le e^{-\lambda(s-\mu)}\mathbb{E} e^{\lambda (S-\mu)} \\
+\Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda (s-\E[S])}\right\}
+ & \le e^{-\lambda(s-\mu)}\E e^{\lambda (S-\mu)} \\
  & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2}.
 \end{align}
 Now, we can maximize the right-hand side of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
@@ -435,7 +435,7 @@ $$
 $$
 The stated result now follows by noting that
 \begin{align}
-\Pr\left(M_n-\mathbb{E}[S]\ge s\right) = 1-\Pr\{M_n\le s\}
+\Pr\left(M_n-\E[S]\ge s\right) = 1-\Pr\{M_n\le s\}
  & = 1-\Pr\{S\le s\}^n                       \\
  & = 1-(1-\Pr\{S\ge s\})^n                           \\
  & \le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
@@ -445,7 +445,7 @@ The stated result now follows by noting that
 ::: {#cor-one}
 If @def-bounded is satisfied, then, for all $s>0$,
 $$
-\Pr\Big(|M_n-\mathbb{E}[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
+\Pr\Big(|M_n-\E[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
 $$
 :::
 
