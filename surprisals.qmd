@@ -251,7 +251,7 @@ The converse situation is shown in the right panel of @fig-expt1, where the data
 
 ## Bivariate gamma values
 
-The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $100,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is the number of anomalies detected when $\alpha=0.01$ for different sample sizes, averaged over 1000 replications. The false anomaly rate under the true distribution is, of course, 0.01.
+The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $10,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is a loess smooth of the proportion of anomalies detected when $\alpha=0.01$ for different sample sizes, along with 95% confidence intervals. The false anomaly rate under the true distribution is, of course, 0.01.
 
 ```{r}
 #| label: fig-expt2
@@ -260,7 +260,7 @@ The quality of the approximation used depends on the amount of data available, s
 tar_read(fig_expt2)
 ```
 
-Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged.
+Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged. Clearly, all methods have some small-sample bias, with the GPD converging more quickly than the empirical approximation. The GPD approach based on the t distribution is almost as good as using the true distribution, while the GPD approach using the normal distribution is noticeably worse, even for large sample sizes. This is due to the fact that the Normal distribution has lighter tails than the true Gamma distribution, while the t distribution has heavier tails the true Gamma distribution. In general, the GPD approximation is asymptotically unbiased, only when the tails of the assumed distribution are heavier than those of the true distribution.
 
 ::: {.callout-important icon=false}
 # TO DO
