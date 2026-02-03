@@ -30,7 +30,7 @@ get_expt2_prob_single <- function(n) {
     rename(count = n)
 }
 
-get_expt2_prob <- function(n = 10^seq(2, 5, by = 0.1), nrep = 500) {
+get_expt2_prob <- function(n = 10^seq(2, 4, by = 0.1), nrep = 1000) {
   purrr::pmap_dfr(
     tidyr::expand_grid(n = n, rep = seq(nrep)),
     function(n, rep) {
@@ -60,6 +60,6 @@ create_fig_expt2 <- function(expt2_prob) {
     ggplot(aes(x = log10(n), y = anomaly_rate, col = Method)) +
     geom_smooth(method = "loess", span = 0.6) +
     geom_hline(aes(yintercept = 0.01)) +
-    scale_x_continuous(breaks = 2:5, labels = sprintf("%d", 10^(2:5))) +
+    scale_x_continuous(breaks = 2:4, labels = sprintf("%d", 10^(2:4))) +
     labs(x = "Sample size n", y = "Anomaly rate")
 }
