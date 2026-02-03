@@ -314,7 +314,7 @@ In addition, there appears to have been unusually high infant mortality in 1834,
 ## Test cricket not outs
 
 ```{r}
-tar_load(c(not_outs,notouts_aug))
+tar_load(c(not_outs, notouts_aug))
 p <- sum(not_outs$NotOuts) / sum(not_outs$Innings)
 jma <- notouts_aug |> filter(Player == "JM Anderson")
 ```
@@ -355,7 +355,7 @@ The surprisal-based framework provides a flexible and principled way to quantify
 
 Our theoretical results make clear what kind of misspecification can be tolerated. Anomalies are defined relative to regions of low density under an assumed distribution $F$. For the empirical tail-probability estimator to be reliable, the assumed model must correctly identify the *locations* of these low-density regions, even if it does not accurately capture the *shape* of the tail. Definition @def-empirical_pis formalizes this requirement: the true and fitted surprisals need only agree up to a strictly increasing transformation on the extreme tail. When this condition holds, @lem-confident guarantees that the empirical surprisal probabilities form a valid uniform confidence band for the true tail probabilities on the upper tail. Remarkably, this does not require $F$ to have the correct tail behavior or even the correct distributional form, only the correct tail *ordering*. When the condition fails, such as when the assumed model imposes symmetry where the data are skewed, or unimodality where the data are multimodal, the empirical estimator no longer provides uniform guarantees. In practice, such gross mis-specifications should be identifiable through exploratory data analysis.
 
-The GPD approach offers a complementary route to estimating surprisal tail probabilities. Our extreme-value results show that under broad conditions (sub‑Gaussian, sub‑exponential, or polynomial surprisal tails), the maximum surprisal converges to a distribution in the generalized extreme‑value family. These conditions encompass almost all common statistical models. Thus, the GPD approximation can be expected to provide robust tail estimates even when the assumed distribution is only loosely connected to the true one. Empirically, we observe that the GPD and empirical approaches often perform similarly, with the GPD gaining an advantage when the extreme tail is sparse or extremely heavy.
+The GPD approach offers a complementary route to estimating surprisal tail probabilities. Our extreme-value results show that under broad conditions (sub‑Gaussian, sub‑exponential, or polynomial surprisal tails), the maximum surprisal converges to a distribution in the generalized extreme‑value family. These conditions encompass almost all common statistical models. Thus, the GPD approximation can be expected to provide robust tail estimates even when the assumed distribution is only loosely connected to the true one.
 
 From a practical standpoint, users may wish to adopt a hybrid strategy: employ empirical tail probabilities for moderate sample sizes or when the tail ordering appears stable, and rely on the GPD approximation when the tail is very sparse or heavy. Threshold selection for the GPD remains an open methodological question; established techniques from the extreme‑value literature (such as stability plots or nearest‑order‑statistic heuristics) can be adapted to surprisal data, but a systematic study in this context is a topic for future work.
 
