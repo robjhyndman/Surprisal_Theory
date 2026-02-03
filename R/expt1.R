@@ -7,14 +7,18 @@ get_expt1_prob <- function(y) {
     p_emp = surprisals_prob(
       y,
       distribution = dist_normal(),
-      approximation = "rank"
+      approximation = "empirical"
     ),
-    p_gpd = surprisals_prob(y, distribution = dist_normal(), approximation = "gpd"),
+    p_gpd = surprisals_prob(
+      y,
+      distribution = dist_normal(),
+      approximation = "gpd"
+    ),
     pt = surprisals_prob(y, distribution = dist_student_t(4)),
     pt_emp = surprisals_prob(
       y,
       distribution = dist_student_t(4),
-      approximation = "rank"
+      approximation = "empirical"
     ),
     pt_gpd = surprisals_prob(
       y,

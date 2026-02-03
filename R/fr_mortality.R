@@ -5,7 +5,7 @@ hampel_anomalies <- function(
   y,
   bandwidth,
   alpha = 0.01,
-  approximation = c("none", "gpd", "rank")
+  approximation = c("none", "gpd", "empirical")
 ) {
   approximation = match.arg(approximation)
   if (abs(bandwidth - round(bandwidth)) > 1e-8) {
