@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
-\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{3 February 2026}
+\date{10 February 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 3 February 2026}
+   \lfoot{\sf Hyndman, Frazier: 10 February 2026}
 
 % Keywords
 
@@ -560,11 +560,36 @@ Section~\ref{sec-applications}. A discussion follows in
 Section~\ref{sec-discussion}. The appendix contains the proofs needed
 for the results in Sections \ref{sec-empirical} and \ref{sec-gpd}.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, colback=white, title={TO DO}, leftrule=.75mm, opacitybacktitle=0.6, titlerule=0mm, arc=.35mm, opacityback=0, toptitle=1mm, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, arc=.35mm, colframe=quarto-callout-important-color-frame, left=2mm, breakable, toprule=.15mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, title={TO DO}, rightrule=.15mm, leftrule=.75mm, colback=white, coltitle=black, colbacktitle=quarto-callout-important-color!10!white]
 
 We claim the approach is applicable to conditional distributions, and
 our applications use conditional distributions, but the theory uses iid.
 Can we explain how the theory extends to conditional distributions?
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, arc=.35mm, colframe=quarto-callout-important-color-frame, left=2mm, breakable, toprule=.15mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, title={David's Answer}, rightrule=.15mm, leftrule=.75mm, colback=white, coltitle=black, colbacktitle=quarto-callout-important-color!10!white]
+
+This is completely fine so long as the variables \(Z=(Y,X)\) are iid.
+That is, we are mute on the distribution of the variables in our
+results, and so we can interpret them as holding for iid data on the
+joint space. When we have a result about the joint \(Z\)E, we
+automatically have a result for the conditional based on the fact that
+\(f(y,x)=f(y\mid x)f(x)\), which implies the surprisal for the
+conditional is what we are after for a fixed set of \(x\)s. While we are
+not modelling the marginal \(x\) distribution, one can argue that is
+equivalent to modelling the marginal distribution \(f(x)\) by the
+empirical distribution, which I think is fine. If one wanted to you
+could also model the conditioning variables, via the margial \(f(x)\),
+but the most likely way of doing this is either with their empirical
+distribution or some kernel. In that case, the joint distribution we are
+using in our surprisal analysis then becomes the assumed model for
+\(f(y\mid x)\) and the marginal model for \(f(x)\).
+
+If we have dependent data, and we have to directly model the
+conditioning set, a version of Lemma 2.1 will be satisfied, but this
+would invalidate the extreme value theory used for Theorem 3.1.
+Nontheless, it could still be used as an approximation in this case.
 
 \end{tcolorbox}
 
@@ -771,13 +796,22 @@ provided the tail of the surprisal distribution satisfies one of the
 three assumptions, we can still fit a GPD to the largest surprisal
 values, and use this to estimate the tail probabilities.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, colback=white, title={TO DO}, leftrule=.75mm, opacitybacktitle=0.6, titlerule=0mm, arc=.35mm, opacityback=0, toptitle=1mm, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, coltitle=black]
-
-Add something about what kinds of distributions do not satisfy any of
-the three assumptions? Specifically, what about discrete distributions
-with infinite support? Can G have a non-monotonic tail? Others?
-
-\end{tcolorbox}
+Theorem~\ref{thm-three_types} also helps clarify the consequences of
+mis-specifying the distribution used to compute surprisal values. If the
+data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a
+heavy tail (sub-exponential or polynomial), then the maximal surprisal
+follows a Fréchet distribution. The converse, however, does not hold: if
+one assumes a heavy-tailed model (e.g., sub-exponential or polynomial)
+when the data are actually light-tailed (e.g., sub-Gaussian), the
+resulting distribution of the maximal surprisal remains consistent with
+the lighter tail (i.e., it is sub-Gaussian). As the tail of the
+surprisal distribution becomes heavier, convergence slows, and more data
+are required to reliably detect surprisals. In effect, underestimating
+tail heaviness incurs a substantial penalty --- manifested as slow
+convergence of the GDP and, consequently, inaccurate detection ---
+whereas overestimating tail heaviness costs relatively little. This
+suggests that, in practice, it is safer to err on the side of assuming
+heavier tails.
 
 \section{Experiments}\label{sec-experiments}
 
@@ -881,24 +915,19 @@ Note that the empirical tail probabilities are identical under both the
 correct Gamma and incorrect Normal distributions, because the ranking of
 the surprisals in the tail are unchanged. Clearly, all methods have some
 small-sample bias, with the GPD converging more quickly than the
-empirical approximation. The GPD approach based on the t distribution is
-almost as good as using the true distribution, while the GPD approach
-using the normal distribution is noticeably worse, even for large sample
-sizes. This is due to the fact that the Normal distribution has lighter
-tails than the true Gamma distribution, while the t distribution has
-heavier tails the true Gamma distribution. In general, the GPD
-approximation is asymptotically unbiased, only when the tails of the
-assumed distribution are heavier than those of the true distribution.
-
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, colback=white, title={TO DO}, leftrule=.75mm, opacitybacktitle=0.6, titlerule=0mm, arc=.35mm, opacityback=0, toptitle=1mm, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, coltitle=black]
-
-Can we link this statement to the theorem or proof?
-
-\end{tcolorbox}
+empirical approximation. Among the GPD fits, using a Student-t reference
+distribution performs nearly as well as using the true model, whereas
+using a Normal reference distribution is noticeably worse even at large
+sample sizes. The reason is tail mismatch: the Normal distribution is
+lighter-tailed than the true Gamma distribution, while the Student-t is
+heavier-tailed. This is consistent with our previous comments, that it
+is safer to err on the side of assuming heavier tails, as
+underestimating tail heaviness leads to slow convergence, while
+overestimating tail heaviness incurs relatively little cost.
 
 \subsection{Multimodal distribution}\label{sec-multimodal}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, colback=white, title={TO DO}, leftrule=.75mm, opacitybacktitle=0.6, titlerule=0mm, arc=.35mm, opacityback=0, toptitle=1mm, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, arc=.35mm, colframe=quarto-callout-important-color-frame, left=2mm, breakable, toprule=.15mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, title={TO DO}, rightrule=.15mm, leftrule=.75mm, colback=white, coltitle=black, colbacktitle=quarto-callout-important-color!10!white]
 
 We need to add an experiment showing that the empirical approach fails
 for a multimodal distribution, when the model assumes unimodality.
@@ -1080,19 +1109,19 @@ under an assumed distribution \(F\). For the empirical tail-probability
 estimator to be reliable, the assumed model must correctly identify the
 \emph{locations} of these low-density regions, even if it does not
 accurately capture the \emph{shape} of the tail.
-Definition\,Assumption~\ref{def-empirical_pis} formalizes this
-requirement: the true and fitted surprisals need only agree up to a
-strictly increasing transformation on the extreme tail. When this
-condition holds, Lemma~\ref{lem-confident} guarantees that the empirical
-surprisal probabilities form a valid uniform confidence band for the
-true tail probabilities on the upper tail. Remarkably, this does not
-require \(F\) to have the correct tail behavior or even the correct
-distributional form, only the correct tail \emph{ordering}. When the
-condition fails, such as when the assumed model imposes symmetry where
-the data are skewed, or unimodality where the data are multimodal, the
-empirical estimator no longer provides uniform guarantees. In practice,
-such gross mis-specifications should be identifiable through exploratory
-data analysis.
+Assumption~\ref{def-empirical_pis} formalizes this requirement: the true
+and fitted surprisals need only agree up to a strictly increasing
+transformation on the extreme tail. When this condition holds,
+Lemma~\ref{lem-confident} guarantees that the empirical surprisal
+probabilities form a valid uniform confidence band for the true tail
+probabilities on the upper tail. Remarkably, this does not require \(F\)
+to have the correct tail behavior or even the correct distributional
+form, only the correct tail \emph{ordering}. When the condition fails,
+such as when the assumed model imposes symmetry where the data are
+skewed, or unimodality where the data are multimodal, the empirical
+estimator no longer provides uniform guarantees. In practice, such gross
+mis-specifications should be identifiable through exploratory data
+analysis.
 
 The GPD approach offers a complementary route to estimating surprisal
 tail probabilities. Our extreme-value results show that under broad
@@ -1121,7 +1150,7 @@ Computationally, the method is efficient: surprisal computation is
 linear in the sample size, empirical tail estimation requires only
 sorting, and GPD fitting is fast even for very large datasets.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, colback=white, title={TO DO}, leftrule=.75mm, opacitybacktitle=0.6, titlerule=0mm, arc=.35mm, opacityback=0, toptitle=1mm, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, arc=.35mm, colframe=quarto-callout-important-color-frame, left=2mm, breakable, toprule=.15mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toptitle=1mm, title={TO DO}, rightrule=.15mm, leftrule=.75mm, colback=white, coltitle=black, colbacktitle=quarto-callout-important-color!10!white]
 
 Add something about conditional distributions
 
