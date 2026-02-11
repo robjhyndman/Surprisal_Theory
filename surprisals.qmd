@@ -354,6 +354,11 @@ Our theoretical results make clear what kind of misspecification can be tolerate
 
 The GPD approach offers a complementary route to estimating surprisal tail probabilities. Our extreme-value results show that under broad conditions (sub‑Gaussian, sub‑exponential, or polynomial surprisal tails), the maximum surprisal converges to a distribution in the generalized extreme‑value family. These conditions encompass almost all common statistical models. Thus, the GPD approximation can be expected to provide robust tail estimates even when the assumed distribution is only loosely connected to the true one.
 
+::: {.callout-note}
+# Is this true?
+It seems to me that GPD also needs the tail ordering to be correct above the threshold.
+:::
+
 From a practical standpoint, users may wish to adopt a hybrid strategy: employ empirical tail probabilities for moderate sample sizes or when the tail ordering appears stable, and rely on the GPD approximation when the tail is very sparse or heavy. Threshold selection for the GPD remains an open methodological question; established techniques from the extreme‑value literature (such as stability plots or nearest‑order‑statistic heuristics) can be adapted to surprisal data, but a systematic study in this context is a topic for future work.
 
 The surprisal framework also brings interpretability and scalability benefits. Surprisals provide a single, model-based measure of unlikeliness that applies equally to discrete, continuous, and mixed distributions. This avoids the difficulties inherent in distance-based methods, especially in high-dimensional or highly skewed settings. Computationally, the method is efficient: surprisal computation is linear in the sample size, empirical tail estimation requires only sorting, and GPD fitting is fast even for very large datasets.
