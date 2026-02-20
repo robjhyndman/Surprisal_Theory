@@ -128,17 +128,6 @@ Obviously approach (1) makes the strong assumption that $F$ is an accurate repre
 
 In @sec-empirical, we develop the necessary theory to support the use of empirical surprisal probabilities, and identify the conditions under which this will give a good estimate of the true surprisal probabilities. Similarly, @sec-gpd provides the theoretical results needed to use a Generalized Pareto Distribution to approximate the tail of the surprisal distribution. Then we demonstrate the methods with several simulation experiments in @sec-experiments, and in two applications in @sec-applications. A discussion follows in @sec-discussion. The appendix contains the proofs needed for the results in Sections [-@sec-empirical] and [-@sec-gpd].
 
-::: {.callout-important icon=false}
-# TO DO
-We claim the approach is applicable to conditional distributions, and our applications use conditional distributions, but the theory uses iid. Can we explain how the theory extends to conditional distributions?
-:::
-::: {.callout-important icon=false}
-# David's Answer
-This is completely fine so long as the variables $Z=(Y,X)$ are iid. That is, we are mute on the distribution of the variables in our results, and so we can interpret them as holding for iid data on the joint space. When we have a result about the joint $Z$E, we automatically have a result for the conditional based on the fact that $f(y,x)=f(y\mid x)f(x)$, which implies the surprisal for the conditional is what we are after for a fixed set of $x$s. While we are not modelling the marginal $x$ distribution, one can argue that is equivalent to modelling the marginal distribution $f(x)$ by the empirical distribution, which I think is fine. If one wanted to you could also model the conditioning variables, via the margial $f(x)$, but the most likely way of doing this is either with their empirical distribution or some kernel. In that case, the joint distribution we are using in our surprisal analysis then becomes the assumed model for $f(y\mid x)$ and the marginal model for $f(x)$.
-
-If we have dependent data, and we have to directly model the conditioning set, a version of Lemma 2.1 will be satisfied, but this would invalidate the extreme value theory used for Theorem 3.1. Nontheless, it could still be used as an approximation in this case.
-:::
-
 # Empirical surprisal probabilities {#sec-empirical}
 
 Under approach (2) above, we estimate $p_i=\Pr(S \ge s_i)$ as the proportion of observed surprisals at least as large as $s_i$. Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
@@ -161,7 +150,7 @@ Let $S_1,\dots, S_n$ be iid with distribution function $G$. Then, for any $\alph
 
 @lem-confident implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that they be related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same locations as the true distribution.
 
-Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis will not necessarily be satisfied.  We forego a detailed example of the success and failure of this approach until @sec-multimodal.
+Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis will not necessarily be satisfied.
 
 # Extreme value theory for the surprisal distribution {#sec-gpd}
 
@@ -287,13 +276,6 @@ tar_read(fig_expt2)
 
 Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged. Clearly, all methods have some small-sample bias, with the GPD converging more quickly than the empirical approximation. Among the GPD fits, using a Student-t reference distribution performs nearly as well as using the true model, whereas using a Normal reference distribution is noticeably worse even at large sample sizes. The reason is tail mismatch: the Normal distribution is lighter-tailed than the true Gamma distribution, while the Student-t is heavier-tailed. This is consistent with our previous comments, that it is safer to err on the side of assuming heavier tails, as underestimating tail heaviness leads to slow convergence, while overestimating tail heaviness incurs relatively little cost.
 
-## Multimodal distribution {#sec-multimodal}
-
-::: {.callout-important icon=false}
-# TO DO
-We need to add an experiment showing that the empirical approach fails for a multimodal distribution, when the model assumes unimodality. Compare the GPD approach.
-:::
-
 # Applications {#sec-applications}
 
 ## French mortality rates
@@ -384,11 +366,6 @@ It seems to me that GPD also needs the tail ordering to be correct above the thr
 From a practical standpoint, users may wish to adopt a hybrid strategy: employ empirical tail probabilities for moderate sample sizes or when the tail ordering appears stable, and rely on the GPD approximation when the tail is very sparse or heavy. Threshold selection for the GPD remains an open methodological question; established techniques from the extreme‑value literature (such as stability plots or nearest‑order‑statistic heuristics) can be adapted to surprisal data, but a systematic study in this context is a topic for future work.
 
 The surprisal framework also brings interpretability and scalability benefits. Surprisals provide a single, model-based measure of unlikeliness that applies equally to discrete, continuous, and mixed distributions. This avoids the difficulties inherent in distance-based methods, especially in high-dimensional or highly skewed settings. Computationally, the method is efficient: surprisal computation is linear in the sample size, empirical tail estimation requires only sorting, and GPD fitting is fast even for very large datasets.
-
-::: {.callout-important icon=false}
-# TO DO
-Add something about conditional distributions
-:::
 
 In summary, the surprisal framework yields a robust, interpretable, and theoretically grounded approach to anomaly detection. By separating the specification of a working model from the estimation of tail probabilities, and by leveraging both empirical and extreme‑value methods, we achieve a flexible system that performs well even under substantial model misspecification. The applications demonstrate how these ideas can be used to detect meaningful anomalies in complex real‑world data, while the theoretical results clarify when and why the approach succeeds.
 
