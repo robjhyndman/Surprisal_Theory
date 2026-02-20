@@ -40,7 +40,7 @@ include-in-header:
   text: |
     \newcommand{\dt}{\text{d}}
     \newcommand{\E}{\mathbb{E}}
-    \usepackage{mathtools,todonotes}
+    \usepackage{mathtools,todonotes,bbm}
     \mathtoolsset{showonlyrefs,mathic=true}
 ---
 
@@ -220,26 +220,25 @@ In particular, even if the assumed distribution $F$ is not correct, provided the
 
 @thm-three_types also helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal follows a Fréchet distribution. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., sub-exponential or polynomial) when the data are actually light-tailed (e.g., sub-Gaussian), the resulting distribution of the maximal surprisal remains consistent with the lighter tail (i.e., it is sub-Gaussian). As the tail of the surprisal distribution becomes heavier, convergence slows, and more data are required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
 
-## Applicability for Conditional Distributions: Discussion
+# Applicability for conditional distributions
 
-The theoretical results in Lemma 2.1 and Theorem 3.1 assume that the suprisal is based on data $Y$ generated iid from some unknown distribution. In this way, these results are ambivalent as to the whether $Y$ is univariate or multivariate: in either case, the resulting surprisal $S_i=-\log f(Y)$ is univariate, and remains iid since any function of $Y$ is also iid. 
+The theoretical results in @lem-confident and @thm-three_types assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are ambivalent as to the whether $\bm{Y}$ is univariate or multivariate; in either case, the resulting surprisal $S_i=-\log f(\bm{Y})$ is univariate, and remains iid since any function of $Y$ is also iid.
 
-However, there are many modelling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, to fix ideas, we can think of our observed data being the variables $Y=(Z,X)$ where $Z$ is some outcome of interest and $X$ are variables that explain some features of $Z$ that we are interested in measuring. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z\mid X=x)$, and the surprisal $S=-\log f_z(Z\mid X=x)$ can be thought of as being computed ``conditional on a given $X=x$''. 
+However, there are many modelling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, we can think of our observed data being the variables $\bm{Y}=(Z,\bm{X})$ where $Z$ is some outcome of interest and $\bm{X}$ are variables that are used to predict or explain $Z$. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z\mid \bm{X}=\bm{x})$, and the surprisal $S=-\log f_Z(Z\mid \bm{X}=\bm{x})$ can be thought of as being computed "conditional on a given $\bm{X}=\bm{x}$".
 
-For a fixed value of the conditioning variable, such as age or gender, it is not hard to imagine why our theoretical results will remain valid: by fixing $X=x$, since we observe $Y=(Z_i,X_i)$ iid, the distribution of $Z\mid X=x$ is also iid conditional on $X=x$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed point in time or at a given value of the covariates, then Lemma 2.1 and Theorem 3.1 can be applied conditional on this fixed set of covariates. 
+For a fixed vector of the conditioning variables, it is not hard to see why our theoretical results will remain valid: by fixing $\bm{X}=\bm{x}$, since we observe iid $\bm{Y}=(Z_i,\bm{X}_i)$, the distribution of $Z\mid \bm{X}=\bm{x}$ is also iid conditional on $\bm{X}=\bm{x}$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed value of the covariates $\bm{x}$, then @lem-confident and @thm-three_types can be applied conditional on this fixed set of covariates.
 
-
-However, it is important to realize that if we wish to calculate surprisals across both the outcomes and covariates, i.e., when shifting both $Z,X$, then what is a surprisal may change from instance to instance. To see why, consider the simple example where we wish to detect surprisals using a Gaussian regression model for $Z\mid X$, so that 
+However, it is important to realize that if we wish to calculate surprisals across both the outcomes and covariates (i.e., when allowing both $Z$ and $\bm{X}$ to vary), then what is a surprisal may change from instance to instance. To see why, consider the simple example where we wish to detect surprisals using a simple Gaussian regression model for $Z\mid X$, so that
 $$
-S_i=-\log f_Z(Z_i\mid X_i)\propto (Z_i-\beta_0-\beta_1 X_i)^2/\sigma^2.
+S_i=-\log f_Z(Z_i\mid X_i)\propto (Z_i-\beta_0-\beta_1 X_i)^2.
 $$
-Now, $S_i$ can be large for two distinct and interrelated reasons: either because $Z$ itself is large,  relative to the observed values of $\beta_0+\beta_1 \cdot X$, or because $X$ is atypical so that $Y-\beta_0-\beta_1\cdot X$ is large. 
+Now, $S_i$ can be large for two distinct and interrelated reasons: either because $Z$ itself is large,  relative to the observed values of $\beta_0+\beta_1 X$, or because $X$ is atypical so that $Z-\beta_0-\beta_1 X$ is large.
 
-That is, in the general case where we are searching for surprisals over the conditional model, without $X$ being fixed, the behaviour of $S_i$ is determined by that of the joint distribution:
+That is, in the general case, where we are searching for surprisals over the conditional model without $\bm{X}$ being fixed, the behaviour of $S_i$ is determined by that of the joint distribution:
 $$
-P\left(S_i>s\right)=\int f_Z(-\log f_Z(z \mid x)>s \mid X=x) f_X(X=x)dzdx.
+\Pr(S_i>s) = \int \mathbbm{1}(-\log f_Z(z \mid \bm{x}) > s) f_Z(z \mid \bm{x}) f_X(\bm{x})\,dz\,d\bm{x}.
 $$
-This clarifies that extreme behavior in $S_i$ can result from extreme values of $Z$, $X$, or simply values of $Z$ and $X$ where $f_Z(Z\mid X)$ is very small. Critically, the latter can occur even for when $Z$ and $X$ take on values that are typical for their marginal distribution, but which are not well-captured by the assumed conditional model. 
+This clarifies that extreme behavior in $S_i$ can result from extreme values of $Z$, $\bm{X}$, or simply values of $Z$ and $\bm{X}$ where $f_Z(Z\mid \bm{X})$ is very small. Critically, the latter can occur even when $Z$ and $\bm{X}$ take on values that are typical for their marginal distribution, but which are not well-captured by the assumed conditional model.
 
 
 # Experiments {#sec-experiments}
