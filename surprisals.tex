@@ -89,7 +89,7 @@
 
 \newcommand{\dt}{\text{d}}
 \newcommand{\E}{\mathbb{E}}
-\usepackage{mathtools,todonotes}
+\usepackage{mathtools,todonotes,bbm}
 \mathtoolsset{showonlyrefs,mathic=true}
 \usepackage{orcidlink}
 \definecolor{mypink}{RGB}{219, 48, 122}
@@ -145,13 +145,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +284,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{11 February 2026}
+\date{20 February 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +384,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 11 February 2026}
+   \lfoot{\sf Hyndman, Frazier: 20 February 2026}
 
 % Keywords
 
@@ -398,7 +398,37 @@ Distribution, Outlier detection, Tail bounds},
 \maketitle
 
 \begin{abstract}
-TBC
+Anomaly detection methods are widely used but often rely on ad hoc
+rules, strong distributional assumptions, or tail-focused criteria that
+miss inliers that occur in low-density gaps between modes. We propose a
+general framework that defines an anomaly as an observation with
+unusually low probability under a specified (possibly misspecified)
+model. For each observation we compute its surprisal, the negative log
+generalized density, and assign an anomaly score equal to the
+probability of observing a surprisal at least as large. This transforms
+anomaly detection for arbitrary univariate or multivariate data into the
+problem of estimating the upper tail of a univariate surprisal
+distribution. We study two model-robust approaches for computing these
+tail probabilities from fitted surprisals: an empirical estimator and an
+extreme-value estimator based on fitting a Generalized Pareto
+Distribution (GPD) above a high threshold. For the empirical method we
+give a necessary-and-sufficient condition under which the fitted
+surprisal tail ordering matches the true ordering up to a monotone
+transformation, yielding uniform finite-sample confidence guarantees via
+the Dvoretzky--Kiefer--Wolfowitz inequality. For the GPD method we
+establish broad sufficient conditions under which the maximum surprisal
+exhibits classical extreme-value behavior, motivating GPD tail
+approximation even under substantial model misspecification. Simulation
+experiments illustrate that empirical and GPD tail estimates remain
+accurate when the reference model used to compute surprisals is
+incorrect, while direct tail probabilities from the misspecified model
+can be severely distorted. We demonstrate the framework in two
+applications: identifying historically meaningful mortality anomalies in
+French age--sex death rates, and detecting unusually frequent ``not
+out'' innings in Test cricket conditional on career length. The proposed
+surprisal-based approach provides a unified, interpretable mechanism for
+controlling false positive rates and detecting anomalies in complex data
+with minimal reliance on correct tail modeling.
 \end{abstract}
 
 \begin{keywords}
@@ -560,39 +590,6 @@ Section~\ref{sec-applications}. A discussion follows in
 Section~\ref{sec-discussion}. The appendix contains the proofs needed
 for the results in Sections \ref{sec-empirical} and \ref{sec-gpd}.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, breakable, arc=.35mm, title={TO DO}, bottomtitle=1mm, toprule=.15mm, coltitle=black, toptitle=1mm, opacitybacktitle=0.6, bottomrule=.15mm, opacityback=0, colframe=quarto-callout-important-color-frame, colback=white, titlerule=0mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, leftrule=.75mm]
-
-We claim the approach is applicable to conditional distributions, and
-our applications use conditional distributions, but the theory uses iid.
-Can we explain how the theory extends to conditional distributions?
-
-\end{tcolorbox}
-
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, breakable, arc=.35mm, title={David's Answer}, bottomtitle=1mm, toprule=.15mm, coltitle=black, toptitle=1mm, opacitybacktitle=0.6, bottomrule=.15mm, opacityback=0, colframe=quarto-callout-important-color-frame, colback=white, titlerule=0mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, leftrule=.75mm]
-
-This is completely fine so long as the variables \(Z=(Y,X)\) are iid.
-That is, we are mute on the distribution of the variables in our
-results, and so we can interpret them as holding for iid data on the
-joint space. When we have a result about the joint \(Z\)E, we
-automatically have a result for the conditional based on the fact that
-\(f(y,x)=f(y\mid x)f(x)\), which implies the surprisal for the
-conditional is what we are after for a fixed set of \(x\)s. While we are
-not modelling the marginal \(x\) distribution, one can argue that is
-equivalent to modelling the marginal distribution \(f(x)\) by the
-empirical distribution, which I think is fine. If one wanted to you
-could also model the conditioning variables, via the margial \(f(x)\),
-but the most likely way of doing this is either with their empirical
-distribution or some kernel. In that case, the joint distribution we are
-using in our surprisal analysis then becomes the assumed model for
-\(f(y\mid x)\) and the marginal model for \(f(x)\).
-
-If we have dependent data, and we have to directly model the
-conditioning set, a version of Lemma 2.1 will be satisfied, but this
-would invalidate the extreme value theory used for Theorem 3.1.
-Nontheless, it could still be used as an approximation in this case.
-
-\end{tcolorbox}
-
 \section{Empirical surprisal probabilities}\label{sec-empirical}
 
 Under approach (2) above, we estimate \(p_i=\Pr(S \ge s_i)\) as the
@@ -657,8 +654,7 @@ Importantly, Assumption~\ref{def-empirical_pis} is not satisfied by all
 pairs of distributions: if the true data has skewness but the fitted
 model assumes symmetry, or if there is bimodality in the observed data
 that is not modeled, then Assumption~\ref{def-empirical_pis} will not
-necessarily be satisfied. We forego a detailed example of the success
-and failure of this approach until Section~\ref{sec-multimodal}.
+necessarily be satisfied.
 
 \section{Extreme value theory for the surprisal
 distribution}\label{sec-gpd}
@@ -813,6 +809,62 @@ whereas overestimating tail heaviness costs relatively little. This
 suggests that, in practice, it is safer to err on the side of assuming
 heavier tails.
 
+\section{Applicability for conditional
+distributions}\label{applicability-for-conditional-distributions}
+
+The theoretical results in Lemma~\ref{lem-confident} and
+Theorem~\ref{thm-three_types} assume that the surprisal is based on iid
+data \(\bm{Y}\) generated from some unknown distribution. In this way,
+these results are ambivalent as to the whether \(\bm{Y}\) is univariate
+or multivariate; in either case, the resulting surprisal
+\(S_i=-\log f(\bm{Y})\) is univariate, and remains iid since any
+function of \(Y\) is also iid.
+
+However, there are many modelling situations, such as regression
+settings, where we are not necessarily interested in measuring the
+surprisal that results from the joint distribution of the data, but
+along a fixed vector of conditioning variables (e.g., age, or gender).
+In such cases, we can think of our observed data being the variables
+\(\bm{Y}=(Z,\bm{X})\) where \(Z\) is some outcome of interest and
+\(\bm{X}\) are variables that are used to predict or explain \(Z\). In
+such cases, we can directly apply the surprisal approach with a
+conditional model of the form \(f_Z(z\mid \bm{X}=\bm{x})\), and the
+surprisal \(S=-\log f_Z(Z\mid \bm{X}=\bm{x})\) can be thought of as
+being computed ``conditional on a given \(\bm{X}=\bm{x}\)''.
+
+For a fixed vector of the conditioning variables, it is not hard to see
+why our theoretical results will remain valid: by fixing
+\(\bm{X}=\bm{x}\), since we observe iid \(\bm{Y}=(Z_i,\bm{X}_i)\), the
+distribution of \(Z\mid \bm{X}=\bm{x}\) is also iid conditional on
+\(\bm{X}=\bm{x}\), and the resulting theory applies. That is, for
+example, if we wish to calculate surprisals at a fixed value of the
+covariates \(\bm{x}\), then Lemma~\ref{lem-confident} and
+Theorem~\ref{thm-three_types} can be applied conditional on this fixed
+set of covariates.
+
+However, it is important to realize that if we wish to calculate
+surprisals across both the outcomes and covariates (i.e., when allowing
+both \(Z\) and \(\bm{X}\) to vary), then what is a surprisal may change
+from instance to instance. To see why, consider the simple example where
+we wish to detect surprisals using a simple Gaussian regression model
+for \(Z\mid X\), so that \[
+S_i=-\log f_Z(Z_i\mid X_i)\propto (Z_i-\beta_0-\beta_1 X_i)^2.
+\] Now, \(S_i\) can be large for two distinct and interrelated reasons:
+either because \(Z\) itself is large, relative to the observed values of
+\(\beta_0+\beta_1 X\), or because \(X\) is atypical so that
+\(Z-\beta_0-\beta_1 X\) is large.
+
+That is, in the general case, where we are searching for surprisals over
+the conditional model without \(\bm{X}\) being fixed, the behaviour of
+\(S_i\) is determined by that of the joint distribution: \[
+\Pr(S_i>s) = \int \mathbbm{1}(-\log f_Z(z \mid \bm{x}) > s) f_Z(z \mid \bm{x}) f_X(\bm{x})\,dz\,d\bm{x}.
+\] This clarifies that extreme behavior in \(S_i\) can result from
+extreme values of \(Z\), \(\bm{X}\), or simply values of \(Z\) and
+\(\bm{X}\) where \(f_Z(Z\mid \bm{X})\) is very small. Critically, the
+latter can occur even when \(Z\) and \(\bm{X}\) take on values that are
+typical for their marginal distribution, but which are not well-captured
+by the assumed conditional model.
+
 \section{Experiments}\label{sec-experiments}
 
 \subsection{Standard univariate normal
@@ -924,16 +976,6 @@ heavier-tailed. This is consistent with our previous comments, that it
 is safer to err on the side of assuming heavier tails, as
 underestimating tail heaviness leads to slow convergence, while
 overestimating tail heaviness incurs relatively little cost.
-
-\subsection{Multimodal distribution}\label{sec-multimodal}
-
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, breakable, arc=.35mm, title={TO DO}, bottomtitle=1mm, toprule=.15mm, coltitle=black, toptitle=1mm, opacitybacktitle=0.6, bottomrule=.15mm, opacityback=0, colframe=quarto-callout-important-color-frame, colback=white, titlerule=0mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, leftrule=.75mm]
-
-We need to add an experiment showing that the empirical approach fails
-for a multimodal distribution, when the model assumes unimodality.
-Compare the GPD approach.
-
-\end{tcolorbox}
 
 \section{Applications}\label{sec-applications}
 
@@ -1132,7 +1174,7 @@ common statistical models. Thus, the GPD approximation can be expected
 to provide robust tail estimates even when the assumed distribution is
 only loosely connected to the true one.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, breakable, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Is this true?}, bottomtitle=1mm, toprule=.15mm, coltitle=black, toptitle=1mm, opacitybacktitle=0.6, bottomrule=.15mm, opacityback=0, colframe=quarto-callout-note-color-frame, colback=white, titlerule=0mm, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, arc=.35mm, left=2mm, leftrule=.75mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, colback=white, rightrule=.15mm, toptitle=1mm, bottomrule=.15mm, opacityback=0, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Is this true?}, toprule=.15mm]
 
 It seems to me that GPD also needs the tail ordering to be correct above
 the threshold.
@@ -1156,12 +1198,6 @@ methods, especially in high-dimensional or highly skewed settings.
 Computationally, the method is efficient: surprisal computation is
 linear in the sample size, empirical tail estimation requires only
 sorting, and GPD fitting is fast even for very large datasets.
-
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, breakable, arc=.35mm, title={TO DO}, bottomtitle=1mm, toprule=.15mm, coltitle=black, toptitle=1mm, opacitybacktitle=0.6, bottomrule=.15mm, opacityback=0, colframe=quarto-callout-important-color-frame, colback=white, titlerule=0mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, leftrule=.75mm]
-
-Add something about conditional distributions
-
-\end{tcolorbox}
 
 In summary, the surprisal framework yields a robust, interpretable, and
 theoretically grounded approach to anomaly detection. By separating the
