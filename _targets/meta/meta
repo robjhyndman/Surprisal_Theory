@@ -16,6 +16,9 @@ fr_anomaly_plot|stem|615541a24e04f838|7de4a73bb331bccd|792a52ed1a5239af|-1428623
 notouts_aug|stem|1c0f36699c35b8af|b9d8d85659dab814|31e0c06f0ffedea8|-76025296||t20504.1836048036s|s138948b|138948|rds|local|vector|||0.027||
 not_outs_plot|stem|0de89cd5dcebff02|b277edfac8920749|323559404391b060|167166307||t20504.1836057889s|s562486b|562486|rds|local|vector|||0.009||
 paper|stem|6303585c3bba6226|03e75cb424023dec|dc00116513614918|576663479|surprisals_files*surprisals.pdf*surprisals.qmd*_extensions/quarto-monash/blindable-div/_extension.yml*_extensions/quarto-monash/blindable-div/blindable-div.lua*_extensions/quarto-monash/wp/_extension.yml*_extensions/quarto-monash/wp/AACSB.png*_extensions/quarto-monash/wp/AMBA.png*_extensions/quarto-monash/wp/before-body.tex*_extensions/quarto-monash/wp/before-title.tex*_extensions/quarto-monash/wp/EQUIS.png*_extensions/quarto-monash/wp/MBSportrait.jpg*_extensions/quarto-monash/wp/monash2.png*_extensions/quarto-monash/wp/title.tex*refs.bib|t20504.2476178657s|s1340614b|1340614|file|local|vector|||8.395||
+.Random.seed|object|8e50f163bd8d867e
+y_df|object|6dd99de081ba66eb
+mix_dist|object|911dded5462165ac
 fit_notouts|function|02b1342331ef627b
 create_notouts_plot|function|fa4bc39f250a74a1
 noutouts_anomalies|function|eae4be346b897d53
@@ -24,12 +27,9 @@ get_expt2_prob_single|function|e59c7cf56bb14731
 create_fr_mortality_plot|function|f01aab782c2df0d7
 gpd_shape|function|0a6db284fcb2693c
 create_fig_expt2|function|b2d9b838e3028f51
-.Random.seed|object|5aaf8e74c62d4c97
-y_df|object|0e086be166af0445
 hampel_anomalies|function|49fdea8f79f5db32
 create_fr_anomaly_plot|function|28e72f88ffd2bf2f
 augment_notouts|function|120c6b036fc687e5
-mix_dist|object|911dded5462165ac
 create_gpd_shape_fig|function|fdbcc432fcd3fbc4
 create_fig_expt1|function|923cdff736298e31
 get_expt2_prob|function|41a6ea2486a44261
