@@ -138,7 +138,7 @@ Recall that the surprisal under the true distribution is defined as $S=-\log f(\
 
 ::: {#def-empirical_pis}
 
-There exists an $s_\star$ and a function $h(\cdot)$ that is strictly increasing on $[s_\star, \infty)$, such that $S=h(\widehat{S})$ almost surely for all $\hat{S} \ge s_\star$.
+There exists an $s_\star$ and a function $h(\cdot)$ that is strictly increasing on $[s_\star, \infty)$, such that $S=h(\widehat{S})$ almost surely for all $\widehat{S} \ge s_\star$.
 
 :::
 
@@ -148,17 +148,17 @@ Let $S_1,\dots, S_n$ be iid with distribution function $G$. Then, for any $\alph
 
 :::
 
-@lem-confident implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that they be related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same locations as the true distribution.
+@lem-confident implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that -- beyond a threshold value $s_\star$ -- the two are related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same locations as the true data distribution.
 
-Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis will not necessarily be satisfied.
+Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis my not be satisfied.
 
 # Extreme value theory for the surprisal distribution {#sec-gpd}
 
-Our third approach uses extreme value theory applied to the surprisal values. We will show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities.
+Our third approach uses extreme value theory applied to the (univariate) surprisal values. We will show that under weak conditions on the tail of the surprisal distribution, the maximum surprisal converges to one of the three types of extreme value distributions. This justifies fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using it to estimate tail probabilities.
 
 An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
 
-Here we extend that idea to allow $F$ to be any well-behaved distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+Here we extend that idea to allow $F$ to be any distribution, including conditional distributions, that admits at least a finite second moment. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
 
 We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, describing increasingly heavy tails:
 
@@ -178,7 +178,7 @@ $$
 
 ::: {#def-subbounded}
 #### Sub-exponential
-The random variable $S$ is sub-exponential with parameters $\nu$ and $b$, i.e.,
+The random variable $S$ admits an exponential moment in a neighborhood of zero; i.e., for parameters $\nu$ and $b$,
 $$
 	\E \exp\{\lambda(S-\E[S])\} \leq \exp\{\lambda^2\nu^2/ 2\} \quad\text{ for all } \quad |\lambda|< 1/b.
 $$
@@ -186,7 +186,7 @@ $$
 
 ::: {#def-polybounded}
 #### Polynomial
-The random variable $|S|$ has polynomial moments of order $\alpha\ge 1$; i.e., $\E[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
+The random variable $|S|$ admits a polynomial moments of order $\alpha\ge 1$; i.e., $\E[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
 :::
 
 @def-bounded will be satisfied in cases where the density $f$ is bounded both above and below over the support of $f$, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound over the support of $f$.
@@ -218,11 +218,11 @@ $$
 
 In particular, even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the three assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities.
 
-@thm-three_types also helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal follows a Fréchet distribution. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., sub-exponential or polynomial) when the data are actually light-tailed (e.g., sub-Gaussian), the resulting distribution of the maximal surprisal remains consistent with the lighter tail (i.e., it is sub-Gaussian). As the tail of the surprisal distribution becomes heavier, convergence slows, and more data are required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
+@thm-three_types also helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal follows a Fréchet distribution. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., sub-exponential or polynomial) when the data are actually light-tailed (e.g., sub-Gaussian), the resulting distribution of the maximal surprisal remains consistent with the lighter tail (i.e., it is sub-Gaussian). As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate anomoly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
 
 # Applicability for conditional distributions
 
-The theoretical results in @lem-confident and @thm-three_types assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are ambivalent as to the whether $\bm{Y}$ is univariate or multivariate; in either case, the resulting surprisal $S_i=-\log f(\bm{Y})$ is univariate, and remains iid since any function of $Y$ is also iid.
+The theoretical results in @lem-confident and @thm-three_types assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are agnostic as to the dimension of $\bm{Y}$; the resulting surprisal $S_i=-\log f(\bm{Y})$ is always univariate, and remains iid since any function of $\bm{Y}$ is also iid.
 
 However, there are many modelling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, we can think of our observed data being the variables $\bm{Y}=(Z,\bm{X})$ where $Z$ is some outcome of interest and $\bm{X}$ are variables that are used to predict or explain $Z$. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z\mid \bm{X}=\bm{x})$, and the surprisal $S=-\log f_Z(Z\mid \bm{X}=\bm{x})$ can be thought of as being computed "conditional on a given $\bm{X}=\bm{x}$".
 
