@@ -82,7 +82,7 @@ list(
   tar_quarto(
     paper,
     "surprisals.qmd",
-    extra_files = c("refs.bib"),
+    extra_files = c("refs.bib", "preamble.tex"),
     quiet = FALSE
   )
 )

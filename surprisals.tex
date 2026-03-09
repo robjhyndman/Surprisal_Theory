@@ -5,13 +5,10 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  11pt,
-  a4paper,
-]{article}
+  12pt]{article}
 \usepackage{xcolor}
-\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -32,7 +29,6 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -42,6 +38,29 @@
     \setlength{\parskip}{6pt plus 2pt minus 1pt}}
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
 \makeatother
 
 
@@ -83,16 +102,20 @@
 
 
  
-\usepackage[style=authoryear-comp,]{biblatex}
-\addbibresource{refs.bib}
+\usepackage[]{natbib}
+\bibliographystyle{agsm}
 
 
-\newcommand{\dt}{\text{d}}
-\newcommand{\E}{\mathbb{E}}
-\usepackage{mathtools,todonotes,bbm}
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-1in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.7in}%
+\addtolength{\topmargin}{-1in}%
+\usepackage{mathtools,todonotes,bm, bbm}
+
 \mathtoolsset{showonlyrefs,mathic=true}
-\usepackage{orcidlink}
-\definecolor{mypink}{RGB}{219, 48, 122}
+
+\newcommand{\E}{\mathbb{E}}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -129,9 +152,9 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
-\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
@@ -164,223 +187,28 @@ Distribution, Outlier detection, Tail bounds},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
-%% CAPTIONS
-\usepackage{caption}
-\DeclareCaptionStyle{italic}[justification=centering]
- {labelfont={bf},textfont={it},labelsep=colon}
-\captionsetup[figure]{style=italic,format=hang,singlelinecheck=true}
-\captionsetup[table]{style=italic,format=hang,singlelinecheck=true}
 
-%% FONT
-\usepackage{bera}
-\usepackage[charter]{mathdesign}
-%\usepackage[scale=0.9]{sourcecodepro}
-\usepackage[lf,t]{FiraSans}
 
-%% HEADERS AND FOOTERS
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\rfoot{\Large\sffamily\raisebox{-0.1cm}{\textbf{\thepage}}}
-\makeatletter
-\lhead{\textsf{\expandafter{\@title}}}
-\makeatother
-\rhead{}
-\cfoot{}
-\setlength{\headheight}{15pt}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-\fancypagestyle{plain}{%
-\fancyhf{} % clear all header and footer fields
-\fancyfoot[C]{\sffamily\thepage} % except the center
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}}
-
-%% MATHS
-\usepackage{bm,amsmath}
-\allowdisplaybreaks
-
-%% GRAPHICS
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
-\setcounter{topnumber}{2}
-\setcounter{bottomnumber}{2}
-\setcounter{totalnumber}{4}
-\renewcommand{\topfraction}{0.85}
-\renewcommand{\bottomfraction}{0.85}
-\renewcommand{\textfraction}{0.15}
-\renewcommand{\floatpagefraction}{0.8}
-
-%% SECTION TITLES
-\usepackage[compact,sf,bf]{titlesec}
-\titleformat{\section}[block]
-  {\fontsize{15}{17}\bfseries\sffamily}
-  {\thesection}
-  {0.4em}{}
-\titleformat{\subsection}[block]
-  {\fontsize{12}{14}\bfseries\sffamily}
-  {\thesubsection}
-  {0.4em}{}
-\titlespacing{\section}{0pt}{*5}{*1}
-\titlespacing{\subsection}{0pt}{*2}{*0.2}
-\titlespacing{\subsubsection}{0pt}{*1}{*0.1}
-
-%% BIBLIOGRAPHY.
-
-\makeatletter
-\@ifpackageloaded{biblatex}{
-\ExecuteBibliographyOptions{bibencoding=utf8,minnames=1,maxnames=3, maxbibnames=99,dashed=false,terseinits=true,giveninits=true,uniquename=false,uniquelist=false,doi=false, isbn=false,url=true,sortcites=false}
-\DeclareFieldFormat{url}{\texttt{\url{#1}}}
-\DeclareFieldFormat[article]{pages}{#1}
-\DeclareFieldFormat[inproceedings]{pages}{\lowercase{pp.}#1}
-\DeclareFieldFormat[incollection]{pages}{\lowercase{pp.}#1}
-\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}}
-\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
-\DeclareFieldFormat[article]{title}{\MakeCapital{#1}}
-\DeclareFieldFormat[article]{url}{}
-\DeclareFieldFormat[inproceedings]{title}{#1}
-\DeclareFieldFormat{shorthandwidth}{#1}
-\usepackage{xpatch}
-\xpatchbibmacro{volume+number+eid}{\setunit*{\adddot}}{}{}{}
-% Remove In: for an article.
-\renewbibmacro{in:}{%
-  \ifentrytype{article}{}{%
-  \printtext{\bibstring{in}\intitlepunct}}}
-\AtEveryBibitem{\clearfield{month}}
-\AtEveryCitekey{\clearfield{month}}
-\DeclareDelimFormat[cbx@textcite]{nameyeardelim}{\addspace}
-\renewcommand*{\finalnamedelim}{\addspace\&\space}
-}{}
-\makeatother
-
-%% PAGE BREAKING to avoid widows and orphans
-\clubpenalty = 10000
-\widowpenalty = 10000
-
-\usepackage{microtype}
-% Placement of logos
-
-\RequirePackage[absolute,overlay]{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-\def\placefig#1#2#3#4{\begin{textblock}{.1}(#1,#2)\rlap{\includegraphics[#3]{#4}}\end{textblock}}
-
-% Title and date
-
-\title{Anomaly detection using surprisals}
-\date{9 March 2026}
-
-\def\Date{\number\day}
-\def\Month{\ifcase\month\or
- January\or February\or March\or April\or May\or June\or
- July\or August\or September\or October\or November\or December\fi}
-\def\Year{\number\year}
-
-% Working paper number and JEL codes
-
-\makeatletter
-\def\wp#1{\gdef\@wp{#1}}\def\@wp{??/??}
-\def\jel#1{\gdef\@jel{#1}}\def\@jel{??}
-\def\showjel{{\large\textsf{\textbf{JEL classification:}}~\@jel}}
-\def\nojel{\def\showjel{}}
-\makeatother
-
-\wp{no/yr}
-\jel{C10,C14,C46}
-
-% Title page
-
-\makeatletter
-\def\cover{{\sffamily\setcounter{page}{0}
-        \thispagestyle{empty}
-        \placefig{2}{1.5}{width=5cm}{monash2}
-        \placefig{16.9}{1.5}{width=2.1cm}{MBSportrait}
-        \begin{textblock}{4}(16.9,4)ISSN 1440-771X\end{textblock}
-        \begin{textblock}{7}(12.7,27.9)\hfill
-        \includegraphics[height=0.7cm]{AACSB}~~~
-        \includegraphics[height=0.7cm]{EQUIS}~~~
-        \includegraphics[height=0.7cm]{AMBA}
-        \end{textblock}
-        \vspace*{2.5cm}
-        \begin{center}\Large
-        Department of Econometrics and Business Statistics\\[.5cm]
-        \footnotesize http://monash.edu/business/ebs/research/publications
-        \end{center}\vspace{2cm}
-        \begin{center}
-        \fbox{\parbox{14cm}{\begin{onehalfspace}\centering\Huge\vspace*{0.3cm}
-                \textsf{\textbf{\expandafter{\@title}}}\vspace{1cm}\par
-                \LARGE
-                \expandafter{\@author}
-                \end{onehalfspace}
-        }}
-        \end{center}
-        \vfill
-                \begin{center}\Large
-                \Month~\Year\\[1cm]
-                Working Paper \@wp
-        \end{center}\vspace*{2cm}}}
-        \def\addresses#1{\gdef\@addresses{#1}}\def\@addresses{??}
-        \def\pageone{{\sffamily\setstretch{1}%
-        \thispagestyle{empty}%
-        \vbox to \textheight{%
-        \raggedright\baselineskip=1.2cm
-     {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}
-        \vspace{2cm}\par
-        \hspace{1cm}\parbox{14cm}{\sffamily\large\@addresses}\vspace{1cm}\vfill
-        \hspace{1cm}{\large\Date~\Month~\Year}\\[1cm]
-        \hspace{1cm}\showjel\vss}}}
-\def\blindtitle{{\sffamily
-     \thispagestyle{plain}\raggedright\baselineskip=1.2cm
-     {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}\vspace{1cm}\par
-        }}
-\def\titlepage{{\cover\newpage\pageone\newpage\blindtitle}}
-
-\def\blind{\def\titlepage{{\blindtitle}}\let\maketitle\blindtitle}
-\def\titlepageonly{\def\titlepage{{\pageone\end{document}}}}
-\def\nocover{\def\titlepage{{\pageone\newpage\blindtitle}}\let\maketitle\titlepage}
-\let\maketitle\titlepage
-\makeatother
-
-% Authors
-
-\nocover
-  \author{Rob J Hyndman, David T Frazier}
-  \addresses{%
-    %
-      \textbf{Rob J Hyndman}\\%
-      %
-        Department of Econometrics \& Business Statistics\\%
-        Monash University\\%
-        Clayton 3800\\%
-        Australia\\%
-      %
-      {Email: Rob.Hyndman@monash.edu}\\%
-      \textit{Corresponding author}\\[0.5cm]%
-   %
-      \textbf{David T Frazier}\\%
-      %
-        Department of Econometrics \& Business Statistics\\%
-        Monash University\\%
-        Clayton 3800\\%
-        Australia\\%
-      %
-      %
-      \\[0.5cm]%
-   %
-   }%
-   \lfoot{\sf Hyndman, Frazier: 9 March 2026}
-
-% Keywords
-
-\newenvironment{keywords}{\par\vspace{0.5cm}\noindent{\sffamily\textbf{Keywords:}}}{\vspace{0.25cm}\par\hrule\vspace{0.5cm}\par}
-
-% Abstract
-\renewenvironment{abstract}{\begin{minipage}{\textwidth}\parskip=1.4ex\noindent
-\hrule\vspace{0.1cm}\par{\sffamily\textbf{\abstractname}}\newline\setstretch{1.5}}
-  {\end{minipage}}
 \begin{document}
+
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\bf Anomaly detection using surprisals}
+\author{
+Rob J Hyndman\\
+Department of Econometrics \& Business Statistics, Monash University\\
+and\\David T Frazier\\
+Department of Econometrics \& Business Statistics, Monash University\\
+}
 \maketitle
 
+\bigskip
+\bigskip
 \begin{abstract}
 Anomaly detection methods are widely used but often rely on ad hoc rules
 or strong assumptions, and they often focus on tail events, missing
@@ -404,14 +232,15 @@ and Test-cricket data show the approach remains effective under
 substantial model misspecification.
 \end{abstract}
 
-\begin{keywords}
-  Extreme value theory; Generalized Pareto Distribution; Outlier
-detection; 
-  Tail bounds.
-\end{keywords}
+\noindent%
+{\it Keywords:} Extreme value theory, Generalized Pareto
+Distribution, Outlier detection, Tail bounds
+\vfill
+
+\newpage
+\spacingset{1.9} % DON'T change the spacing!
 
 
-\setstretch{1.5}
 \section{Introduction}\label{introduction}
 
 Anomaly detection methods are often rather ad hoc and lack a solid
@@ -447,20 +276,19 @@ probability mass function if \(F\) is discrete, and a combination of
 both if \(F\) is a mixture of continuous and discrete components.
 
 The \emph{surprisal} of observation \(\bm{y}_i\) is defined as
-\autocite{Stone2022} \[
+\citep{Stone2022} \[
 s_i=-\log f(\bm{y}_i).
 \] While these are better known as ``log scores'' in statistics
-\autocite{Good1952-zw}, in this context we prefer the term ``surprisal''
-\autocite[coined by][]{Tribus61}, as it captures the idea that
-observations with low density are more ``surprising'' (and therefore
-potentially anomalous) than those with high density. A large value of
-\(s_i\) indicates that \(\bm{y}_i\) is an unlikely value, and so is a
-potential anomaly. On the other hand, typical values will have low
-surprisals. In information theory, the average surprisal is known as the
-entropy of a random variable \autocite{Cover2006,Stone2022} and provides
-a measure of uncertainty. If \(f\) is obtained from a parametric model,
-then the sum of the surprisals is equal to minus the log likelihood of
-the data.
+\citep{Good1952-zw}, in this context we prefer the term ``surprisal''
+\citep[coined by][]{Tribus61}, as it captures the idea that observations
+with low density are more ``surprising'' (and therefore potentially
+anomalous) than those with high density. A large value of \(s_i\)
+indicates that \(\bm{y}_i\) is an unlikely value, and so is a potential
+anomaly. On the other hand, typical values will have low surprisals. In
+information theory, the average surprisal is known as the entropy of a
+random variable \citep{Cover2006, Stone2022} and provides a measure of
+uncertainty. If \(f\) is obtained from a parametric model, then the sum
+of the surprisals is equal to minus the log likelihood of the data.
 
 Let \(G(s) = \Pr\{S\le s\}\) be the distribution function of the
 surprisal values, where \(S = -\log f(\bm{Y})\) and \(\bm{Y}\sim F\).
@@ -468,7 +296,7 @@ Then the probability of observing a value with surprisal at least as
 large as \(s\) is given by \(\Pr(S\ge s) = 1-G(s^-)\), where
 \(G(s^-) = \lim_{t\uparrow s} G(t)\). This leads to a natural way of
 assigning an anomaly score to each observation \(\bm{y}_i\): \[
-p_i = \Pr(S \ge s_i)  = 1-G(s_i^-)
+p_i = \Pr(S \ge s_i)  = 1-G(s_i^-),
 \] where \(s_i = -\log f(\bm{y}_i)\). We define anomalies as
 observations with \(p_i < \alpha\), giving a false positive rate of
 \(\alpha\) if all observations are from \(F\). This is preferable to
@@ -477,7 +305,7 @@ allows for anomalies to occur anywhere in the distribution of \(F\), not
 just in its tails. For example, anomalies may lie between modes in a
 multimodal distribution, or in otherwise low-density regions of the
 distribution \(F\). It is also preferable to a distance-based approach
-to anomaly detection \autocite[e.g.,][]{hdoutliers}, as it naturally
+to anomaly detection \citep[e.g.,][]{hdoutliers}, as it naturally
 handles skewed and heavy-tailed distributions.
 
 The surprisal approach converts the problem of working with \(F\), a
@@ -486,7 +314,7 @@ non-Euclidean space), to working with a univariate distribution \(G\)
 defined on \(\mathbb{R}\). We can write \[
 G(s) = \Pr\{-\log f(\bm{Y})\le s\} = \Pr\{ f(\bm{Y})\ge e^{-s}\}.
 \] This makes clear that the surprisal probability is related to the
-highest density regions of the distribution \autocite{HDR96}. In fact,
+highest density regions of the distribution \citep{HDR96}. In fact,
 every observation with \(p_i< \alpha\) lies outside the
 \(100(1-\alpha)\)\% highest density region of \(F\).
 
@@ -496,12 +324,12 @@ case, identifying anomalies as observations with \(p_i < \alpha\) is
 equivalent to a z-score test with the threshold set to
 \(\Phi^{-1}(1-\alpha/2)\). Hence, our approach can be seen as a
 generalization of anomaly detection methods based on z-scores including
-Grubbs' test \autocite{Grubbs1950}.
+Grubbs' test \citep{Grubbs1950}.
 
 It can also be seen as a generalization of other anomaly detection
 methods. For example, the Hampel identifier, due to a proposal of Frank
-Hampel \autocite{Davies1993}, is designed to identify anomalies in a
-time series based on whether an observation is very different from the
+Hampel \citep{Davies1993}, is designed to identify anomalies in a time
+series based on whether an observation is very different from the
 neighboring observations. It denotes an observation as an anomaly if
 \(|y_t-m_t|/a_t > \tau\), where \begin{align*}
 m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
@@ -571,7 +399,7 @@ Under approach (2) above, we estimate \(p_i=\Pr(S \ge s_i)\) as the
 proportion of observed surprisals at least as large as \(s_i\). Using
 this approach, the anomaly boundary for a threshold of \(\alpha\)
 corresponds to the \(100(1-\alpha)\)\% highest density region computed
-using the quantile density approach of \textcite{HDR96}.
+using the quantile density approach of \citet{HDR96}.
 
 Let \(F(\cdot)\) denote the true distribution function of \(\bm{Y}\),
 and suppose we use \(\widehat{F}\) to model \(\bm{Y}\). The
@@ -642,12 +470,12 @@ the three types of extreme value distributions. This justifies fitting a
 Generalized Pareto Distribution (GPD) to the largest surprisal values,
 and using it to estimate tail probabilities.
 
-An important precursor to this work is \textcite{lookout} who proposed
+An important precursor to this work is \citet{lookout} who proposed
 estimating \(F\) by a leave-one-out kernel density estimate, and then
 fitting a Generalized Pareto Distribution (GPD) to the most extreme
 surprisal values. The underlying idea is that even if \(F\) is not
 particularly well-estimated, the tail of the surprisal distribution
-should still be well-approximated by a GPD. \textcite{lookout2} provides
+should still be well-approximated by a GPD. \citet{lookout2} provides
 some theoretical justification for this approach in the context of
 kernel density estimation.
 
@@ -664,7 +492,7 @@ contained in the largest \(\beta\) of \(\{s_i\}_{i=1}^n\) are assigned
 surprisal distribution of \(S = -\log f(\bm{Y})\), where
 \(\bm{Y}\sim F\), and \(f\) is the corresponding generalized density
 function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem
-\autocite{coles2001introduction}.
+\citep{coles2001introduction}.
 
 We consider three possible conditions on the surprisal distribution of
 \(S = -\log f(\bm{Y})\), describing increasingly heavy tails:
@@ -760,7 +588,7 @@ exponential moment, then the maximum surprisal will be Gumbel; if the
 maximum surprisal only has a polynomial moment, then it is Fréchet. As
 each of these distributions is a member of the generalized extreme value
 family, then the upper tail of the distribution can be approximated by a
-Generalized Pareto Distribution \autocite[Theorem
+Generalized Pareto Distribution \citep[Theorem
 4.1]{coles2001introduction}.
 
 In particular, even if the assumed distribution \(F\) is not correct,
@@ -957,7 +785,7 @@ overestimating tail heaviness incurs relatively little cost.
 \subsection{French mortality rates}\label{french-mortality-rates}
 
 French mortality rates, disaggregated by age (single years) and sex, are
-available from the \textcite{HMD}. We will consider male and female data
+available from the \citet{HMD}. We will consider male and female data
 from 1816 to 1999 over ages 0 to 85, giving 172 separate time series,
 each of length 184.
 
@@ -1029,7 +857,7 @@ these is unknown.
 \subsection{Test cricket not outs}\label{test-cricket-not-outs}
 
 Career batting data for all men and women to have played test cricket
-between 1834 and 6 October 2025 were obtained from \textcite{Rweird}. We
+between 1834 and 6 October 2025 were obtained from \citet{Rweird}. We
 will investigate if there are some batters who have an unusually high
 proportion of innings where they have not been dismissed, known as a
 ``not out''. The data set contains results from 97649 innings, of which
@@ -1064,7 +892,7 @@ played.}
 \end{figure}%
 
 This suggests that we can construct a generalized additive model
-\autocite{Wood2017gam} for the number of not outs for each batter as a
+\citep{Wood2017gam} for the number of not outs for each batter as a
 function of the number of innings they played. It is natural to use a
 Binomial distribution with a logit link function: \[
   \text{NotOuts} \mid \text{Innings} \sim \text{Binomial}(n=\text{Innings},~ p),
@@ -1073,7 +901,7 @@ in an innings, \[
   \log(p / (1- p)) = g(\text{Innings}),
 \] and \(g()\) is a smooth function to be estimated nonparametrically.
 The resulting estimate, obtained from the mgcv package with penalized
-regression splines \autocite{mgcv}, is shown in blue in
+regression splines \citep{mgcv}, is shown in blue in
 Figure~\ref{fig-notouts}.
 
 Now we can use the fitted model to compute the surprisals from the
@@ -1147,14 +975,15 @@ tails), the maximum surprisal converges to a distribution in the
 generalized extreme‑value family. These conditions encompass almost all
 common statistical models. Thus, the GPD approximation can be expected
 to provide robust tail estimates even when the assumed distribution is
-only loosely connected to the true one. That is, provided the threshold
-is far enough into the tail that the tail orderings are the same beyond
-that point, the GPD approach should yield accurate tail probabilities.
-The situation is slightly different from that for the empirical
-approach, as the GPD is motivated by the asymptotic behavior of the
-surprisals, and provided we have \(n\) large enough for this
-approximation to be accurate, the tail ordering should be correct above
-the threshold.
+only loosely connected to the true one. That is, provided the chosen
+threshold is far enough into the tail that the tail orderings from the
+assumed distribution and the true distribution are the same beyond that
+point, the GPD approach should yield accurate tail probabilities. The
+situation is slightly different from that for the empirical approach, as
+the GPD is motivated by the asymptotic behavior of the surprisals, which
+means that if \(n\) is large enough for this approximation to be
+accurate, then the tail ordering should also be correct above the
+threshold.
 
 Threshold selection for the GPD remains an open methodological question;
 established techniques from the extreme‑value literature (such as
@@ -1163,21 +992,22 @@ surprisal data, but a systematic study in this context is a topic for
 future work.
 
 In practice, the choice between the empirical and GPD approaches depends
-on the sample size and the desired level of \(\alpha\). The empirical
-estimator requires no tuning or model estimation, and provides
-finite-sample uniform error control, but it can be noisy when
-\(n\alpha\) is small. The GPD estimator is most useful when \(n\alpha\)
-is small, as it can reduce variance and allow extrapolation beyond the
-observed maximum, but it requires choosing a threshold and fitting a
-parametric model to the tail, which introduces additional complexity and
-potential for mis-specification. When the surprisal distribution
-exhibits discreteness, spikes, or other non-smooth features that one may
-not wish to smooth away with a parametric tail model, the empirical
-approach may be preferable. In many cases, it may be advisable to use
-both approaches in tandem as a robustness check. While both approaches
-can be expected to perform well under moderate model misspecification,
-neither approach is guaranteed under severe misspecification,
-particularly if tail ordering is incorrect.
+on the sample size, \(n\), and the desired level of significance,
+\(\alpha\). The empirical estimator requires no tuning or model
+estimation, and provides finite-sample uniform error control, but it can
+be noisy when \(n\alpha\) is small. The GPD estimator is most useful
+when \(n\alpha\) is small, as it can reduce variance and allow
+extrapolation beyond the observed maximum, but it requires choosing a
+threshold and fitting a parametric model to the tail, which introduces
+additional complexity and potential for mis-specification. When the
+surprisal distribution exhibits discreteness, spikes, or other
+non-smooth features that one may not wish to smooth away with a
+parametric tail model, the empirical approach may be preferable. In many
+cases, it may be advisable to use both approaches in tandem as a
+robustness check. While both approaches can be expected to perform well
+under moderate model misspecification, neither approach is guaranteed if
+the misspecification is severe enough that the tail orderings of the
+true and fitted distributions differ substantially.
 
 The surprisal framework also brings interpretability and scalability
 benefits. Surprisals provide a single, model-based measure of
@@ -1199,23 +1029,24 @@ real-world data, while the theoretical results clarify when and why the
 approach succeeds.
 
 Our methods are implemented in the \texttt{weird} R package
-\autocite{Rweird}, which provides a user-friendly interface for
-computing surprisals and estimating tail probabilities using both
-empirical and GPD approaches.
+\citep{Rweird}, which provides a user-friendly interface for computing
+surprisals and estimating tail probabilities using both empirical and
+GPD approaches.
 
 \subsection*{Software and
 reproducibility}\label{software-and-reproducibility}
 \addcontentsline{toc}{subsection}{Software and reproducibility}
 
-All results presented here can be reproduced using the code available at
-\url{https://github.com/robjhyndman/Surprisal_Theory}. The analysis was
-conducted using R version 4.5.2 \autocite{R}, with the following R
-packages: weird \autocite{Rweird}, tsibble \autocite{Rtsibble}, targets
-\autocite{targets,targetspaper}, ggplot2 \autocite{ggplot2,ggplotbook},
-and other tidyverse \autocite{tidyverse} packages.
+All results presented here can be reproduced using the data and code
+available at \url{https://github.com/robjhyndman/Surprisal_Theory}. The
+analysis was conducted using R version 4.5.2 \citep{R}, with the
+following R packages: weird \citep{Rweird}, tsibble \citep{Rtsibble},
+targets \citep{targets, targetspaper}, ggplot2
+\citep{ggplot2, ggplotbook}, and other tidyverse \citep{tidyverse}
+packages.
 
-\subsection*{Acknowledgments}\label{acknowledgments}
-\addcontentsline{toc}{subsection}{Acknowledgments}
+\subsection*{Funding}\label{funding}
+\addcontentsline{toc}{subsection}{Funding}
 
 Both authors are funded by the Australian Research Council through
 Discovery Project DP250100702. Rob Hyndman is a member of the Australian
@@ -1226,7 +1057,8 @@ Optimisation Technologies, Integrated Methodologies, and Applications
 \subsection*{References}\label{references}
 \addcontentsline{toc}{subsection}{References}
 
-\printbibliography[heading=none]
+\renewcommand{\bibsection}{}
+\bibliography{refs.bib}
 
 \newpage{}
 

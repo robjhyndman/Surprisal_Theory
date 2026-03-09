@@ -25,23 +25,43 @@ keywords:
   - Outlier detection
   - Tail bounds
 bibliography: refs.bib
-wpnumber: no/yr
-jelcodes: C10,C14,C46
-blind: false
-cover: false
-linestretch: 1.5
 format:
-  wp-pdf:
+  wp-pdf+wp:
+    output-file: "surprisals.pdf"
+    keep-tex: false
+    wpnumber: no/yr
+    jelcodes: C10,C14,C46
+    blind: false
+    cover: false
+    linestretch: 1.5
+    include-in-header: preamble.tex
+  jasa-pdf:
+    output-file: surprisals_jcgs.pdf
     keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header: preamble.tex
+    shift-heading-level-by: 0
+    journal:
+      blinded: false
+  jasa-pdf+blind:
+    output-file: surprisals_jcgs_blind.pdf
+    keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header: preamble.tex
+    shift-heading-level-by: 0
+    journal:
+      blinded: true
 crossref:
   def-title: Assumption
   def-prefix: Assumption
-include-in-header:
-  text: |
-    \newcommand{\dt}{\text{d}}
-    \newcommand{\E}{\mathbb{E}}
-    \usepackage{mathtools,todonotes,bbm}
-    \mathtoolsset{showonlyrefs,mathic=true}
+date-format: "D MMMM YYYY"
+fig-height: 5
+fig-width: 8
+knitr:
+  opts_chunk:
+    echo: false
+    warning: false
+    message: false
 ---
 
 ```{r}
@@ -92,7 +112,7 @@ While these are better known as "log scores" in statistics [@Good1952-zw], in th
 
 Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then the probability of observing a value with surprisal at least as large as $s$ is given by $\Pr(S\ge s) = 1-G(s^-)$, where $G(s^-) = \lim_{t\uparrow s} G(t)$. This leads to a natural way of assigning an anomaly score to each observation $\bm{y}_i$:
 $$
-p_i = \Pr(S \ge s_i)  = 1-G(s_i^-)
+p_i = \Pr(S \ge s_i)  = 1-G(s_i^-),
 $$
 where $s_i = -\log f(\bm{y}_i)$. We define anomalies as observations with $p_i < \alpha$, giving a false positive rate of $\alpha$ if all observations are from $F$. This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$. It is also preferable to a distance-based approach to anomaly detection [e.g., @hdoutliers], as it naturally handles skewed and heavy-tailed distributions.
 
@@ -368,9 +388,9 @@ Our methods are implemented in the `weird` R package [@Rweird], which provides a
 
 ## Software and reproducibility {.unnumbered}
 
-All results presented here can be reproduced using the code available at <https://github.com/robjhyndman/Surprisal_Theory>. The analysis was conducted using R version 4.5.2 [@R], with the following R packages: weird [@Rweird], tsibble [@Rtsibble], targets [@targets;@targetspaper], ggplot2 [@ggplot2;@ggplotbook], and other tidyverse [@tidyverse] packages.
+All results presented here can be reproduced using the data and code available at <https://github.com/robjhyndman/Surprisal_Theory>. The analysis was conducted using R version 4.5.2 [@R], with the following R packages: weird [@Rweird], tsibble [@Rtsibble], targets [@targets;@targetspaper], ggplot2 [@ggplot2;@ggplotbook], and other tidyverse [@tidyverse] packages.
 
-## Acknowledgments {.unnumbered}
+## Funding {.unnumbered}
 
 Both authors are funded by the Australian Research Council through Discovery Project DP250100702. Rob Hyndman is a member of the Australian Research Council Industrial Transformation Training Centre in Optimisation Technologies, Integrated Methodologies, and Applications (OPTIMA), Project ID IC200100009.
 
