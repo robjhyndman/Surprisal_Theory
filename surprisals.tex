@@ -94,22 +94,6 @@
 \usepackage{orcidlink}
 \definecolor{mypink}{RGB}{219, 48, 122}
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
-\definecolor{quarto-callout-color}{HTML}{909090}
-\definecolor{quarto-callout-note-color}{HTML}{0758E5}
-\definecolor{quarto-callout-important-color}{HTML}{CC1914}
-\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
-\definecolor{quarto-callout-tip-color}{HTML}{00A047}
-\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
-\definecolor{quarto-callout-color-frame}{HTML}{acacac}
-\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
-\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
-\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
-\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
-\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
-\makeatother
-\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
 \ifdefined\contentsname
@@ -145,13 +129,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -284,7 +268,7 @@ Distribution, Outlier detection, Tail bounds},
 % Title and date
 
 \title{Anomaly detection using surprisals}
-\date{20 February 2026}
+\date{9 March 2026}
 
 \def\Date{\number\day}
 \def\Month{\ifcase\month\or
@@ -384,7 +368,7 @@ Distribution, Outlier detection, Tail bounds},
       \\[0.5cm]%
    %
    }%
-   \lfoot{\sf Hyndman, Frazier: 20 February 2026}
+   \lfoot{\sf Hyndman, Frazier: 9 March 2026}
 
 % Keywords
 
@@ -572,8 +556,10 @@ support the use of empirical surprisal probabilities, and identify the
 conditions under which this will give a good estimate of the true
 surprisal probabilities. Similarly, Section~\ref{sec-gpd} provides the
 theoretical results needed to use a Generalized Pareto Distribution to
-approximate the tail of the surprisal distribution. Then we demonstrate
-the methods with several simulation experiments in
+approximate the tail of the surprisal distribution. While we present the
+main results in terms of iid data, Section~\ref{sec-conditional} shows
+that the methods can be applied to conditional distributions as well. We
+demonstrate the methods with several simulation experiments in
 Section~\ref{sec-experiments}, and in two applications in
 Section~\ref{sec-applications}. A discussion follows in
 Section~\ref{sec-discussion}. The appendix contains the proofs needed
@@ -613,7 +599,7 @@ turns out to be both necessary and sufficient.
 
 There exists an \(s_\star\) and a function \(h(\cdot)\) that is strictly
 increasing on \([s_\star, \infty)\), such that \(S=h(\widehat{S})\)
-almost surely for all \(\hat{S} \ge s_\star\).
+almost surely for all \(\widehat{S} \ge s_\star\).
 
 \end{definition}
 
@@ -634,24 +620,25 @@ tails that are similarly located to the actual data distribution, then
 the fitted empirical surprisal probabilities are very accurate measures
 of the true surprisal probability, \(G(s)\). Critically, this does not
 require that the tails of the fitted distribution are the same as the
-actual data distribution, and only requires that they be related through
-a monotone transformation. That is, for this approach to be accurate, we
-must be confident that the fitted distribution has regions of low
-density in the same locations as the true distribution.
+actual data distribution, and only requires that -- beyond a threshold
+value \(s_\star\) -- the two are related through a monotone
+transformation. That is, for this approach to be accurate, we must be
+confident that the fitted distribution has regions of low density in the
+same locations as the true data distribution.
 
 Importantly, Assumption~\ref{def-empirical_pis} is not satisfied by all
 pairs of distributions: if the true data has skewness but the fitted
 model assumes symmetry, or if there is bimodality in the observed data
-that is not modeled, then Assumption~\ref{def-empirical_pis} will not
-necessarily be satisfied.
+that is not modeled, then Assumption~\ref{def-empirical_pis} my not be
+satisfied.
 
 \section{Extreme value theory for the surprisal
 distribution}\label{sec-gpd}
 
-Our third approach uses extreme value theory applied to the surprisal
-values. We will show that under weak conditions on the tail of the
-surprisal distribution, the maximum surprisal converges to one of the
-three types of extreme value distributions. This justifies fitting a
+Our third approach uses extreme value theory applied to the (univariate)
+surprisal values. We will show that under weak conditions on the tail of
+the surprisal distribution, the maximum surprisal converges to one of
+the three types of extreme value distributions. This justifies fitting a
 Generalized Pareto Distribution (GPD) to the largest surprisal values,
 and using it to estimate tail probabilities.
 
@@ -664,12 +651,12 @@ should still be well-approximated by a GPD. \textcite{lookout2} provides
 some theoretical justification for this approach in the context of
 kernel density estimation.
 
-Here we extend that idea to allow \(F\) to be any well-behaved
-distribution, including conditional distributions. Specifically, we fit
-a GPD to the largest \(\beta\) of \(\{s_i\}_{i=1}^n\), obtaining
-estimates of the location, scale and shape parameters,
-\((\mu,\sigma,\xi)\). We calculate the probability of a surprisal at
-least as large as that of each observation,
+Here we extend that idea to allow \(F\) to be any distribution,
+including conditional distributions, that admits at least a finite
+second moment. Specifically, we fit a GPD to the largest \(\beta\) of
+\(\{s_i\}_{i=1}^n\), obtaining estimates of the location, scale and
+shape parameters, \((\mu,\sigma,\xi)\). We calculate the probability of
+a surprisal at least as large as that of each observation,
 \(p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]\),
 where \(P\) is the distribution function of the GPD. Observations not
 contained in the largest \(\beta\) of \(\{s_i\}_{i=1}^n\) are assigned
@@ -707,8 +694,8 @@ for all \(\lambda\in\mathbb{R}\), and some \(\nu>0\), \[
 
 \begin{definition}[Sub-exponential]\protect\hypertarget{def-subbounded}{}\label{def-subbounded}
 
-The random variable \(S\) is sub-exponential with parameters \(\nu\) and
-\(b\), i.e., \[
+The random variable \(S\) admits an exponential moment in a neighborhood
+of zero; i.e., for parameters \(\nu\) and \(b\), \[
     \E \exp\{\lambda(S-\E[S])\} \leq \exp\{\lambda^2\nu^2/ 2\} \quad\text{ for all } \quad |\lambda|< 1/b.
 \]
 
@@ -716,7 +703,7 @@ The random variable \(S\) is sub-exponential with parameters \(\nu\) and
 
 \begin{definition}[Polynomial]\protect\hypertarget{def-polybounded}{}\label{def-polybounded}
 
-The random variable \(|S|\) has polynomial moments of order
+The random variable \(|S|\) admits a polynomial moments of order
 \(\alpha\ge 1\); i.e., \(\E[|S|^p] \le C^p\) for some \(C>0\) such that
 \(C^p-1>0\).
 
@@ -791,25 +778,24 @@ when the data are actually light-tailed (e.g., sub-Gaussian), the
 resulting distribution of the maximal surprisal remains consistent with
 the lighter tail (i.e., it is sub-Gaussian). As the tail of the
 surprisal distribution becomes heavier, convergence slows, and more data
-are required to reliably detect surprisals. In effect, underestimating
+is required to reliably detect surprisals. In effect, underestimating
 tail heaviness incurs a substantial penalty --- manifested as slow
-convergence of the GDP and, consequently, inaccurate detection ---
-whereas overestimating tail heaviness costs relatively little. This
+convergence of the GDP and, consequently, inaccurate anomaly detection
+--- whereas overestimating tail heaviness costs relatively little. This
 suggests that, in practice, it is safer to err on the side of assuming
 heavier tails.
 
 \section{Applicability for conditional
-distributions}\label{applicability-for-conditional-distributions}
+distributions}\label{sec-conditional}
 
 The theoretical results in Lemma~\ref{lem-confident} and
 Theorem~\ref{thm-three_types} assume that the surprisal is based on iid
 data \(\bm{Y}\) generated from some unknown distribution. In this way,
-these results are ambivalent as to the whether \(\bm{Y}\) is univariate
-or multivariate; in either case, the resulting surprisal
-\(S_i=-\log f(\bm{Y})\) is univariate, and remains iid since any
-function of \(Y\) is also iid.
+these results are agnostic as to the dimension of \(\bm{Y}\); the
+resulting surprisal \(S_i=-\log f(\bm{Y})\) is always univariate, and
+remains iid since any function of \(\bm{Y}\) is also iid.
 
-However, there are many modelling situations, such as regression
+However, there are many modeling situations, such as regression
 settings, where we are not necessarily interested in measuring the
 surprisal that results from the joint distribution of the data, but
 along a fixed vector of conditioning variables (e.g., age, or gender).
@@ -844,7 +830,7 @@ either because \(Z\) itself is large, relative to the observed values of
 \(Z-\beta_0-\beta_1 X\) is large.
 
 That is, in the general case, where we are searching for surprisals over
-the conditional model without \(\bm{X}\) being fixed, the behaviour of
+the conditional model without \(\bm{X}\) being fixed, the behavior of
 \(S_i\) is determined by that of the joint distribution: \[
 \Pr(S_i>s) = \int \mathbbm{1}(-\log f_Z(z \mid \bm{x}) > s) f_Z(z \mid \bm{x}) f_X(\bm{x})\,dz\,d\bm{x}.
 \] This clarifies that extreme behavior in \(S_i\) can result from
@@ -1161,23 +1147,37 @@ tails), the maximum surprisal converges to a distribution in the
 generalized extreme‑value family. These conditions encompass almost all
 common statistical models. Thus, the GPD approximation can be expected
 to provide robust tail estimates even when the assumed distribution is
-only loosely connected to the true one.
-
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, toprule=.15mm, opacitybacktitle=0.6, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Is this true?}, arc=.35mm, coltitle=black, colback=white, bottomtitle=1mm, toptitle=1mm, left=2mm, leftrule=.75mm, opacityback=0, breakable, rightrule=.15mm, colframe=quarto-callout-note-color-frame, bottomrule=.15mm]
-
-It seems to me that GPD also needs the tail ordering to be correct above
+only loosely connected to the true one. That is, provided the threshold
+is far enough into the tail that the tail orderings are the same beyond
+that point, the GPD approach should yield accurate tail probabilities.
+The situation is slightly different from that for the empirical
+approach, as the GPD is motivated by the asymptotic behavior of the
+surprisals, and provided we have \(n\) large enough for this
+approximation to be accurate, the tail ordering should be correct above
 the threshold.
 
-\end{tcolorbox}
+Threshold selection for the GPD remains an open methodological question;
+established techniques from the extreme‑value literature (such as
+stability plots or nearest‑order‑statistic heuristics) can be adapted to
+surprisal data, but a systematic study in this context is a topic for
+future work.
 
-From a practical standpoint, users may wish to adopt a hybrid strategy:
-employ empirical tail probabilities for moderate sample sizes or when
-the tail ordering appears stable, and rely on the GPD approximation when
-the tail is very sparse or heavy. Threshold selection for the GPD
-remains an open methodological question; established techniques from the
-extreme‑value literature (such as stability plots or
-nearest‑order‑statistic heuristics) can be adapted to surprisal data,
-but a systematic study in this context is a topic for future work.
+In practice, the choice between the empirical and GPD approaches depends
+on the sample size and the desired level of \(\alpha\). The empirical
+estimator requires no tuning or model estimation, and provides
+finite-sample uniform error control, but it can be noisy when
+\(n\alpha\) is small. The GPD estimator is most useful when \(n\alpha\)
+is small, as it can reduce variance and allow extrapolation beyond the
+observed maximum, but it requires choosing a threshold and fitting a
+parametric model to the tail, which introduces additional complexity and
+potential for mis-specification. When the surprisal distribution
+exhibits discreteness, spikes, or other non-smooth features that one may
+not wish to smooth away with a parametric tail model, the empirical
+approach may be preferable. In many cases, it may be advisable to use
+both approaches in tandem as a robustness check. While both approaches
+can be expected to perform well under moderate model misspecification,
+neither approach is guaranteed under severe misspecification,
+particularly if tail ordering is incorrect.
 
 The surprisal framework also brings interpretability and scalability
 benefits. Surprisals provide a single, model-based measure of
@@ -1195,7 +1195,7 @@ probabilities, and by leveraging both empirical and extreme‑value
 methods, we achieve a flexible system that performs well even under
 substantial model misspecification. The applications demonstrate how
 these ideas can be used to detect meaningful anomalies in complex
-real‑world data, while the theoretical results clarify when and why the
+real-world data, while the theoretical results clarify when and why the
 approach succeeds.
 
 Our methods are implemented in the \texttt{weird} R package

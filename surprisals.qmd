@@ -240,7 +240,6 @@ $$
 $$
 This clarifies that extreme behavior in $S_i$ can result from extreme values of $Z$, $\bm{X}$, or simply values of $Z$ and $\bm{X}$ where $f_Z(Z\mid \bm{X})$ is very small. Critically, the latter can occur even when $Z$ and $\bm{X}$ take on values that are typical for their marginal distribution, but which are not well-captured by the assumed conditional model.
 
-
 # Experiments {#sec-experiments}
 
 ## Standard univariate normal values
