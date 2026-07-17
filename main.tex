@@ -367,26 +367,150 @@ Finally, we consider the case where the surprisal only has a polynomial moment (
 \subsection{Three types theorem}
 
 Placing the three lemmas together gives the following ``three types'' Theorem.
-
+\textbf{\color{blue}Note the change here to $\le$ from $\ge$. Check its correct in the paper version.}
 \begin{theorem}\label{thm:three_types}
 	Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $Y\sim \bm{F}$. Further, let $M_n=\max\{s_1,\dots,s_n\}$, where $s_i=-\log f(y_i)$.
 	\begin{enumerate}
 		\item If the surprisal satisfies \cref{ass:bounded}, then
 		      $$
-			      \sup_{s:s>0}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
+			      \sup_{s:s>0}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\le \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
 		      $$
 		\item If the surprisal satisfies \cref{ass:subbounded}, then
 		      $$
-			      \sup_{s:s>1/b}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right\}-e^{-e^{-s}}\right|=o(1).
+			      \sup_{s:s>1/b}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\le (2b)s+(2b)\log(2n)\right\}-e^{-e^{-s}}\right|=o(1).
 		      $$
 		\item If the surprisal satisfies \cref{ass:polybounded}, then
 		      $$
-			      \sup_{s:s>C}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\ge (Csn^{1/p})\right\}-e^{-s^{-p}}\right|=o(1).
+			      \sup_{s:s>C}\left|\mathrm{Pr}\left\{|M_n-\E[S]|\le (Csn^{1/p})\right\}-e^{-s^{-p}}\right|=o(1).
 		      $$
 	\end{enumerate}
 \end{theorem}
 
 \cref{thm:three_types} gives a corresponding `three types' theorem for the behavior of surprisals and has a simple interpretation. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Frechet.
+
+
+\subsubsection{Type (3) Approach: asymptotic comparison}
+Theorem \ref{thm:three_types} explains that the distribution of $M_n$ is the generalized extreme value distribution: for $z=(s-\mu)/\sigma$,
+$$
+	\Pr\{(M_n-\mu)/\sigma\le z\}=\mathrm{Gev}\{(s-\mu)/\sigma;0,1,\xi\}=\begin{cases}
+	\exp \left\{-\left(1+\xi\cdot z\right)^{-1 / \xi}\right\} &\xi>0\\\exp(-z)&\xi=0,    
+	\end{cases}
+$$
+wheree $\mu \in \Re, \sigma>0$ and $\xi \in \mathbb{R}$. This distribution takes specific forms depending on the particular value of the shape parameter $\xi$ and changes depending on this value. 
+\begin{enumerate}
+	\item The (reverse) Weibull distribution is obtained when $\xi<0$.
+	\item The Gumble distirbution is obtained when $\xi=0$.
+	\item The Frechet distribution is obtained when $\xi>0$.
+\end{enumerate}
+
+For $n$ large and $z$ large, the tail probability can then be generically expressed as 
+$$
+\Pr\{(M_n-\mu)/\sigma>z\}= 1-e^{-t(z)}+o(1),\quad t(z)=\begin{cases}
+(1+\xi \cdot z)^{-\frac{1}{\xi}}&\xi\ne0\\\exp(-z)&\xi=0 . 
+\end{cases}
+$$
+An immediately useful implication of Theorem \ref{thm:three_types} is that it gives us a direct way of linking the disagreement between the tail behavior of the surprisal that is fit under the assumed model, $\hat{f}(y)$, and the surprisal that would be fit under the ``true model'', denoted by $f^\star(y)$. 
+
+To see this implication, let $S^\star=-\log f^\star(Y)$, and $\hat{S}=-\log \hat{f}(Y)$ denote the surprisals associated to the random variable $Y$ under the assumed and true models, respectively. Further, let $\hat{M}_n$ and $M_n^\star$ be the maximal counterparts, and define $\hat\mu=\E(\hat{S})$, $\mu^\star=\E (S^\star)$, and $\hat\sigma=\sqrt{\text{Var}(\hat{S})}$ and $\sigma^\star=\sqrt{\text{Var}(S^\star)}$. Then, Theorem \ref{thm:three_types} directly implies that, for $n$ and $z$ large, 
+\begin{flalign}
+\left|\Pr\{(\hat{M}_n-\hat\mu)/\hat\sigma>z\}-\Pr\{(M^\star_n-\mu^\star)/\sigma^\star>z\}\right|&=|e^{-\hat{t}(z)}-e^{-t^\star(z)}|+o(1)\nonumber\\&=e^{-t^\star(z)}|1-e^{-\left\{\hat{t}(z)-t^\star(z)\right\}}|    +o(1),\label{eq:new1} 
+\end{flalign}where 
+$\hat{t}(z)$ (resp., $t^\star(z)$) denotes $t(z)$ with $\xi=\hat\xi$ (resp., $\xi=\xi^\star$), and where $\hat\xi$ and $\xi^\star$ exist (for $n$ large enough) by Theorem \ref{thm:three_types}. 
+
+Equation \eqref{eq:new1} shows that, even though the fitted model $\hat{f}$ may be misspecified, we can still attain a bound on the accuracy between the fitted surprisal distribution and the true surprisal distribution:  
+\begin{equation}\label{eq:new_bound}
+\left|\Pr\{(\hat{M}_n-\hat\mu)/\hat\sigma>z\}-\Pr\{(M^\star_n-\mu^\star)/\sigma^\star>z\}\right|\le e^{-t^\star(z)}+o(1)
+\end{equation}
+ so long as
+$$
+1-e^{-\left\{\hat{t}(z)-t^\star(z)\right\}}\le1\iff \hat{t}(z)\ge t^\star(z)\iff \hat\xi\ge\xi^\star.
+$$
+Equation \eqref{eq:new_bound} implies that so long as the tails of surprisal under the assumed model, $\hat{S}=-\log \hat{f}(Y)$, are close to that of the surprisal under the true model, $S^\star=-\log f^\star(Y)$, the two tail probabilities will be close. Hence, we only have to ensure that the assumed model has tails that ``resemble the observed data'' to ensure we can accurately detect surprisals using our proposed framework. 
+
+
+We can write the result formally as a corollary to Theorem \ref{thm:three_types}. 
+\begin{corollary}\label{corr:new_corr}
+Under Assumptions 1-3, if $\hat\xi\ge \xi^\star$,  then for $z$ large and $n$ large,   
+$$
+\left|\Pr\{(\hat{M}_n-\hat\mu)/\hat\sigma>z\}-\Pr\{(M^\star_n-\mu^\star)/\sigma^\star>z\}\right|\le e^{-t^\star(z)}+o(1).
+$$
+\end{corollary}
+
+
+
+For example, if the true model is $N(-1,10)$ and we use a $N(0,1)$ assumed model, then the (normalized) estimated surprisal distribution has the same tail thickness as the true surprisal distribution and would therefore deliver a reasonably accurate approximation. Alternatively, if the true data is $\chi^2(d)$ and we maintain the same $N(0,1)$ assumed model, then we will not accurately detect surprisals since the tails of the true distributions are substantially different. 
+
+
+\newpage
+
+\subsection{Empirical surprisal probabilities}
+
+Under approach (2) above, we estimate $p_i=\Pr[S> S_i]$ as the proportion of observed surprisals larger than $s_i$. Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
+
+For this approach to be accurate the surprisal ranks under the actual distribution generating $Y$, denoted by $F(\cdot)$ with generalized density function $f(\cdot)$, and the distribution used to model $Y$, which is denoted by $\widehat{F}$ with generalized density function $\widehat{f}(\cdot)$, must behave similarly. In particular, \textit{it is both necessary and sufficient} that the surprisal ranks in the upper tail of the surprisal distribution, since we are only interested in large surprisal values,  can be related through a monotone transformation.
+
+{\color{blue} What really matters here is not $\Pr(S\le s)$ but $\Pr(S>s)$! This is what we should have a result about. I've revised this to account for this. }
+
+Recall that the surprisal under the true distribution is defined as $S=-\log f(\bm{Y})$, and recall that $G(s)=\Pr(S\le s)$ denotes the CDF of $S$ at $s\in\mathbb{S}\subseteq\mathbb{R}$, where $\mathbb{S}$ denotes the support of the surprisals. Likewise, let $\widehat{S}=-\log \widehat{f}(\bm{Y})$ denote the surprisal under the fitted distribution, and for $\widehat{\mathbb{P}}_n(s):=n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i\le s]$ the empirical CDF of the fitted sample $\widehat{S}_1,\dots,\widehat{S}_n$ let $\widehat{\mathbb{S}}_n(s)=1-\widehat{\mathbb{P}}_n(s)$ denote the empirical survival function. For $\widehat{\mathbb{S}}_n(s)$ to provide an accurate estimate of the upper tail of $\Pr(S> s)$ in any given sample, we impose the following condition.
+
+{\color{blue} Previous result was not entirely correct since it did not cater for the change  of variables induced by $S=h(\widehat{S})$. This means that the empirical measures must be somewhat changed in order to account for this fact. This new result does does this.}
+
+For $\widehat{\mathbb{P}}_n(s)$ to be an accurate estimate of $G(s)$ in any given sample, the following condition turns out to be both necessary and sufficient.
+\begin{assumption}\label{ass:empirical_pis}
+There exists an $s_\star$ such that, for all $s\ge s_\star$ and a function $h(\cdot)$, strictly increasing on $s\ge s_\star$, such that $S=h(\widehat{S})$ almost surely on the set $\{S\ge s_\star\}\cap\{\widehat{S}\ge h^{-1}(s_\star)\}$. 
+\end{assumption}
+%Under the above assumption, we can prove that the empirical cdf of the fitted surprisals are an accurate approximation to the true surprisals. 
+\begin{lemma}\label{lem:confident}
+Assume that $S_1,\dots, S_n$ are iid realizations from $F$. For $\alpha \in(0,1)$, with probability at least $1-\alpha$, for any $s \ge s_\star$, $\widehat{\mathbb{S}}_n(h^{-1}(s))-\epsilon \leq \Pr(S>s) \leq \widehat{\mathbb{S}}_n(h^{-1}(s))+\epsilon$ if an only if Assumption \ref{ass:empirical_pis} is satisfied.
+\end{lemma}
+\begin{proof}
+Define $\mathbb{S}_n(s)=n^{-1}\sum_{i=1}^{n}1[S_i> s]=1-{\mathbb{P}}_n(s)$. For now, assume that, on the set $S,\widehat{S}\ge s_\star$, $\widehat{\mathbb{S}}_n(h^{-1}(s))={\mathbb{S}}_n(s)$ almost surely. 
+
+If this is satisfied, then
+\begin{flalign}
+\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\widehat{\mathbb{S}}_n(h^{-1}(s))-\Pr(S>s)\right|>\epsilon\right\}&=\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\mathbb{S}_n(s)-\Pr(S>s)\right|>\epsilon\right\}\nonumber\\&=\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\{1-\mathbb{P}_n(s)\}-\{1-F(s)\}\right|>\epsilon\right\}\nonumber\\&=\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\mathbb{P}_n(s)-F(s)\right|>\epsilon\right\}\nonumber\\&\le \operatorname{Pr}\left\{\sup _{s \in \mathbb{S}}\left|\mathbb{P}_n(s)-F(s)\right|>\epsilon\right\} \nonumber\\&=2 e^{-2 n \epsilon^2},\label{eq:result}
+\end{flalign}where the last inequality follows from  the Dvoretzky-Kiefer-Wolfowitz theorem, for every $\epsilon>0$. Taking $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$, we see that
+\begin{align*}
+\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-F(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
+\end{align*}
+Hence, with probability at least $1-\alpha$, $\sup_{s \ge s_\star}|\widehat{\mathbb{S}}_n(h^{-1}(s))-\Pr(S>s)|\le\epsilon$. Fixing an $s\ge s_\star$ and re-arranging terms yields the stated inequality
+$$
+\widehat{\mathbb{S}}_n(h^{-1}(s))-\epsilon\le \Pr(S>s)\le \widehat{\mathbb{S}}_n(h^{-1}(s))+\epsilon.
+$$
+
+For the above argument to hold, it must be that, on the set $s\ge s_\star$, $\widehat{\mathbb{S}}_n(h^{-1}(s))={\mathbb{S}}_n(s)$ almost surely. We now show that this is satisfied if and only if Assumption \ref{ass:empirical_pis} is satisfied. 
+
+%\noindent\textbf{Case 1: $\Rightarrow$.} 
+
+Take $s\ge s_\star$. Consider the event $1[S_i> s]$. By Assumption  \ref{ass:empirical_pis}, since $h(\cdot)$ is strictly increasing on $s\ge s_\star$, it has an inverse that must also be strictly increasing on $s\ge s_\star$. Since $s\ge s_\star$, we must have that $h^{-1}(s)\ge h^{-1}(s_\star)$. Therefore, we have that 
+\begin{equation*}\label{eq:new_indx}
+1[S_i> s]=1[h^{-1}(S_i)> h^{-1}(s)]=1[\widehat{S}_i> h^{-1}(s)],\text{ a.s. }\{S>s\}\cap\{\widehat{S}>h^{-1}(s)\}   . 
+\end{equation*}
+%Since $h(\cdot)$ is strictly increasing, and since $s\ge s_\star$, we have that $h^{-1}(s)\ge h^{-1}(s_\star)$. Hence, \eqref{eq:new_indx} is satisfied almost surely on the set $\{$
+%$$
+%1[h(\widehat{S}_i)\le h(s)]=1[\widehat{S}_i\le s].
+%$$
+Hence, for $s\ge s_\star$, we have that $\widehat{\mathbb{S}}_n(h^{-1}(s))={\mathbb{S}}_n(s)$ and \eqref{eq:result} is satisfied.
+
+
+%\noindent\textbf{Case 2: $\Leftarrow$.} Now, assume that $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ for all $s\ge s_\star$. Then, the sets 
+%$$
+%\mathcal{S}:=\{S_1,\dots,S_n:S_i>s_\star\}\text{ and }\widehat{\mathcal{S}}:=\{\widehat{S}_1,\dots,\widehat{S}_n:\widehat{S}_i>s_\star\}
+%$$must satisfy $|\mathcal{S}|=|\widehat{\mathcal{S}}|$, since $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$. Thus, the values in $\widehat{\mathcal{S}}$ and $\mathcal{S}$ must be the same up to a re-ordering of elements. Hence, there exists a bijection such that $S_i=h(\widehat{S}_i)$ for all $s>s_\star$. 
+%
+\end{proof}
+
+
+Lemma \ref{lem:confident} implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that they be related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same location as the true distribution.
+
+Importantly, Assumption \ref{ass:empirical_pis} is not be satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then Assumption \ref{ass:empirical_pis} will not be satisfied.  We forego a detailed example of the success and failure of this approach until Section xxx. 
+
+
+\textbf{Alternatively, we could give a short example where this works and doesn't...}
+
+
+\newpage
+
 
 \section{\cref{thm:three_types} in Action}
 
@@ -450,6 +574,57 @@ To show that this is the case we generate $R=1000$ independent samples of size $
 \end{figure}
 
 The most interesting thing from these examples from a methodological perspective is that if we get the assumed distribution of the data wrong, then this will have meaningful consequence for the behavior of the surprisal we are calculating. In particular, as the student-t example shows, when we model the data using a distribution which is assumed to have thinner tails than those of the actual data, the surprisal can have a very long/thick tail. This immediately suggests that if our goal is to check for anomalies, we should be using distributions that are somewhat robust to outliers, e.g., student-t, etc. I've obtained similar results if you model the data with a Gaussian, but the actual data generation mechanism is exponential. In this case, the max surprisal is Frechet. However, if you had modeled the data with something like a heavy-tailed student-t, then the max surprisal is Gumble. This suggests that the model you specify is absolutely critical to understanding behavior of the max surprisal itself.
+
+
+\section{Empirical CDF Approach}
+Recall that the surprisal is $S=-\log f(Y)$, for some assumed distribution $F$ with density/mass function $f(\cdot)$, and recall that $G(s)=\Pr(S\le s)$ denotes the CDF of $S$ at $s\in\mathbb{S}\subseteq\mathbb{R}$, where $\mathcal{S}$ denotes the support of the surprisals. Assume that the sequence of observed surprisals $s_1,\dots,s_n$ are iid realization from $S$, and let $\mathbb{P}_n(s):=n^{-1}\sum_{i=1}^{n}1[s_i\le s]$ denote the empirical CDF (eCDF) of the realized sample $s_1,\dots,s_n$. The following result shows that the eCDF of the surprisals can be used to consistently detect surprisals even though $G$ is unknown and $Y$ may not be distributed according to $F$. 
+\begin{lemma}\label{lem:ecdf}
+Assume that $s_1,\dots,s_n$ are iid realization from $S\sim G$. Let $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$. For $\alpha\in(0,1)$, with probability at least $1-\alpha$, for any $s\in\mathbb{S}$,
+$
+\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n(s)+\epsilon.
+$
+\end{lemma}
+\begin{proof}
+From the Dvoretzky-Kiefer-Wolfowitz inequality, for every $\epsilon>0$, we have 
+$$
+\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}\le 2e^{-2n\epsilon^2}.
+$$Taking $\epsilon$ as in the statement of the result we see that
+\begin{flalign*}
+\Pr\left\{\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.    
+\end{flalign*}
+Hence, with probability at least $1-\alpha$, $\sup_{s\in\mathcal{S}}|\mathbb{P}_n(s)-G(s)|\le\epsilon$. Fixing an $s\in\mathcal{S}$ and re-arranging terms yields the stated inequality
+$$
+\mathbb{P}_n(s)-\epsilon\le G(s)\le \mathbb{P}_n(s)+\epsilon,
+$$where $\epsilon$ is as stated in the result.
+\end{proof}
+
+Since $p_i=1-G(s_i)=\Pr[S>s_i]$, Lemma \ref{lem:ecdf} gives us an immediate bound on the accuracy of $p_i$. Namely, if we choose $\epsilon$ as in Lemma \ref{lem:ecdf}, then with probability at least $1-\alpha$
+$$
+1-\mathbb{P}_n(s_i)-\epsilon\le p_i\le 1-\mathbb{P}_n(s_i)+\epsilon
+$$
+
+
+This result by itself is not necessarily useful. After all, we want to conduct inference on the true distribution of the true surprisal: 
+$$
+G^\star(s)=\Pr(S^\star\le s)=\Pr(-\log f^\star(Y)\le s),\quad Y\sim f^\star.
+$$In general, all $\mathbb{P}_n(s)$ estimates is the distribution of the ``fitted surprisal'' 
+$$
+G(s)=\Pr(-\log f(Y)\le s)\ne G^\star(s)
+$$
+In general, there is no reason to expect that $G(s)$ should be close to $G^\star(s)$ for all $s$. 
+
+That being said, if we wish to have a conservative bound for the surprisal, all we require is that 
+$$
+\Pr(S\ge s)\ge \Pr(S^\star\ge s)\iff 1-G(s)\ge 1-G^\star(s)\iff G(s)\le G^\star(s)
+$$
+If $S$ satisfies $G(s)\le G^\star(s)$ for all $s\in\mathcal{S}$, and $G(s)< G^\star(s)$ for at least some $s\in\mathcal{S}$, then we say that $S$ \textbf{first-order stochastically dominates} $S^\star$. 
+
+Hence, so long as $S$ FOSD $S^\star$, we have that 
+$$
+\Pr(S^\star\ge s_i)=1-G^\star(s_i)\le p_i=1-G(s_i)\le 1-\mathbb{P}_n(s_i)+\epsilon,
+$$by our previous result with probability at least $1-\alpha$. 
+
+ 
 
 \bibliographystyle{agsm}
 \bibliography{refs}
