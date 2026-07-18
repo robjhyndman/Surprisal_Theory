@@ -65,6 +65,7 @@
 
 
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -154,11 +155,11 @@
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{plain}
-\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Assumption}[section]
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -337,7 +338,8 @@ m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
 a_t &= \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
 \end{align*} The threshold \(\tau\) is often set under the assumption of
 a Normal distribution. When we take a surprisal perspective, this is
-equivalent to setting \begin{equation}\phantomsection\label{eq-hampel}{
+equivalent to setting
+\begin{equation}\protect\phantomsection\label{eq-hampel}{
   F = N(m_t, a^2_t/\Phi^{-2}(0.75)).
 }\end{equation} The false anomaly rate is
 \(\alpha = 2[1 - \Phi(\tau/\Phi^{-1}(0.75))]\).
@@ -1278,7 +1280,7 @@ Corollary~\ref{cor-two} and the above we have that \[
 \subsection{\texorpdfstring{\(S\) has a polynomial
 moment}{S has a polynomial moment}}\label{s-has-a-polynomial-moment}
 
-\phantomsection\label{lem:bounds_poly}
+\protect\phantomsection\label{lem:bounds_poly}
 Suppose \(\bm{y}_1,\dots,\bm{y}_n\) are iid from a density \(f\), and
 let \(M_n = \max\{s_1,\dots,s_n\}\) where \(s_i = -\log f(\bm{y}_i)\).
 If Assumption~\ref{def-polybounded} is satisfied, then, for \(s>0\) and
