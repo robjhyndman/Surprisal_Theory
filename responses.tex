@@ -1,0 +1,179 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{bm,amsmath,amsfonts,amsthm}
+\usepackage{mathpazo,microtype,setspace,parskip}
+\usepackage[margin=2cm, bottom=2.5cm]{geometry}
+\usepackage{booktabs,todonotes}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage[no-weekday]{eukdate}
+\usepackage{color}
+\usepackage[colorlinks,linkcolor=black,citecolor=black,filecolor=black,bookmarks=false]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+%% CAPTIONS
+\usepackage{caption}
+\DeclareCaptionStyle{italic}[justification=centering]
+ {labelfont={bf},textfont={it},labelsep=colon}
+\captionsetup[figure]{style=italic,format=hang,singlelinecheck=true}
+\captionsetup[table]{style=italic,format=hang,singlelinecheck=true}
+
+%% GRAPHICS
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.8}
+
+\newcommand{\dt}{\mathrm{d}}
+\newcommand{\E}{\mathbb{E}}
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\setstretch{1.3}
+
+\begin{document}
+\title{Response to Referees}
+%\author{Rob J Hyndman and David T Frazier}
+\maketitle
+We thank you for your constructive comments, which helped us to improve the structure of our paper, as well as in pushing us to deepen our analysis of the cut posterior structure. Before responding to your specific comments, we first list here the major changes made. Your specific comments are reproduced in normal text, while our responses follow in \textit{italics}.
+
+
+\section*{Reviewer: 1}
+
+\noindent B. \textbf{Limitations.}
+\begin{itemize}
+    \item[A]  The method named 1. is to use the assumed data distribution F, and in Section 5 this is shown not to be viable in the sense that assuming the wrong distribution gives poor results. Therefore attention is shifted to the other two methods. That is fine, but should this method get a number then?
+    \item[B] Method 2. uses the empirical surprisal probabilities, which assumes that there is a strictly increasing function between the upper tail of the empirical distribution and its true distribution.
+    \begin{enumerate}
+        \item It is not clear how realistic that assumption is, some evidence or guidance would help.
+
+        \noindent \textit{This assumption is not strong for many data types of empirical interest. For instance, it is automatically satisfied if the true and assumed distributions are uni-modal, even if the assumed (or true) distribution exhibits skewness. The only settings in which this condition may not be satisfied is when the number of modes exhibited by the two distributions differ. In such cases, if one distribution has a mode in the tail of the distribution, then we cannot in general `order' the two densities in any stochastic sense, which means that no monotone transformation will exist. While a piecewise version may exist, it is not altogether clear how one could find the value $s_\star$ in this setting. We now give show how this condition can be verified for examples with uni-modal distributions. }
+        \item  Also, how large does the sample size have to be for this approach to work? The first experiment uses n = 1000, and in the second it also appears that the results become accurate for n at least 1000. The real datasets have n = 31648 (although that is not entirely clear, see below) and n = 97649.
+
+        %\noindent\textit{The result is true as stated for all $n\ge1$. However, as with any type of concentration statement, the value of $n$ determines the feasible level of error control. That is any value of $n$ that does not yield $\epsilon\in(0,1)$ gives, by construction, a vacuous bound, and clearly, from the definition of $\epsilon$ a large value of $n$ gives a tighter bound. This is not something that is specific to this approach, and is true for any such finite-sample confidence sequence one would hope to build.}
+        
+        \noindent\textit{Finding extreme surprisals under Method 2 requires one to accurately estimate an empirical quantile of the fitted surprisal distribution; e.g., the 10\% or 5\% quantile. As such, the method will only work when we have enough data to accurate estimate this quantile, which can be gauged by analyzing the range of the standard empirical  quantile confidence set based on the standard variance estimator: if this set is large, then the resulting method is unlikely to detect many true surprisals as the $\widehat{P}_n$ is simply too noisy to accurate estimate extreme quantiles.}
+        
+    \textit{Therefore, as with any statistical estimator, there is no singular sample size one can possibly point to and say that this will work well for all data types so long as the sample is larger than x. Instead, what matters is the variability of the data: the thicker the tails of the data the more data we need in order to accurately estimate extreme points. For instance, in the case where the data $Y$ is normally distributed, so that the surprisal $S=-\log f(Y)$ is chi-squared distributed, this method delivers accurate inferences after a few hundred observations. If instead, the the empirical quantile. Since the what matters is not so much how much data you hvae.}
+    \end{enumerate}
+\item[C] - Method 3 fits a GPD to the surprisals. However, for this it assumes that F has at least a finite second moment,[...] The paper recommends assuming heavier tails than the data, but nothing heavier than student with 4 degrees of freedom is used. Theorem 3.1 does not hold for t(1) and t(2), but one could try whether the method works in practice, or better, modify it so no moment condition is needed.
+
+\noindent\textit{Respectfully, this statement is simply not true. We believe this statement stems from the referee's confusion regarding the existence of moments under the data distribution, denoted as $F$ in our paper, and the existence of moments \textbf{under the distribution of the surprisal}, the latter of which form the bases for Theorem 3.1. This view is reinforced by the referee's incorrect assertion that  Theorem 3.1 ``does does not hold for t(1) and t(2)'': Let $Y\sim t(1)$, then, for $f$ the standard $t$ density, 
+$$
+S=-\log f(Y)\approx \log \left(1+\frac{Y^2}{p}\right),
+$$and the moment generating function of $S$ exists and satisfies
+$$
+\mathbb{E}\left[e^{t S}\right]\le C_p e^{t} \frac{\Gamma\left(\frac{p+1}{2}\right) \Gamma\left(\frac{p}{2}-\frac{t(p+1)}{2}\right)}{\Gamma\left(\frac{p}{2}\right) \Gamma\left(\frac{p+1}{2}-\frac{t(p+1)}{2}\right)},\quad t<\frac{p}{p_1}
+$$for a constant $C_p$, which is finite for $p\ge 1$. Hence, Theorem 3.1 shows in this case that the surprisal actually has a sub-exponential tail and the results of Theorem 3.1 are satisfied so long as $p\ge1$.} 
+
+\textit{We reiterate here, as we have already pointed out in the paper, that the moment condition we impose is \textbf{not on the distribution of the data, but on the induced distribution of the surprisal.} The two are related in a non-linear way and so must be thought about on a case-by-case basis. Further, we would also like to point out that Theorem 3.1 is also satisfied even if the surprisal distribution itself is a student $t(p)$ distribution: part 3 of Theorem 3.1 is valid for distributions that only exhibit a polynomial moment of order $p\ge1$. That is, even if the \textbf{surprisal distribution} is a student-t distribution with a single degree of freedom.   
+}
+
+
+\textit{We would like to note, however, that the referee's confusion is likely due, in part, to a clumsy bit of wording and an unfortunate typo on our part. 
+\begin{enumerate}
+    \item In Assumption 3.3, the $\alpha\ge 1$ condition in this statement should be $p\ge 1$, and has been corrected in the updated version.
+    \item The previous statement in the paper ``Here we extend that idea to allow F to be any distribution, including conditional distributions, that admits at least a finite second moment'' was not meant to be interpreted as an absolutist statement. As our discussion above makes clear, Theorem 3.1 is valid even where $F$ does not admit a second moment. This statement was simply trying to give convenient examples of distributions under which our results would be valid, but we see now that this has led to confusion. We have now modified this statement to read: `Here we extend that idea to allow F to be any distribution, including conditional distributions, \textbf{so long as the resulting surprisal distribution admits at least a first moment''.} We apologize for the confusion, and believe this updated phrasing clarifies the scale of our proposed approach. 
+\end{enumerate}}
+
+
+\item[D] For both methods 2. and 3. the authors should assist the user by providing some guidelines about the required sample size n.
+
+\textbf{Rob, any ideas? }
+
+\end{itemize}
+ 
+
+\noindent \textbf{Smaller comments:}
+\begin{enumerate}
+    \item[-] The paper is made harder to read by the absence of equation numbers in the main text. At the top of page 18 reference is made to an equation (1) but there is none, except in the Appendix but that is something unrelated.
+ \item[-] It would also be easier if the three proposals (or at least the second and third, since the first is not really proposed) were not referred to as numbers 2 and 3 but by a name or abbreviation.
+\item[-] page 9, assumption 3.3: the $\alpha$ is not used, do you mean p instead? 
+
+\textit{Yes, this was an unfortunate typo and has now been corrected. As you can see with this change, Assumption 3.3 only requires that the \textbf{surprisal distribution admits a finite first moment.}}
+\item[-] caption of Figure 1: "Observations are computed from a N(0,10)..." Do you mean generated?
+\item[-] Section 5.1: in this experiment you use t(4) which has a 3rd moment. Please rerun it with t(1) as well. Method 3. may no longer work due its moment condition, but how well does method 2. do, that does not require a moment condition?
+\textit{{\color{red}Rob: The referee appears to be confused as what the experiment is showing: using a model with a heavier tail will not deliver worse performance. That is, if we assume that the model is $t(1)$, then the resulting surprisal still has an exponential tail, and will thus behave similarly to a $t(4)$, which also has the same tail. We have made this point several times in the paper, but the referee has appeared to miss this...}}
+
+
+\item[-] Section 6.1: Not enough information is given to follow this data analysis. How are the surprisal values computed? From one big dataset of all 31648 mortalities, or from 172 datasets? If the latter, are they considered as plain univariate datasets or as time series (with which surprisals)?
+\item[-] Figure 3: You say that infant mortality (age 0) is much higher than the rest of childhood. This is not visible in the plots, because ages 0 to ~12 get basically the same color. Do you mean the top dark curve? Maybe it is better to give age 0 a different color.
+\item[-] Figure 5: For number of innings over 100, it appears that the fitted curve is not very different from constant. In that region, neither mean or variance change much. This would make some of the high points with innings between 100 and 200 about equally surprising as JM Anderson. Are you using some critical value to select the number of `substantial' surprisals?
+\end{enumerate}
+
+\section{Associate Editor}
+
+
+\noindent(1) The first proposed method is highly sensitive to correct specification of the underlying data distribution, and the simulation results demonstrate that it often performs poorly when this assumption is violated. The second proposed method estimates anomaly probabilities using the empirical distribution of the surprisal values, but its validity relies heavily on Assumption 1.  As noted by the Reviewer, this assumption requires considerably stronger theoretical justification or empirical evidence regarding the settings in which it is expected to hold\\ 
+
+\noindent\textit{We agree with the AE that the theoretical validity of Method 2 requires Assumption 1. However, we would also like to point out that this is because the theoretical results given in Lemma 2.1 is incredibly powerful: this is a finite sample guarantee that holds with large probability. This is not an asymptotic guarantee a is almost always the case in outlier/extreme point detection methods. As such, given the finite-sample nature of this guarantee, it is not at all surprising that strong conditions must be maintained.  }
+
+\noindent\textit{That being said, as we had previously written, Assumption 2.1 is fully justified and can be directly verified for any two pairs of assumed distributions. As was written after Lemma 2.1, while we had given explicit examples where this condition is \textbf{not satisfied}, we had not listed examples where it \textbf{is satisfied}. The monotonicy required by this assumption can be easily seen to be satisfied for any two classes of uni-modal distributions, and even to multi-modal distributions so long as the modes do not occur in the ``tails'' of the distributions. Additional discussion of this point has now been given after Lemma 2.1.}
+
+
+\noindent (2) The theoretical justification for the GPD approach is based on studying the limiting distribution of the maximum surprisal. However, the actual procedure is a classical peaks-over-threshold method, since a GPD is fitted to exceedances over a high surprisal threshold and the fitted model is subsequently used to estimate tail probabilities. Consequently, the relevant theoretical foundation is the Pickands–Balkema–de Haan theorem, or equivalently the assumption that the surprisal distribution belongs to the maximum domain of attraction of a generalized extreme value distribution. This connection should be stated explicitly and developed rigorously.\\
+
+{\color{red}Okay, I don't think I totally understand this comment. Are they saying they want us to change our results to some other representation in extreme value theory? If so, then this is indeed possible while maintaining versions of Assumptions 1-3. It will require some extra work, but it would also fit within the POT framework. What do you think, Rob?  }
+
+
+\textit{The conditions maintained in Assumptions 1-3 and the result obtained in Theorem 3.1 can already be used to directly deliver a theoretical results in the style of the Pickands–Balkema–de Haan theorem. Since Theorem 3.1 establishes convergence in distribution of the normalized maxima $\overline{M}_n$, obtained from an i.i.d. sample from a fixed distribution \(F\), this is sufficient to establish a corresponding first-order Pickands–Balkema–de Haan result. We now make this connection explicit in the paper with Corollary 1 and the surrounding discussion.}
+
+
+\noindent (3) The discussion of tail classes and limiting distributions is overly broad and lacks the level of rigor expected for an Extreme Value Theory justification. Rather than relying on moment conditions, the theoretical development should be formulated using standard domain-of-attraction assumptions.\\
+
+\noindent\textit{Respectfully, we disagree with the AE that our results are ``overly broad and lacks the level of rigor expected for an Extreme Value Theory justification''. The conditions maintained in Assumptions 1-3 can be directly interpreted by any researcher who has studied probability at the Master's level, and as such do not require that one has direct and intensive training in classical extreme value theory. The moment partition underlying Assumptions 1-3 is \textbf{the standard decomposition used in high-dimensional statistical analysis} to derive concentration inequalities and was precisely chosen for its broad applicability: this precise decomposition, sub-Gaussianity, sub-exponentiality, and polynomial moments underlies much of modern probability theory. This is not a determinant of our analysis as the AE appears to think, and ensures that this analysis can be understood by a broad swath of the statistical community and not simply those with a detailed understanding of classical extreme value theory. }
+
+
+\noindent\textit{Lastly, if the AE is concerned by the level or rigor with which these conditions and the ensuring results are proven, then we invite them to critique the results in full rather than simply asserting that they are not ``rigorous''. Rather, as stated, this assertion seems less like an issue with the underlying mathematics and more a concern that our stated conditions do not fit the standard mode of analysis they are accustom to. Indeed, as the new Corollary 1 demonstrates, our conditions are sufficient to deduce a rigorous result about the ``standard domain-of-attraction'' while having the added benefit that they are interpretable at a glance.}
+
+\noindent (4) The presentation of the GPD methodology is nonstandard and requires clarification. The manuscript states that a GPD is fitted to the largest $\beta$ surprisal values and that observations outside this set are assigned probability $\beta$, but it is unclear whether $\beta$ denotes a number of observations, a fraction of the sample, or a probability threshold. A standard POT formulation would instead introduce a threshold u, fit a two-parameter GPD to the threshold exceedances, and estimate tail probabilities accordingly. If a three-parameter GPD with an estimated location parameter is used, the authors should justify this choice, since the location parameter is typically fixed at the threshold and estimating it jointly with the scale and shape parameters may lead to instability.\\
+
+\noindent(5) Threshold selection is a fundamental component of any peaks-over-threshold procedure. Although the manuscript acknowledges that threshold selection is an open problem, the proposed methodology can not be properly evaluated without practical guidance. The threshold choices adopted in the simulations require justification, and the real-data applications should report the number of exceedances used, assess sensitivity to threshold selection, and include standard EVT diagnostic plots.\\
+
+\noindent (6.1) As noted by the Reviewer, the finite second-moment assumption is both questionable and largely unnecessary. Heavy-tailed distributions with infinite variance may still yield surprisal distributions belonging to a standard domain of attraction, while the existence of a finite second moment alone does not guarantee the validity of a GPD approximation. \\
+
+\noindent\textit{As noted in our rebuttal to the reviewer,  nowhere in our theoretical analysis did we assume that the surprisal distribution required a second moment assumption: Assumption 3.3  as stated, and therefore Theorem 3.1, only requires the existence of a \textbf{first moment}. The reviewer's confusion possibly stems from a mix-up between the moments under the data distribution, i.e., $F$ in our paper, and those required to exist under the surprisal distribution. Their confusion may also be the product of a clumsy bit of wording and an unfortunate typo in the previous manuscript.
+\begin{enumerate}
+    \item In Assumption 3.3, the $\alpha\ge 1$ condition in this statement should be $p\ge 1$, and has been corrected in the updated version. This assumption maintains that the surprisal distribution must admit \textbf{at least a first moment}; no second moment assumption is required.
+    \item The previous statement in the paper ``Here we extend that idea to allow F to be any distribution, including conditional distributions, that admits at least a finite second moment'' was not meant to be interpreted as an absolutist statement. As our discussion above makes clear, Theorem 3.1 is valid even where $F$ does not admit a second moment. This statement was simply trying to give convenient examples of distributions under which our results would be valid, but we see now that this has led to confusion. We have now modified this statement to read: `Here we extend that idea to allow F to be any distribution, including conditional distributions, \textbf{so long as the resulting surprisal distribution admits at least a first moment''.} We apologize for the confusion, and believe this updated phrasing clarifies the scale of our proposed approach. 
+\end{enumerate}}
+
+
+\noindent(6.2) The assumptions should therefore be reformulated directly in terms of the tail behavior of the surprisal distribution.\\
+
+\textit{We bring the AEs attention to the fact that Assumptions 3.1-3.3 are in fact statements on the tail behaviour of the surprisal distribution. We have chosen to classify the tail behavior precisely as is done in the high-dimensional statistical literature (see, e.g., Wainright), which is the modern workhorse of statistical theory. These assumptions directly embed how many moments a distribution has, which directly translates into the corresponding ``thickness'' of the surprisal distributions tail. As mentioned above, this is an explicit choice on our part: we have chosen this precise moment decomposition as we believe it will appeal to the broadest audience. The vast majority of statisticians can tell at a glance how many moments a distribution will exhibit, but they would be hard pressed to tell you to which ``standard domain of attraction'' a given distribution lies.}
+
+\noindent(7) The theoretical developments assume independent observations, whereas the French mortality application involves temporally structured data in which exceedances are naturally clustered across years, ages, and sexes. In such settings, standard peaks-over-threshold methods require modifications to account for dependence through concepts such as the extremal index, declustering, or effective sample size. Ignoring dependence may result in miscalibrated tail probabilities and uncertainty estimates.\\
+
+\noindent\textit{This is a true point and something that has to be acknowledged in the paper}
+
+\noindent(8) The manuscript largely overlooks the important issue of robust estimation in computing the surprisal values. Since surprisals depend on estimated model parameters, classical estimators can be severely distorted by outliers, leading to unreliable surprisal values and compromising both the empirical and GPD-based procedures. The paper should discuss robust estimation strategies and compare the proposed approach with robust distance-based methods, which remain highly competitive for the detection of classical outliers (see extensive comments in the Reviewer’s report).\\
+
+\noindent(9) The discussion of conditional distributions in Section 4 is interesting, but raises additional theoretical questions regarding the appropriate tail distribution. It is unclear whether the proposed methodology targets the marginal tail over the joint distribution of responses and covariates or conditional tails at fixed covariate values. This distinction deserves a more thorough treatment.\\
+
+\textit{This is a good point and one I don't have an answer for.}
+
+\noindent(*) Finally, the Reviewer raises a number of additional technical and presentation issues that should also be carefully addressed in any revision.\\
+
+\noindent(**) While the overall idea of the paper is interesting and potentially suitable for JCGS, I do not believe that the current version meets the level of theoretical rigor and methodological development expected by the journal. Consequently, I recommend rejection of the manuscript in its present form. However, I would encourage the authors to undertake a substantial revision that rigorously addresses the theoretical foundations of the proposed methodology, strengthens the Extreme Value Theory justification, and comprehensively responds to the methodological concerns raised by the Reviewer. A thoroughly revised manuscript along these lines could be considered as a new submission.
+
+
+
+
+
+
+
+\bibliographystyle{agsm}
+\bibliography{refs}
+
+\end{document}
