@@ -158,13 +158,16 @@ Recall that the surprisal under the true distribution is defined as $S=-\log f(\
 
 ::: {#def-empirical_pis}
 
-There exists an $s_\star$ and a function $h(\cdot)$ that is strictly increasing on $[s_\star, \infty)$, such that $S=h(\widehat{S})$ almost surely for all $\widehat{S} \ge s_\star$.
+There exists an $s_\star\in\mathbb{R}$ and a function $h(\cdot)$, strictly increasing on $[s_\star, \infty)$, such that $S=h(\widehat{S})$ almost surely for all $\widehat{S} \ge s_\star$, and $S\le h(s_\star)$ for $\widehat{S}< s_\star$.
 
 :::
 
 ::: {#lem-confident}
 
-Let $S_1,\dots, S_n$ be iid with distribution function $G$. Then, for any $\alpha \in(0,1)$, and $\epsilon = \sqrt{\log(2/\alpha)/(2n)}$, we have for all $s \ge s_\star$, $\widehat{\mathbb{P}}_n(s)-\epsilon \leq G(s) \leq \widehat{\mathbb{P}}_n+\epsilon$ with probability at least $1-\alpha$ if and only if @def-empirical_pis is satisfied.
+Let $S_1,\dots, S_n$ be iid with distribution function $G$. If @def-empirical_pis is satisfied, then, for any $\alpha \in(0,1)$, and $\epsilon = \sqrt{\log(2/\alpha)/(2n)}$, with probability at least $1-\alpha$, for every $\widehat{S}_i\ge s_\star$
+$$
+\widehat{\mathbb{P}}_n(\widehat{S}_i)-\epsilon\le G(S_i)\le \widehat{\mathbb{P}}_n(\widehat{S}_i)+\epsilon.
+$$
 
 :::
 
@@ -178,75 +181,57 @@ Our third approach uses extreme value theory applied to the (univariate) surpris
 
 An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
 
-Here we extend that idea to allow $F$ to be any distribution, including conditional distributions, that admits at least a finite second moment. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$. To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, similar to the Fisher-Tippett-Gnedenko (FTG) theorem [@coles2001introduction].
+Here we extend that idea to allow $F$ to be any distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
 
-We consider three possible conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, describing increasingly heavy tails:
+To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, to ensure a Pickands–Balkema–de Haan theorem is satisfied. However, rather than formulate this result using domain-of-attraction conditions, we formulate the result using moments of the surprisal $S=-\log f(Y)$. We believe this formulation is helpful as the moment behavior of $S$ can often be directly discerned at a glance and so does not require that the practitioner have previous knowledge of EVT or any the knowledge of which domain-of-attraction $S$ belongs. For instance, if $Y\sim N(0,1)$, then it is immediately obvious that $S$ is chi-squared, and it is taught in early statistics classes that chi-squared random variables have an exponential moment.
 
-1. where $S$ is sub-Gaussian (e.g., when $f$ is bounded above and below);
-2. where $S$ is sub-exponential (e.g., when $f$ is Gaussian); and
-3. where $S$ has a polynomial moment (e.g., when $f$ is Student-t).
-
-We state these as three alternative assumptions.
+To state our results, we thus maintain the following conditions.
 
 ::: {#def-bounded}
-#### Sub-Gaussian
-The random variable $S =-\log f(\bm{Y})\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
-$$
-	\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\}.
-$$
+#### Exponential Moment Existence
+The random variable $S =-\log f(\bm{Y})\in\mathbb{R}$ is such that $\mu=\E[S]$ exist. For some parameters $\nu>0$ and $\sigma^2>0$, and any $\lambda\in\mathbb{R}$ such that $|\lambda|\le 1/\nu$, $\E[e^{\lambda(S-\mu)}]\le e^{\lambda^2\sigma^2/2}.$
 :::
 
-::: {#def-subbounded}
-#### Sub-exponential
-The random variable $S$ admits an exponential moment in a neighborhood of zero; i.e., for parameters $\nu$ and $b$,
-$$
-	\E \exp\{\lambda(S-\E[S])\} \leq \exp\{\lambda^2\nu^2/ 2\} \quad\text{ for all } \quad |\lambda|< 1/b.
-$$
+::: {#def-poly}
+#### Polynomial Moment Existence
+For some $q>1$, $\E[(S-\mu)^{q}]<\infty$.
 :::
 
-::: {#def-polybounded}
-#### Polynomial
-The random variable $|S|$ admits a polynomial moments of order $\alpha\ge 1$; i.e., $\E[|S|^p] \le C^p$ for some $C>0$ such that $C^p-1>0$.
+@def-bounded, or variations thereof, underlies much of modern statistical analysis and in plain language ensures that $S$ is a sub-exponential random variable. This condition is easy to check for many distributions, and is maintained for precisely this purpose. For example, if $Y\sim t_p$, $p\ge1$, then it is straightforward to show that $S=-\log f(Y)$ has a moment generating function, on a certain domain, which implies @def-bounded is satisfied: the quantities $\mu,\sigma^2$ and $\nu$ can be directly calculated from the MGP and are functions of the degrees of freedom parameter $p$.
+
+@def-poly will be satisfied in cases where $S$ only admits a polynomial moment. For instance, if we assume that $Y$ has a standard Gaussian density, so that $S\propto Y^2$, but the actual distribution of $Y$ is student-t with $p$ degrees of freedom, then $S$ will satisfy @def-poly so long as $p\ge2$; i.e., so long as the observed data has at least a finite mean.
+
+Define the GPD distribution function
+$$
+H_{\xi}(y)=\left\{\begin{array}{lll}
+1-(1+\xi y)^{-1 / \xi}, & \xi \neq 0, & 1+\xi y>0 \\
+1-e^{-y}, & \xi=0, &
+\end{array}\right.
+$$
+
+::: {#thm-gpd}
+Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $\bm{Y}\sim F$. Let the regularity conditions in @def-regular be satisfied. Then, there exists a scale function $\beta(u)>0$ such that
+$$
+\lim_{u\uparrow s_+}\sup_{y\ge0} \left|\Pr\left(\frac{(S-\mu)-u}{\beta(u)}\le y\bigg{|}(S-\mu)>u\right)-H_\xi(y)\right|=0,
+$$
+where the specific value of $\xi$, and the function $\beta(u)$, depends on whether @def-bounded or @def-poly is satisfied.
 :::
 
-@def-bounded will be satisfied in cases where the density $f$ is bounded both above and below over the support of $f$, such as with mass functions on a finite set. However, it may not be satisfied if the log density has no lower bound over the support of $f$.
+@thm-gpd shows that the conditional excess distribution function of the surprisal converges to the GDP distribution where the value of $\xi$ is constrained by the number of finite moments which $S$ exhibits. If the surprisal distribution has at least an exponential tail and full support, then the conditional excess distribution function of the surprisal behaves like a shifted exponential distribution; if instead the surprisal only has a polynomial moment, then the conditional excess distribution function converges to the Pareto distribution. @thm-gpd then gives theoretical credence to our proposed POT approach: in large samples the conditional excess distribution function of the surprisal converges to the GPD, and using the fitted GPD as an approximation for the true surprisal probability should deliver a reasonably accurate approximation in large sample, under regularity conditions, and so long as we can accurately estimate the parameters of the Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
 
-@def-subbounded will be satisfied when $f$ has full support on $\mathbb{R}^d$ and the log density is unbounded below, such as with a Gaussian distribution.
+It is possible to link Assumptions [-@def-bounded] and [-@def-poly] to the domain of attraction conditions usually considered in extreme value theory. For simplicity, let us assume that range of $S$ is $\mathbb{R}$. Under technical conditions, @def-bounded then implies that the distribution of $S$, denoted by $G$ herein, is in the Gumbel domain of attraction, i.e., $H_0$. In contrast, under @def-poly, $G$ can be in either the Gumbel or Frechet domain of attraction: where $q$ denotes the number of assumed moments, we only have that $0\le \xi\le 1/q$ and so cannot exclude the Gumbel domain of attraction; if, however, we know that the $(q+1)$-th moment of $S$ if infinite, then @def-poly we have that $G$ is in the Frechet domain of attraction and $0<1/(1+q)\le\xi\le1/q$.
 
-@def-polybounded will be satisfied when $f$ has polynomial tails, such as with a Student-t distribution.
-
-Under each of Assumptions [-@def-bounded]--[-@def-polybounded], we seek a result on the limiting distribution of the maximum of the surprisals $M_n = \max\{s_1,\dots,s_n\}$. This is provided in @thm-three_types, with the proof given in the Appendix.
-
-::: {#thm-three_types}
-Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log f(\bm{Y})$, where $\bm{Y}\sim F$. Further, let $M_n=\max\{s_1,\dots,s_n\}$, where $s_i=-\log f(y_i)$.
-
-1. If the surprisal satisfies @def-bounded, then
-$$
-  \sup_{s:s>0}\left|\Pr\left\{\big|M_n-\E[S]\big|\ge \sqrt{2\nu^2 s}+\sqrt{2\nu^2\log(2n)}\right\}-e^{-s}\right|=o(1).
-$$
-2. If the surprisal satisfies @def-subbounded, then
-$$
-  \sup_{s:s>1/b}\left|\Pr\Big\{\big|M_n-\E[S]\big|\ge (2b)s+(2b)\log(2n)\Big\}-e^{-e^{-s}}\right|=o(1).
-$$
-3. If the surprisal satisfies @def-polybounded, then
-$$
-	\sup_{s:s>C}\left|\Pr\Big\{\big|M_n-\E[S]\big|\ge (Csn^{1/p})\Big\}-e^{-s^{-p}}\right|=o(1).
-$$
-:::
-
-@thm-three_types shows that the limiting distribution of $M_n$ falls within the class of extreme value distributions, for each of the three assumptions. If the surprisal has Gaussian like tails, then the maximum surprisal is a reversed Weibull; if it only has an exponential moment, then the maximum surprisal will be Gumbel; if the maximum surprisal only has a polynomial moment, then it is Fréchet. As each of these distributions is a member of the generalized extreme value family, then the upper tail of the distribution can be approximated by a Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
-
-In particular, even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the three assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities.
-
-@thm-three_types also helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal follows a Fréchet distribution. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., sub-exponential or polynomial) when the data are actually light-tailed (e.g., sub-Gaussian), the resulting distribution of the maximal surprisal remains consistent with the lighter tail (i.e., it is sub-Gaussian). As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate anomaly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
+<!--
+Even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the three assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities. Indeed, @thm-gpd helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal can have a heavy tail; see, e.g., the earlier example where we assumed $Y\sim N(0,1)$, when in actuality $Y\sim t_\nu$. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., $t_2$) when the data are actually light-tailed (e.g., Gaussian), then the conditional excess distribution function of the surprisal remains consistent with the lighter tail. As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate anomaly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
+-->
 
 # Applicability for conditional distributions {#sec-conditional}
 
-The theoretical results in @lem-confident and @thm-three_types assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are agnostic as to the dimension of $\bm{Y}$; the resulting surprisal $S_i=-\log f(\bm{Y})$ is always univariate, and remains iid since any function of $\bm{Y}$ is also iid.
+The theoretical results in @lem-confident and @thm-gpd assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are agnostic as to the dimension of $\bm{Y}$; the resulting surprisal $S_i=-\log f(\bm{Y})$ is always univariate, and remains iid since any function of $\bm{Y}$ is also iid.
 
 However, there are many modeling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, we can think of our observed data being the variables $\bm{Y}=(Z,\bm{X})$ where $Z$ is some outcome of interest and $\bm{X}$ are variables that are used to predict or explain $Z$. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z\mid \bm{X}=\bm{x})$, and the surprisal $S=-\log f_Z(Z\mid \bm{X}=\bm{x})$ can be thought of as being computed "conditional on a given $\bm{X}=\bm{x}$".
 
-For a fixed vector of the conditioning variables, it is not hard to see why our theoretical results will remain valid: by fixing $\bm{X}=\bm{x}$, since we observe iid $\bm{Y}=(Z_i,\bm{X}_i)$, the distribution of $Z\mid \bm{X}=\bm{x}$ is also iid conditional on $\bm{X}=\bm{x}$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed value of the covariates $\bm{x}$, then @lem-confident and @thm-three_types can be applied conditional on this fixed set of covariates.
+For a fixed vector of the conditioning variables, it is not hard to see why our theoretical results will remain valid: by fixing $\bm{X}=\bm{x}$, since we observe iid $\bm{Y}=(Z_i,\bm{X}_i)$, the distribution of $Z\mid \bm{X}=\bm{x}$ is also iid conditional on $\bm{X}=\bm{x}$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed value of the covariates $\bm{x}$, then @lem-confident and @thm-gpd can be applied conditional on this fixed set of covariates.
 
 However, it is important to realize that if we wish to calculate surprisals across both the outcomes and covariates (i.e., when allowing both $Z$ and $\bm{X}$ to vary), then what is a surprisal may change from instance to instance. To see why, consider the simple example where we wish to detect surprisals using a simple Gaussian regression model for $Z\mid X$, so that
 $$
@@ -407,223 +392,351 @@ Both authors are funded by the Australian Research Council through Discovery Pro
 # Proof of @lem-confident
 
 ::: {.proof}
-Define $\mathbb{P}_n(s)=n^{-1}\sum_{i=1}^{n}1[S_i\le s]$. For now, assume that, on the set $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ almost surely. If this is satisfied, then
+**Step 1.** Define $\mathbb{P}_n(s)=n^{-1}\sum_{i=1}^{n}1[S_i\le s]$. We first derive a high probability bound under the assumption that on the set $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ almost surely. In **Step 2.** we demonstrate that this latter assumption is satisfied under our maintained conditions.
+
+Since on the set $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$, almost surely
 \begin{flalign}
 \operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\widehat{\mathbb{P}}_n(s)-G(s)\right|>\epsilon\right\}&=\operatorname{Pr}\left\{\sup _{s \ge s_\star}\left|\mathbb{P}_n(s)-G(s)\right|>\epsilon\right\}\nonumber\\&\le \operatorname{Pr}\left\{\sup _{s \in \mathbb{S}}\left|\mathbb{P}_n(s)-G(s)\right|>\epsilon\right\} \nonumber\\&=2 e^{-2 n \epsilon^2},\label{eq:result}
-\end{flalign}where the last inequality follows from  the Dvoretzky-Kiefer-Wolfowitz theorem, for every $\epsilon>0$. Taking $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$, we see that
+\end{flalign}where the last inequality follows from the Dvoretzky-Kiefer-Wolfowitz theorem, for every $\epsilon>0$. Taking $\epsilon=\sqrt{\log (2/\alpha)/(2n)}$, we see that
 \begin{align*}
 \Pr\left\{\sup_{s\in\mathbb{S}}|\mathbb{P}_n(s)-G(s)|>\epsilon\right\}&\le 2e^{-2n\epsilon^2}\\&=2e^{-2n \left(\frac{\log(2/\alpha)}{2n}\right)}\\&=2e^{-\log(2/\alpha)}\\&=\alpha.
 \end{align*}
-Hence, with probability at least $1-\alpha$, $\sup_{s \ge s_\star}|\widehat{\mathbb{P}}_n(s)-G(s)|\le\epsilon$. Fixing an $s\ge s_\star$ and re-arranging terms yields the stated inequality
+Hence, with probability at least $1-\alpha$, $\sup_{s \ge s_\star}|\widehat{\mathbb{P}}_n(s)-G(s)|\le\epsilon$. Thus, for any $s\ge s_\star$, re-arranging terms yields the stated inequality
 $$
 \widehat{\mathbb{P}}_n(s)-\epsilon\le G(s)\le \widehat{\mathbb{P}}_n(s)+\epsilon.
 $$
 
-For the above argument to hold, it must be that, on the set $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ almost surely. We now show that this is satisfied if and only if @def-empirical_pis is satisfied.
+For the above argument to hold, it must be that, on the set $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ almost surely.
 
-**Case 1: $\Rightarrow$**. Take $s\ge s_\star$. Consider the random variable $1[S_i\le s]=1$ and note that, by Assumption  @def-empirical_pis, it must be that $1[h(\widehat{S}_i)\le h(s)]=1[S_i\le s]$ almost surely. However, since $h(\cdot)$ is strictly increasing, it has an inverse that is also strictly increasing, so that (almost surely)
-$$
-1[h(\widehat{S}_i)\le h(s)]=1[\widehat{S}_i\le s].
-$$
-Hence, for $s\ge s_\star$, $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ and \eqref{eq:result} is satisfied.
+**Step 2.** We now show that the maintained condition stated in **Step 1.** is valid under @def-empirical_pis.
 
-**Case 2: $\Leftarrow$**. Now, assume that $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$ for all $s\ge s_\star$. Then, the sets
+Fix an index $i$ with $\widehat{S}_i \geq s_{\star}$. For any $j$, consider the two possibilities. If $\widehat{S}_j \geq s_{\star}$, strict monotonicity gives
 $$
-\mathbb{S}:=\{S_1,\dots,S_n:S_i>s_\star\}\text{ and }\widehat{\mathbb{S}}:=\{\widehat{S}_1,\dots,\widehat{S}_n:\widehat{S}_i>s_\star\}
-$$must satisfy $|\mathbb{S}|=|\widehat{\mathbb{S}}|$, since $\widehat{\mathbb{P}}_n(s)={\mathbb{P}}_n(s)$. Thus, the values in $\widehat{\mathbb{S}}$ and $\mathbb{S}$ must be the same up to a re-ordering of elements. Hence, there exists a bijection such that $S_i=h(\widehat{S}_i)$ for all $s>s_\star$.
-
+\widehat{S}_j \leq \widehat{S}_i \quad \Longleftrightarrow \quad h\left(\widehat{S}_j\right) \leq h\left(\widehat{S}_i\right) \quad \Longleftrightarrow \quad S_j \leq S_i .
+$$
+If $\widehat{S}_j<s_{\star}$, then both inequalities hold, because
+$$
+\widehat{S}_j<s_{\star} \leq \widehat{S}_i, \quad S_j \leq h\left(s_{\star}\right) \leq h\left(\widehat{S}_i\right)=S_i .
+$$
+Consequently, $1\left[\widehat{S}_j \leq \widehat{S}_i\right]=1\left[S_j \leq S_i\right]$ for every $j$. Summing yields the exact identity
+$$
+\widehat{\mathbb{P}}_n(\widehat{S}_i)=\mathbb{P}_n\left(S_i\right) .
+$$
+Therefore, simultaneously for all eligible indices,
+$$
+\left|\widehat{\mathbb{P}}_n(\widehat{S}_i)-G\left(S_i\right)\right|=\left|\mathbb{P}_n\left(S_i\right)-G\left(S_i\right)\right| \leq \sup _{s \in \mathbb{R}}\left|\mathbb{P}_n(s)-G(s)\right| .
+$$
+The stated result then follows from **Step 1.**
 :::
 
-# Proof of @thm-three_types
+# Proof of @thm-gpd
 
-We prove each of the three cases in turn.
+Before proving the main result, we state and prove two key Lemmas.
 
-## $S$ has sub-Gaussian tails
+## Lemmas
 
-::: {#lem-bounds}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$.
-If $S =-\log f(\bm{Y})\in\mathbb{R}$, and satisfies, for all $\lambda\in\mathbb{R}$, and some $\nu>0$,
+In this section, let $X=S-\mu$, and let $\mathcal{X}=\text{supp}(X)$. For $G$ the distribution function of $X$, define $\bar{G}=1-G$, and let $x_+:=\sup\{x\in\mathcal{X}:G(x)<1\}=\infty$. Define the sequence $b_n$ by the relation $\bar{G}(b_n)= 1/n$, for all $n$ large enough, and let $a_n=1/\{n\cdot g(b_n)\}>0$, where $g$ denotes the density of $G$. Define $M_n=\max\{S_1-\mu,\dots,S_n-\mu\}$. We maintain the following regularity conditions on $X$.
+
+::: {#def-regular}
+#### Regularity Condition
+(i) For some $t_0<x_+$, $G$ is absolutely continuous on $(t_0,x_+)$ with a strictly positive and continuously differentiable density $g$. (ii) $\bar{G}(t)\rightarrow0$ as $t\rightarrow x_+$. (iii) The reciprocal hazard function $r(t)=\bar{G}(t)/g(t)$ satisfies
 $$
-\E \exp\{\lambda (S-\E[S])\}\le \exp\{\lambda^2 \nu^2/2\},
-$$
-then, for $s\in\mathbb{R}_+$,
-$$
-\Pr\{M_n-\E[S]\ge s\}\le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
+\lim_{t\uparrow x_+} \frac{d}{dt }r(t)=\xi\in\mathbb{R}.
 $$
 :::
 
-::: {.proof}
-For any $\lambda>0$,
-\begin{align}
-\Pr\{S\ge s\} =
-\Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda (s-\E[S])}\right\}
- & \le e^{-\lambda(s-\mu)}\E e^{\lambda (S-\mu)} \\
- & \le e^{-\lambda(s-\mu)}e^{\lambda^2\nu^2/2}.
-\end{align}
-Now, we can maximize the right-hand side of the above bound in $\lambda$, which yields the optimal value $\lambda=(s-\mu)/\{M^2\}$. Plugging this in we have the bound
+Define
 $$
-\Pr\{S\ge s\}\le e^{-\frac{1}{2}(s-\mu)^2/\nu^2}.
+G_\xi(x):=\begin{cases}
+    \exp\{-(1+\xi x)^{-1/\xi}\},\quad\xi\ne0,\quad1+\xi x>0,\\
+    \exp\{-e^{-x}\},\quad\xi=0
+\end{cases}.
 $$
-The stated result now follows by noting that
-\begin{align}
-\Pr\left(M_n-\E[S]\ge s\right) = 1-\Pr\{M_n\le s\}
- & = 1-\Pr\{S\le s\}^n                       \\
- & = 1-(1-\Pr\{S\ge s\})^n                           \\
- & \le 1-\left(1-e^{-\frac{1}{2}s^2/\nu^2}\right)^n.
-\end{align}
-:::
 
-::: {#cor-one}
-If @def-bounded is satisfied, then, for all $s>0$,
+::: {#lem-GEVconv}
+@def-regular is satisfied. If @def-bounded is satisfied then, for every $x\in\mathbb{R}$,
 $$
-\Pr\Big(|M_n-\E[S]| \ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(2n)}\Big) \le e^{-s}.
+\Pr\left(\frac{M_n-b_n}{a_n}\le x\right)\longrightarrow G_0(x).
+$$
+If instead @def-poly is satisfied, then
+$$
+\Pr\left(\frac{M_n-b_n}{a_n}\le x\right)\longrightarrow G_\xi(x),\quad 0\le\xi\le 1/q.
 $$
 :::
 
 ::: {.proof}
-This follows directly from the union bound:
-\begin{align}
-\Pr\Big(|M_n|\ge \sqrt{2\nu^2s} + \sqrt{2\nu^2\log(n)}\Big)
- & \le n \Pr\Big\{|S|\ge \sqrt{2}\nu^2s + \sqrt{2\nu^2\log(n)}\Big\} \\
- & \le 2n e^{-[\sqrt{2\nu^2s}+\sqrt{2\nu^2\log(n)}]^2/(2\nu^2)} \\
- & = 2n e^{-\frac{1}{2\nu^2}(2s\nu^2 )-\frac{2\nu^2\log(2n)}{2\nu^2}-\frac{\sqrt{2\nu^2s}\sqrt{2\nu^2\log(2n)}}{2\nu^2}} \\
- & \le e^{-\sqrt{\log(2n)s}-s} \\
- & \le e^{-s}
-\end{align}
-The first result follows from the iid assumption on $S$ and the union bound, while the second from the assumption that $S$ is sub-Gaussian. The remaining inequalities follow from reorganizing terms.
-:::
+The proof proceeds in four steps.
 
-@cor-one is useful as it clarifies that if the surprisal is sub-Gaussian, then the maximal surprisal will follow a reversed Weibull distribution, and thus is within the class of extreme value distributions.
-
-## $S$ has an exponential moment
-
-::: {#lem-bounds_sub}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-subbounded is satisfied, then, for $s\in\mathbb{R}_+$,
+**Step 1: Upper tail threshold.**
+For $T>\max(t_0,0)$ and $t\ge T$, the fundamental theorem of calculus gives
 $$
-	\Pr\left(M_n-\E[S]\ge s\right)\le 1-
-	\begin{cases}
-		(1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
-		(1-e^{-s/2b})^n                 & \text{ if }s>\nu^2/b
-	\end{cases}.
+  \frac{r(t)}{t}-\xi
+  =\frac{r(T)-\xi T}{t}
+   +\frac1t\int_T^t\{r'(u)-\xi\}\,du.
 $$
-:::
+Given $\varepsilon>0$, choose $T$ so that $|r'(u)-\xi|\le\varepsilon$ for all $u\ge T$. The absolute value of the integral term is then at most $\varepsilon(t-T)/t$, and the first term tends to zero. Since $\varepsilon$ is arbitrary,
+\begin{equation}
+  \frac{r(t)}{t}\longrightarrow\xi.
+  \label{eq:scale-order}
+\end{equation}
+As $r(t)>0$ and $t>0$ for all sufficiently large $t$, this implies $\xi\ge0$.
 
-::: {.proof}
-The result follows a similar argument as for @lem-bounds, up until we maximize the tail bound. In particular, for any $\lambda>0$,
-\begin{align*}
-  \Pr\left\{ S-\E[S]\ge s\right\} =
-  \Pr\left\{e^{\lambda (S-\E[S])}\ge e^{\lambda s}\right\}
-    & \le e^{-\lambda s}\E e^{\lambda (S-\E[S])} \\
-    & \le e^{-\lambda s}e^{\lambda^2\nu^2/2}.
-\end{align*}
-Now, we must consider a constrained optimization to ensure the right-hand side exists. In particular, we know from the proof of @lem-bounds that the unconstrained optimum is $\lambda=s/\nu^2$, which corresponds to the constrained optimum on the set $0\le t<\nu^2/b$. However, when $s\ge \nu^2/b$, the maximum is achieved at $\lambda=1/b$, and putting this together yields
+Fix $x\in\mathbb R$ such that $1+\xi x>0$; when $\xi=0$, this permits every real $x$. Define
 $$
-  \Pr\left\{S-\E[S]\ge s\right\}\le
+  J_x=[\min(0,x),\max(0,x)],\qquad
+  c_x=\min_{v\in J_x}(1+\xi v)
+     =\min(1,1+\xi x)>0.
+$$
+By \eqref{eq:scale-order},
+$$
+  \sup_{v\in J_x}
+  \left|
+    \frac{t+r(t)v}{t}-(1+\xi v)
+  \right|
+  \le |x|\left|\frac{r(t)}{t}-\xi\right|
+  \longrightarrow0.
+$$
+Consequently, for all sufficiently large $t$,
+\begin{equation}
+  \inf_{v\in J_x}\{t+r(t)v\}
+  \ge\frac{c_x}{2}t
+  \longrightarrow\infty.
+  \label{eq:moving-interval}
+\end{equation}
+Thus the entire interval between $t$ and $t+r(t)x$ eventually lies in $(t_0,\infty)$, and its smallest point tends to infinity. This permits the use of @def-regular(iii) uniformly along that interval, including when $x<0$.
+
+**Step 2: Tail ratio.**
+Set
+$$
+  \eta_t=\sup_{w\in J_x}|r'(t+r(t)w)-\xi|.
+$$
+@def-regular(iii) and equation \eqref{eq:moving-interval} imply $\eta_t\to0$. For every $v\in J_x$, the fundamental theorem of calculus gives
+$$
+  \frac{r(t+r(t)v)}{r(t)}
+  =1+\int_0^v r'(t+r(t)w)\,dw.
+$$
+All integrals with a negative upper limit are interpreted as oriented integrals. Hence
+\begin{equation}
+  \sup_{v\in J_x}
+  \left|
+    \frac{r(t+r(t)v)}{r(t)}-(1+\xi v)
+  \right|
+  \le |x|\eta_t
+  \longrightarrow0.
+  \label{eq:local-scale}
+\end{equation}
+Since $1+\xi v\ge c_x>0$ on $J_x$, the ratios on the left are eventually bounded below by $c_x/2$. Taking reciprocals in \eqref{eq:local-scale} is therefore valid uniformly on $J_x$, yielding
+\begin{equation}
+  \sup_{v\in J_x}
+  \left|
+    \frac{r(t)}{r(t+r(t)v)}-\frac{1}{1+\xi v}
+  \right|
+  \longrightarrow0.
+  \label{eq:reciprocal-scale}
+\end{equation}
+
+On $(t_0,\infty)$, positivity of $\overline G$ and $g$ gives
+$$
+  \frac{d}{dt}\log\overline G(t)
+  =-\frac{g(t)}{\overline G(t)}
+  =-\frac{1}{r(t)}.
+$$
+Thus, for any $u,v>t_0$,
+\begin{equation}
+  \log\frac{\overline G(v)}{\overline G(u)}
+  =-\int_u^v\frac{dw}{r(w)}.
+  \label{eq:hazard-integral}
+\end{equation}
+We now evaluate this integral with endpoints $t$ and $t+r(t)x$. These endpoints and the interval between them are valid by \eqref{eq:moving-interval}. Substituting $u=t+r(t)v$ and using the uniform convergence in \eqref{eq:reciprocal-scale} on the fixed interval $J_x$ gives
+$$
+  \begin{aligned}
+    \log\frac{\overline G(t+r(t)x)}{\overline G(t)}
+    &=-\int_t^{t+r(t)x}\frac{du}{r(u)}\\
+    &=-\int_0^x\frac{r(t)}{r(t+r(t)v)}\,dv\\
+    &\longrightarrow-\int_0^x\frac{dv}{1+\xi v}\\
+    &=
+    \begin{cases}
+      -\xi^{-1}\log(1+\xi x),&\xi>0,\\
+      -x,&\xi=0.
+    \end{cases}
+  \end{aligned}
+$$
+In particular, the absolute difference between the two integrals over $[0,x]$ is bounded by $|x|$ times the supremum in \eqref{eq:reciprocal-scale}. Exponentiating proves
+\begin{equation}
+  \frac{\overline G(t+r(t)x)}{\overline G(t)}
+  \longrightarrow
+  \tau_\xi(x):=
   \begin{cases}
-    e^{-\frac{1}{2}s^2/\nu^2} & \text{ if }0\le s\le \nu^2/b; \\
-    e^{-s/2b}                 & \text{ if } s>\nu^2/b.
+    (1+\xi x)^{-1/\xi},&\xi>0,\\
+    e^{-x},&\xi=0,
   \end{cases}
+  \qquad 1+\xi x>0.
+  \label{eq:tail-ratio}
+\end{equation}
+
+**Step 3: Convert the tail ratio.**
+The function $\overline G$ is continuous and strictly decreasing on $(t_0,\infty)$, and tends to zero as $t\to\infty$. It is strictly positive at every finite $t$, because $x_+=\infty$. Therefore $\overline G(b_n)=1/n$ has a unique solution in $(t_0,\infty)$ for all sufficiently large $n$, and $b_n\to\infty$. With $a_n=r(b_n)$, equation \eqref{eq:tail-ratio} gives
+\begin{equation}
+  n\overline G(b_n+a_nx)
+  =\frac{\overline G(b_n+r(b_n)x)}{\overline G(b_n)}
+  \longrightarrow\tau_\xi(x),
+  \qquad 1+\xi x>0.
+  \label{eq:normalized-tail}
+\end{equation}
+Write $q_n=\overline G(b_n+a_nx)$. Then $q_n\to0$ and $nq_n\to\tau_\xi(x)$, so
 $$
-The stated result again follows by noting that
-\begin{align*}
-  \Pr\left\{M_n-\E[S]\ge s\right\}
-    & = 1-\Pr\left\{M_n\le s\right\} \\
-    & = 1-\Pr\left\{S\le s\right\}^n \\
-    & \le 1-
+  n\log(1-q_n)=-nq_n\{1+o(1)\}
+  \longrightarrow-\tau_\xi(x).
+$$
+Independence now yields
+$$
+  \Pr\left(\frac{M_n-b_n}{a_n}\le x\right)
+  =F(b_n+a_nx)^n
+  =(1-q_n)^n
+  \longrightarrow\exp\{-\tau_\xi(x)\}
+  =G_\xi(x).
+$$
+
+If $\xi=0$, this proves the first part of the result for every $x\in\mathbb R$. If $\xi>0$ and $x\le-1/\xi$, then for every $z>-1/\xi$, monotonicity gives
+$$
+  0\le
+  \limsup_{n\to\infty}
+    \Pr\left(\frac{M_n-b_n}{a_n}\le x\right)
+  \le G_\xi(z).
+$$
+Letting $z\downarrow-1/\xi$ makes the right-hand side tend to zero. Thus the result also holds at and below the lower support boundary.
+
+**Step 4: Moment Implications.**
+For every $q>0$, Tonelli's theorem gives the tail-integral identity
+\begin{equation}
+  \mathbb E[S_+^q]
+  =q\int_0^\infty t^{q-1}\overline G(t)\,dt,
+  \label{eq:tail-moments}
+\end{equation}
+with equality also when the expectation is infinite, and where $S_+=\max(S,0)$.
+
+Suppose first that $\xi>0$. By \eqref{eq:scale-order}, for any $\varepsilon\in(0,\xi)$ there is a $T>\max(t_0,0)$ such that
+$$
+  (\xi-\varepsilon)t\le r(t)\le(\xi+\varepsilon)t,
+  \qquad t\ge T.
+$$
+Taking reciprocals and integrating gives
+$$
+  \frac{\log(t/T)}{\xi+\varepsilon}
+  \le \int_T^t\frac{du}{r(u)}
+  \le \frac{\log(t/T)}{\xi-\varepsilon}.
+$$
+Using \eqref{eq:hazard-integral}, we obtain
+\begin{equation}
+  \overline G(T)(t/T)^{-1/(\xi-\varepsilon)}
+  \le\overline G(t)
+  \le\overline G(T)(t/T)^{-1/(\xi+\varepsilon)},
+  \qquad t\ge T.
+  \label{eq:power-bounds}
+\end{equation}
+If $q<1/\xi$, choose $\varepsilon>0$ sufficiently small that $q<1/(\xi+\varepsilon)$. The upper bound in \eqref{eq:power-bounds} then makes the tail integral in \eqref{eq:tail-moments} finite. If $q>1/\xi$, choose $\varepsilon>0$ sufficiently small that $q>1/(\xi-\varepsilon)$. The lower bound makes that integral infinite. The integral over $[0,T]$ is always at most $T^q$. Consequently,
+\begin{equation}
   \begin{cases}
-    (1-e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if } 0\le s\le \nu^2/b; \\
-    (1-e^{-s/2b})^n                 & \text{ if } s>\nu^2/b.
+    \mathbb E[S_+^q]<\infty,&0<q<1/\xi,\\
+    \mathbb E[S_+^q]=\infty,&q>1/\xi.
   \end{cases}
-\end{align*}
+  \label{eq:moment-index}
+\end{equation}
+These conclusions impose no restriction on whether the moment of order exactly $1/\xi$ is finite.
+
+Suppose next that $\xi=0$. Equation \eqref{eq:scale-order} gives $r(t)=o(t)$. For any $A>0$, choose $T>\max(t_0,0)$ sufficiently large that $r(t)\le t/A$ for $t\ge T$. Equation \eqref{eq:hazard-integral} then implies
+$$
+  \overline G(t)
+  =\overline G(T)
+    \exp\left\{-\int_T^t\frac{du}{r(u)}\right\}
+  \le\overline G(T)(t/T)^{-A},\qquad t\ge T.
+$$
+For each $q>0$, taking $A>q$ in \eqref{eq:tail-moments} proves
+\begin{equation}
+  \mathbb E[S_+^q]<\infty
+  \qquad\text{for every }q>0
+  \quad\text{when }\xi=0.
+  \label{eq:gumbel-moments}
+\end{equation}
+
+Under @def-bounded,
+$$
+  \mathbb E[e^{\lambda S_+}]
+  \le 1+\mathbb E[e^{\lambda S}]<\infty.
+$$
+For every $q>0$, the function $u^q e^{-\lambda u}$ is bounded on $[0,\infty)$, so every positive-part moment is finite. Equation \eqref{eq:moment-index} therefore excludes $\xi>0$. Together with $\xi\ge0$, this gives $\xi=0$.
+
+Under @def-poly, if $\xi>0$, equation \eqref{eq:moment-index} requires $p\le1/\xi$, or $\xi\le1/p$. The same upper bound holds when $\xi=0$. If additionally $\mathbb E[S_+^q]=\infty$ for some $q>p$, equation \eqref{eq:gumbel-moments} excludes $\xi=0$. Equation \eqref{eq:moment-index} then requires $q\ge1/\xi$, which gives $\xi\ge1/q$.
+
+Let $p_*:=\sup\{q>0:\E\max(S,0)^p<\infty\}$. Equation \eqref{eq:gumbel-moments} gives $p_*=\infty$ when $\xi=0$, whereas \eqref{eq:moment-index} gives $p_*=1/\xi>0$ when $\xi>0$, regardless of the finiteness of the boundary moment. Thus a finite moment index satisfies $\xi=1/p_*$.
 :::
 
-Results similar to @lem-bounds_sub also hold for $\Pr\left\{M_n-\E[S]\le s\right\}$, and for $\Pr\left\{|M_n-\E[S]|\ge s\right\}$ with an additional factor of $2$, i.e.,
+Recall
 $$
-\Pr\left\{|M_n-\E[S]|\ge s\right\}\le 1-
-\begin{cases}
-  (1-2e^{-\frac{1}{2}s^2/\nu^2})^n & \text{ if }0\le s\le \nu^2/b \\
-  (1-2e^{-s/2b})^n                 & \text{ if }s>\nu^2/b.
-\end{cases}
+H_{\xi}(y):= \begin{cases}1-(1+\xi y)^{-1 / \xi}, & \xi \neq 0, \quad 1+\xi y>0 \\ 1-e^{-y}, & \xi=0,\end{cases}
 $$
+and $H_{\xi}(y)=1$ for $y \geq-1 / \xi$ when $\xi<0$. Recall that $X=S-\mu$. @thm-gpd in the main text follows from the following Lemma.
 
-::: {#cor-two}
-Under @def-subbounded, for $s>\nu^2/b$, as $n\rightarrow\infty$
+::: {#lem-GPDconv}
+@def-regular is satisfied. If @def-bounded is satisfied, then
 $$
-	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)\le 1-e^{-e^{-s}}+o(1/n).
+\Pr\left(\frac{X-b_n}{a_n}>y\big{|}X>b_n\right)\longrightarrow e^{-y}.
 $$
-:::
-
-::: {.proof}
-Apply @def-subbounded to see that
-\begin{align*}
-	\Pr\left(|M_n-\E[S]|\ge (2b)s+(2b)\log(2n)\right)
-	 & \le 1- \left\{1-2e^{-[2bs+2b\log(2n)]/2b}\right\}^n                       \\
-	 & = 1-\big(1-e^{-s}/n\big)^n                                     \\
-	 & = 1-e^{-e^{-s}}-\left[\big(1-e^{-s}/n\big)^n-e^{e^{-s}}\right].
-\end{align*}
-The result now follows by noting that, for all $s>0$,
+If @def-poly is satisfied, then
 $$
-	\left[\big(1-e^{-s}/n\big)^n-e^{-e^{-s}}\right]= o(1)\le 0.
-$$
-:::
-
-@cor-two is useful as it shows that if the surprisal has a sub-exponential tail, then the resulting maximum surprisal tail probability converges to that of an extreme value distribution. In particular, we have that @cor-two implies
-$$
-	\sup_{s:s>\nu^2/b}\left|\Pr\Big\{|M_n-\mu|\ge \big[2bs+2b\log(2n)\big]\Big\}-\big(1-e^{e^{-s}}\big)\right| = o(1).
-$$
-To see that this implies that $M_n-\E[S]$, appropriately standardized, converges to an extreme value distribution, we first recall that
-$$
-	\Pr\{X_n>x\}-\Pr\{X>x\}=1-\Pr\{X_n\le x\}-\left[1-\Pr\{X\le x\}\right]=\Pr\{X\le x\}-\Pr\{X_n\le x\}.
-$$
-Hence,
-$$
-	\sup_{x\in\mathbb{X}}|\Pr\{X_n\le x\}-\Pr\{X\le x\}|=\sup_{x\in\mathbb{X}}|\Pr\{X_n> x\}-\Pr\{X> x\}|,
-$$
-so that when $X_n$ and $X$ are both continuous we see that @cor-two implies that the CDF of $(M_n-\E[S]-2b\log(2n))/2b$ converges to that of the Type-1 extreme value distribution (i.e., Gumbel distribution); i.e., using @cor-two and the above we have that
-$$
-	\sup_{s:s>\nu^2/b}\left|\Pr\left(|M_n-\mu|\le [2bs+2b\log(2n)]\right\}-e^{e^{-s}}\right|=o(1).
-$$
-This is one notion of convergence in distribution.
-
-## $S$ has a polynomial moment
-
-::: {#lem:bounds_poly}
-Suppose $\bm{y}_1,\dots,\bm{y}_n$ are iid from a density $f$, and let $M_n = \max\{s_1,\dots,s_n\}$ where $s_i = -\log f(\bm{y}_i)$. If @def-polybounded is satisfied, then, for $s>0$ and such that $s>C>0$,
-$$
-  \Pr\left(|M_n-\E[S]|\ge s\right) \le 1- (1-C^p/s^p)^n.
-$$
-Hence,
-$$
-	\sup_{s:s>C} \left|\Pr\big(|M_n-\E[S]|\le (s\cdot n^{1/p})\big)-e^{-s^{-p}}\right|=o(1).
+\Pr\left(\frac{X-b_n}{a_n}>y\big{|}X>b_n\right)\longrightarrow (1+\xi y)^{-1/\xi},\quad (1+\xi y)>0.
 $$
 :::
 
 ::: {.proof}
-By Markov's inequality,
-$$
-	\Pr\left\{ |S-\E[S]|\ge s\right\}\le \frac{\E|S|^p}{s^p}\le \frac{C^p}{s^p}.
-$$
-To derive the first stated result, again note that
-\begin{align*}
-\Pr\left\{|M_n-\E[S]|\ge s\right\}
-& = 1 -\Pr\left\{|M_n-\E[S]|\le s\right\}               \\
-& = 1-\Pr\left\{|S-\E[S]|\le s\right\}^n                \\
-& = 1-\left(1-\Pr\left\{|S-\E[S]|\ge s\right\}\right)^n \\
-& \le 1-(1-C^p/s^p)^n.
-\end{align*}
+We prove a general form of the result and then specialize the result to the assumed moment conditions.
 
-To derive the second stated result, apply the first result with $t=sn^{1/p}C>1$, which clearly holds for some $n$ large enough, to see that
+Recall $G(s)=\Pr(S\le s)$. From @lem-GEVconv and independence, we have that $G(b_n+a_nx)^{n}\rightarrow G_\xi(x)$ for any $x$ such that $1+\xi x>0$. Let $\bar{G}=1-G$. However,
+\begin{flalign}
+\label{eq:conv1}
+n\bar{G}(b_n+a_n x)\rightarrow -\log G_\xi(x),
+\end{flalign}
+since $\log(1-t)\asymp -t$ for $t$ sufficiently small, and since $\bar{G}(b_n+a_nx)=\Pr(S>b_n+a_n x)\rightarrow0$ as $n\rightarrow\infty$. Let $\tau_\xi(x):=-\log G_\xi(x)$.
+
+For given $u<x_+$, but sufficiently close, let $m(u)=\lfloor 1/\bar{G}(u)\rfloor$. The result of @lem-GEVconv excludes the case where an atom at a finite upper endpoint exists; hence, as $u\uparrow x_+$,
+\begin{flalign}\label{eq:gpd1}
+ \bar{G}(u)\rightarrow0,\quad m(u)\rightarrow\infty,\quad m(u)\bar{G}(u)\rightarrow1.
+\end{flalign}
+
+We now show that,
 $$
-	\Pr\left\{|M_n-\E[S]|\ge t\right\}
-	\le 1- \left(1-\frac{C^p}{(Csn^{1/p})^p}\right)^n \\
-	= 1-\left(1-s^{-p}/n\right)^n.
+z(u)=\frac{u-b_{m(u)}}{a_{m(u)}}\xrightarrow{u\rightarrow x_+}0.
 $$
-Now, recall that, for $x\ge0$,
+For any $\varepsilon>0$, and sufficiently small, \eqref{eq:conv1} implies that
 $$
-	\lim_{n\rightarrow\infty}(1-x/n)^n=e^{-x}.
+m(u)\bar{G}\{b_{m(u)}-a_{m(u)}\varepsilon\}\rightarrow\tau_\xi(-\varepsilon);\quad  m(u)\bar{G}\{b_{m(u)}+a_{m(u)}\varepsilon\}\rightarrow\tau_\xi(\varepsilon).
 $$
-Since $x\mapsto e^{-x}$ is bounded for all $x\ge0$, it follows that
+From \eqref{eq:gpd1}, and monotonicity of $\bar{G}$, we have, for sufficiently large $u$,
 $$
-	\sup_{s:s>C}\left|\Pr\left\{|M_n-\E[S]|\ge t\right\}-e^{-s^{-p}}\right|=o(1).
+b_{m(u)}-a_{m(u)}\varepsilon<u<b_{m(u)}+a_{m(u)}\varepsilon,
 $$
+and so we have that $z(u)\rightarrow0$.
+
+Fix $x\ge0$ with $1+\xi x>0$, and choose $\varepsilon>0$ small enough so that eventually
+$$
+x-\varepsilon\le x+z(u)\le x+\varepsilon
+$$
+Now, since $a_{m(u)}>0$, for $u=b_{m(u)}+a_{m(u)}z(u)$, we have
+$$
+b_{m(u)}+a_{m(u)}(x-\varepsilon)\le u+a_{m(u)}x\le b_{m(u)}+a_{m(u)}(x+\varepsilon).
+$$
+However, $\bar{G}$ is decreasing so that
+$$
+m(u)\bar{G}\{b_{m(u)}+a_{m(u)}(x+\varepsilon)\}\le m(u)\bar{G}\{ u+a_{m(u)}x\}\le m(u)\bar{G}\{b_{m(u)}+a_{m(u)}(x-\varepsilon)\}
+$$
+From \eqref{eq:conv1}, the outer-term in the above equation converge to $\tau_\xi(x+\varepsilon)$ and $\tau_\xi(x-\varepsilon)$, respectively. Therefore, since $\tau_\xi(x)$ is continuous, taking $\varepsilon\rightarrow0$ implies that
+$$
+ m(u)\bar{G}\{ u+a_{m(u)}x\}=m(u)\bar{G}\left[b_{m(u)}+a_{m(u)}\{z(u)+x\}\right]\rightarrow\tau_\xi(x).
+$$
+Consquently, for $\beta(u)=a_{m(u)}$,
+$$
+\Pr\left\{\frac{S-u}{\beta(u)}>x\mid S>u\right\}=\frac{m(u)\bar{G}\{u+a_{m(u)}x\}}{m(u)\bar{G}(u)}\rightarrow \tau_\xi(x)=1-H_\xi(x).
+$$
+
+Given the above convergence, the stated result now follows by the results in @lem-GEVconv.
 :::
