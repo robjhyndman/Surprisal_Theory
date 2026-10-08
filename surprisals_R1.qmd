@@ -173,7 +173,7 @@ $$
 
 @lem-confident implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that -- beyond a threshold value $s_\star$ -- the two are related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same locations as the true data distribution.
 
-Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis my not be satisfied.
+Importantly, @def-empirical_pis is not satisfied by all pairs of distributions: if the true data has skewness but the fitted model assumes symmetry, or if there is bimodality in the observed data that is not modeled, then @def-empirical_pis may not be satisfied.
 
 # Extreme value theory for the surprisal distribution {#sec-gpd}
 
@@ -183,13 +183,13 @@ An important precursor to this work is @lookout who proposed estimating $F$ by a
 
 Here we extend that idea to allow $F$ to be any distribution, including conditional distributions. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
 
-To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, to ensure a Pickands–Balkema–de Haan theorem is satisfied. However, rather than formulate this result using domain-of-attraction conditions, we formulate the result using moments of the surprisal $S=-\log f(Y)$. We believe this formulation is helpful as the moment behavior of $S$ can often be directly discerned at a glance and so does not require that the practitioner have previous knowledge of EVT or any the knowledge of which domain-of-attraction $S$ belongs. For instance, if $Y\sim N(0,1)$, then it is immediately obvious that $S$ is chi-squared, and it is taught in early statistics classes that chi-squared random variables have an exponential moment.
+To justify this approach, we seek conditions on the surprisal distribution of $S = -\log f(\bm{Y})$, where $\bm{Y}\sim F$, and $f$ is the corresponding generalized density function, to ensure a Pickands–Balkema–de Haan theorem is satisfied. However, rather than formulate this result using domain-of-attraction conditions, we formulate the result using moments of the surprisal $S=-\log f(Y)$. We believe this formulation is helpful as the moment behavior of $S$ can often be directly discerned at a glance and so does not require that the practitioner have previous knowledge of EVT or any knowledge of the domain of attraction to which $S$ belongs. For instance, if $Y\sim N(0,1)$, then it is immediately obvious that $S$ is chi-squared, and it is taught in early statistics classes that chi-squared random variables have an exponential moment.
 
 To state our results, we thus maintain the following conditions.
 
 ::: {#def-bounded}
 #### Exponential Moment Existence
-The random variable $S =-\log f(\bm{Y})\in\mathbb{R}$ is such that $\mu=\E[S]$ exist. For some parameters $\nu>0$ and $\sigma^2>0$, and any $\lambda\in\mathbb{R}$ such that $|\lambda|\le 1/\nu$, $\E[e^{\lambda(S-\mu)}]\le e^{\lambda^2\sigma^2/2}.$
+The random variable $S =-\log f(\bm{Y})\in\mathbb{R}$ is such that $\mu=\E[S]$ exists. For some parameters $\nu>0$ and $\sigma^2>0$, and any $\lambda\in\mathbb{R}$ such that $|\lambda|\le 1/\nu$, $\E[e^{\lambda(S-\mu)}]\le e^{\lambda^2\sigma^2/2}.$
 :::
 
 ::: {#def-poly}
@@ -197,7 +197,7 @@ The random variable $S =-\log f(\bm{Y})\in\mathbb{R}$ is such that $\mu=\E[S]$ e
 For some $q>1$, $\E[(S-\mu)^{q}]<\infty$.
 :::
 
-@def-bounded, or variations thereof, underlies much of modern statistical analysis and in plain language ensures that $S$ is a sub-exponential random variable. This condition is easy to check for many distributions, and is maintained for precisely this purpose. For example, if $Y\sim t_p$, $p\ge1$, then it is straightforward to show that $S=-\log f(Y)$ has a moment generating function, on a certain domain, which implies @def-bounded is satisfied: the quantities $\mu,\sigma^2$ and $\nu$ can be directly calculated from the MGP and are functions of the degrees of freedom parameter $p$.
+@def-bounded, or variations thereof, underlies much of modern statistical analysis and in plain language ensures that $S$ is a sub-exponential random variable. This condition is easy to check for many distributions, and is maintained for precisely this purpose. For example, if $Y\sim t_p$, $p\ge1$, then it is straightforward to show that $S=-\log f(Y)$ has a moment generating function, on a certain domain, which implies @def-bounded is satisfied: the quantities $\mu,\sigma^2$ and $\nu$ can be directly calculated from the MGF and are functions of the degrees of freedom parameter $p$.
 
 @def-poly will be satisfied in cases where $S$ only admits a polynomial moment. For instance, if we assume that $Y$ has a standard Gaussian density, so that $S\propto Y^2$, but the actual distribution of $Y$ is student-t with $p$ degrees of freedom, then $S$ will satisfy @def-poly so long as $p\ge2$; i.e., so long as the observed data has at least a finite mean.
 
@@ -217,12 +217,12 @@ $$
 where the specific value of $\xi$, and the function $\beta(u)$, depends on whether @def-bounded or @def-poly is satisfied.
 :::
 
-@thm-gpd shows that the conditional excess distribution function of the surprisal converges to the GDP distribution where the value of $\xi$ is constrained by the number of finite moments which $S$ exhibits. If the surprisal distribution has at least an exponential tail and full support, then the conditional excess distribution function of the surprisal behaves like a shifted exponential distribution; if instead the surprisal only has a polynomial moment, then the conditional excess distribution function converges to the Pareto distribution. @thm-gpd then gives theoretical credence to our proposed POT approach: in large samples the conditional excess distribution function of the surprisal converges to the GPD, and using the fitted GPD as an approximation for the true surprisal probability should deliver a reasonably accurate approximation in large sample, under regularity conditions, and so long as we can accurately estimate the parameters of the Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
+@thm-gpd shows that the conditional excess distribution function of the surprisal converges to the GPD where the value of $\xi$ is constrained by the number of finite moments which $S$ exhibits. If the surprisal distribution has at least an exponential tail and full support, then the conditional excess distribution function of the surprisal behaves like a shifted exponential distribution; if instead the surprisal only has a polynomial moment, then the conditional excess distribution function converges to the Pareto distribution. @thm-gpd then gives theoretical credence to our proposed POT approach: in large samples the conditional excess distribution function of the surprisal converges to the GPD, and using the fitted GPD as an approximation for the true surprisal probability should deliver a reasonably accurate approximation in large sample, under regularity conditions, and so long as we can accurately estimate the parameters of the Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
 
-It is possible to link Assumptions [-@def-bounded] and [-@def-poly] to the domain of attraction conditions usually considered in extreme value theory. For simplicity, let us assume that range of $S$ is $\mathbb{R}$. Under technical conditions, @def-bounded then implies that the distribution of $S$, denoted by $G$ herein, is in the Gumbel domain of attraction, i.e., $H_0$. In contrast, under @def-poly, $G$ can be in either the Gumbel or Frechet domain of attraction: where $q$ denotes the number of assumed moments, we only have that $0\le \xi\le 1/q$ and so cannot exclude the Gumbel domain of attraction; if, however, we know that the $(q+1)$-th moment of $S$ if infinite, then @def-poly we have that $G$ is in the Frechet domain of attraction and $0<1/(1+q)\le\xi\le1/q$.
+It is possible to link Assumptions [-@def-bounded] and [-@def-poly] to the domain of attraction conditions usually considered in extreme value theory. For simplicity, let us assume that range of $S$ is $\mathbb{R}$. Under technical conditions, @def-bounded then implies that the distribution of $S$, denoted by $G$ herein, is in the Gumbel domain of attraction, i.e., $H_0$. In contrast, under @def-poly, $G$ can be in either the Gumbel or Frechet domain of attraction: where $q$ denotes the number of assumed moments, we only have that $0\le \xi\le 1/q$ and so cannot exclude the Gumbel domain of attraction; if, however, we know that the $(q+1)$-th moment of $S$ is infinite, then under @def-poly we have that $G$ is in the Frechet domain of attraction and $0<1/(1+q)\le\xi\le1/q$.
 
 <!--
-Even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the three assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities. Indeed, @thm-gpd helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal can have a heavy tail; see, e.g., the earlier example where we assumed $Y\sim N(0,1)$, when in actuality $Y\sim t_\nu$. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., $t_2$) when the data are actually light-tailed (e.g., Gaussian), then the conditional excess distribution function of the surprisal remains consistent with the lighter tail. As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GDP and, consequently, inaccurate anomaly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
+Even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the two assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities. Indeed, @thm-gpd helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal can have a heavy tail; see, e.g., the earlier example where we assumed $Y\sim N(0,1)$, when in actuality $Y\sim t_\nu$. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., $t_2$) when the data are actually light-tailed (e.g., Gaussian), then the conditional excess distribution function of the surprisal remains consistent with the lighter tail. As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GPD and, consequently, inaccurate anomaly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
 -->
 
 # Applicability for conditional distributions {#sec-conditional}
@@ -277,7 +277,7 @@ The quality of the approximation used depends on the amount of data available, s
 tar_read(fig_expt2)
 ```
 
-Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged. Clearly, all methods have some small-sample bias, with the GPD converging more quickly than the empirical approximation. Among the GPD fits, using a Student-t reference distribution performs nearly as well as using the true model, whereas using a Normal reference distribution is noticeably worse even at large sample sizes. The reason is tail mismatch: the Normal distribution is lighter-tailed than the true Gamma distribution, while the Student-t is heavier-tailed. This is consistent with our previous comments, that it is safer to err on the side of assuming heavier tails, as underestimating tail heaviness leads to slow convergence, while overestimating tail heaviness incurs relatively little cost.
+Note that the empirical tail probabilities are identical under both the correct Gamma and incorrect Normal distributions, because the ranking of the surprisals in the tail are unchanged. Clearly, all methods have some small-sample bias, with the GPD converging more quickly than the empirical approximation. Among the GPD fits, using a Student-t reference distribution performs nearly as well as using the true model, whereas using a Normal reference distribution is noticeably worse even at large sample sizes. The reason is tail mismatch: the Normal distribution is lighter-tailed than the true Gamma distribution, while the Student-t is heavier-tailed. This suggests that it is safer to err on the side of assuming heavier tails, as underestimating tail heaviness leads to slow convergence, while overestimating tail heaviness incurs relatively little cost.
 
 # Applications {#sec-applications}
 
@@ -359,7 +359,7 @@ The surprisal-based framework provides a flexible and principled way to quantify
 
 Our theoretical results make clear what kind of misspecification can be tolerated. Anomalies are defined relative to regions of low density under an assumed distribution $F$. For the empirical tail-probability estimator to be reliable, the assumed model must correctly identify the *locations* of these low-density regions, even if it does not accurately capture the *shape* of the tail. @def-empirical_pis formalizes this requirement: the true and fitted surprisals need only agree up to a strictly increasing transformation on the extreme tail. When this condition holds, @lem-confident guarantees that the empirical surprisal probabilities form a valid uniform confidence band for the true tail probabilities on the upper tail. Remarkably, this does not require $F$ to have the correct tail behavior or even the correct distributional form, only the correct tail *ordering*. When the condition fails, such as when the assumed model imposes symmetry where the data are skewed, or unimodality where the data are multimodal, the empirical estimator no longer provides uniform guarantees. In practice, such gross mis-specifications should be identifiable through exploratory data analysis.
 
-The GPD approach offers a complementary route to estimating surprisal tail probabilities. Our extreme-value results show that under broad conditions (sub‑Gaussian, sub‑exponential, or polynomial surprisal tails), the maximum surprisal converges to a distribution in the generalized extreme‑value family. These conditions encompass almost all common statistical models. Thus, the GPD approximation can be expected to provide robust tail estimates even when the assumed distribution is only loosely connected to the true one. That is, provided the chosen threshold is far enough into the tail that the tail orderings from the assumed distribution and the true distribution are the same beyond that point, the GPD approach should yield accurate tail probabilities. The situation is slightly different from that for the empirical approach, as the GPD is motivated by the asymptotic behavior of the surprisals, which means that if $n$ is large enough for this approximation to be accurate, then the tail ordering should also be correct above the threshold.
+The GPD approach offers a complementary route to estimating surprisal tail probabilities. Our extreme-value results show that under broad moment conditions on the surprisal (an exponential moment, or only a polynomial moment), together with mild regularity conditions, the excesses of the surprisal over a high threshold converge to a Generalized Pareto Distribution. These conditions encompass almost all common statistical models. Thus, the GPD approximation can be expected to provide robust tail estimates even when the assumed distribution is only loosely connected to the true one. That is, provided the chosen threshold is far enough into the tail that the tail orderings from the assumed distribution and the true distribution are the same beyond that point, the GPD approach should yield accurate tail probabilities. The situation is slightly different from that for the empirical approach, as the GPD is motivated by the asymptotic behavior of the surprisals, which means that if $n$ is large enough for this approximation to be accurate, then the tail ordering should also be correct above the threshold.
 
 Threshold selection for the GPD remains an open methodological question; established techniques from the extreme‑value literature (such as stability plots or nearest‑order‑statistic heuristics) can be adapted to surprisal data, but a systematic study in this context is a topic for future work.
 
@@ -454,7 +454,7 @@ G_\xi(x):=\begin{cases}
 $$
 
 ::: {#lem-GEVconv}
-@def-regular is satisfied. If @def-bounded is satisfied then, for every $x\in\mathbb{R}$,
+Let @def-regular be satisfied. If @def-bounded is satisfied then, for every $x\in\mathbb{R}$,
 $$
 \Pr\left(\frac{M_n-b_n}{a_n}\le x\right)\longrightarrow G_0(x).
 $$
@@ -666,9 +666,9 @@ $$
 $$
 For every $q>0$, the function $u^q e^{-\lambda u}$ is bounded on $[0,\infty)$, so every positive-part moment is finite. Equation \eqref{eq:moment-index} therefore excludes $\xi>0$. Together with $\xi\ge0$, this gives $\xi=0$.
 
-Under @def-poly, if $\xi>0$, equation \eqref{eq:moment-index} requires $p\le1/\xi$, or $\xi\le1/p$. The same upper bound holds when $\xi=0$. If additionally $\mathbb E[S_+^q]=\infty$ for some $q>p$, equation \eqref{eq:gumbel-moments} excludes $\xi=0$. Equation \eqref{eq:moment-index} then requires $q\ge1/\xi$, which gives $\xi\ge1/q$.
+Under @def-poly, if $\xi>0$, equation \eqref{eq:moment-index} requires $q\le1/\xi$, or $\xi\le1/q$. The same upper bound holds when $\xi=0$. If additionally $\mathbb E[S_+^r]=\infty$ for some $r>q$, equation \eqref{eq:gumbel-moments} excludes $\xi=0$. Equation \eqref{eq:moment-index} then requires $r\ge1/\xi$, which gives $\xi\ge1/r$.
 
-Let $p_*:=\sup\{q>0:\E\max(S,0)^p<\infty\}$. Equation \eqref{eq:gumbel-moments} gives $p_*=\infty$ when $\xi=0$, whereas \eqref{eq:moment-index} gives $p_*=1/\xi>0$ when $\xi>0$, regardless of the finiteness of the boundary moment. Thus a finite moment index satisfies $\xi=1/p_*$.
+Let $p_*:=\sup\{r>0:\E\max(S,0)^r<\infty\}$. Equation \eqref{eq:gumbel-moments} gives $p_*=\infty$ when $\xi=0$, whereas \eqref{eq:moment-index} gives $p_*=1/\xi>0$ when $\xi>0$, regardless of the finiteness of the boundary moment. Thus a finite moment index satisfies $\xi=1/p_*$.
 :::
 
 Recall
@@ -678,7 +678,7 @@ $$
 and $H_{\xi}(y)=1$ for $y \geq-1 / \xi$ when $\xi<0$. Recall that $X=S-\mu$. @thm-gpd in the main text follows from the following Lemma.
 
 ::: {#lem-GPDconv}
-@def-regular is satisfied. If @def-bounded is satisfied, then
+Let @def-regular be satisfied. If @def-bounded is satisfied, then
 $$
 \Pr\left(\frac{X-b_n}{a_n}>y\big{|}X>b_n\right)\longrightarrow e^{-y}.
 $$
@@ -733,7 +733,7 @@ From \eqref{eq:conv1}, the outer-term in the above equation converge to $\tau_\x
 $$
  m(u)\bar{G}\{ u+a_{m(u)}x\}=m(u)\bar{G}\left[b_{m(u)}+a_{m(u)}\{z(u)+x\}\right]\rightarrow\tau_\xi(x).
 $$
-Consquently, for $\beta(u)=a_{m(u)}$,
+Consequently, for $\beta(u)=a_{m(u)}$,
 $$
 \Pr\left\{\frac{S-u}{\beta(u)}>x\mid S>u\right\}=\frac{m(u)\bar{G}\{u+a_{m(u)}x\}}{m(u)\bar{G}(u)}\rightarrow \tau_\xi(x)=1-H_\xi(x).
 $$
