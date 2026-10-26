@@ -1,22 +1,22 @@
 ---
 title: "Anomaly detection using surprisals"
 author:
-- name: Rob J Hyndman
-  affiliation:
-    - ref: ebs
-  email: Rob.Hyndman@monash.edu
-  corresponding: true
-  orcid: 0000-0002-2140-5352
-- name: David T Frazier
-  affiliation:
-    - ref: ebs
+  - name: Rob J Hyndman
+    affiliation:
+      - ref: ebs
+    email: Rob.Hyndman@monash.edu
+    corresponding: true
+    orcid: 0000-0002-2140-5352
+  - name: David T Frazier
+    affiliation:
+      - ref: ebs
 affiliations:
-    - id: ebs
-      name: Monash University
-      department: Department of Econometrics & Business Statistics
-      city: Clayton
-      country: Australia
-      postal-code: 3800
+  - id: ebs
+    name: Monash University
+    department: Department of Econometrics & Business Statistics
+    city: Clayton
+    country: Australia
+    postal-code: 3800
 abstract: |
   Anomaly detection methods are widely used but often rely on ad hoc rules or strong assumptions, and they often focus on tail events, missing “inlier” anomalies that occur in low-density gaps between modes. We propose a unified framework that defines an anomaly as an observation with unusually low probability under a (possibly misspecified) model. For each observation we compute its surprisal (the negative log generalized density) and define an anomaly score as the probability of a surprisal at least as large as that observed. This reduces anomaly detection for complex univariate or multivariate data to estimating the upper tail of a univariate surprisal distribution. We develop two model-robust estimators of these tail probabilities: an empirical estimator based on the observed surprisal distribution and an extreme-value estimator that fits a Generalized Pareto Distribution above a high threshold. For the empirical method we give conditions under which tail ordering is preserved and derive finite-sample confidence guarantees via the Dvoretzky–Kiefer–Wolfowitz inequality. For the GPD method we establish broad tail conditions ensuring classical extreme-value behavior. Simulations and applications to French mortality and Test-cricket data show the approach remains effective under substantial model misspecification.
 keywords:
@@ -66,6 +66,7 @@ knitr:
 
 ```{r}
 #| label: setup
+
 library(targets)
 library(ggplot2)
 library(tsibble)
@@ -106,29 +107,29 @@ Let $\bm{y}_1,\dots,\bm{y}_n$ be iid observations from a probability distributio
 
 The *surprisal* of observation $\bm{y}_i$ is defined as [@Stone2022]
 $$
-s_i=-\log f(\bm{y}_i).
+  s_i = -\log f(\bm{y}_i).
 $$
 While these are better known as "log scores" in statistics [@Good1952-zw], in this context we prefer the term "surprisal" [coined by @Tribus61], as it captures the idea that observations with low density are more "surprising" (and therefore potentially anomalous) than those with high density. A large value of $s_i$ indicates that $\bm{y}_i$ is an unlikely value, and so is a potential anomaly. On the other hand, typical values will have low surprisals. In information theory, the average surprisal is known as the entropy of a random variable [@Cover2006;@Stone2022] and provides a measure of uncertainty. If $f$ is obtained from a parametric model, then the sum of the surprisals is equal to minus the log likelihood of the data.
 
-Let $G(s) = \Pr\{S\le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y}\sim F$. Then the probability of observing a value with surprisal at least as large as $s$ is given by $\Pr(S\ge s) = 1-G(s^-)$, where $G(s^-) = \lim_{t\uparrow s} G(t)$. This leads to a natural way of assigning an anomaly score to each observation $\bm{y}_i$:
+Let $G(s) = \Pr\{S \le s\}$ be the distribution function of the surprisal values, where $S = -\log f(\bm{Y})$ and $\bm{Y} \sim F$. Then the probability of observing a value with surprisal at least as large as $s$ is given by $\Pr(S \ge s) = 1 - G(s^-)$, where $G(s^-) = \lim_{t \uparrow s} G(t)$. This leads to a natural way of assigning an anomaly score to each observation $\bm{y}_i$:
 $$
-p_i = \Pr(S \ge s_i)  = 1-G(s_i^-),
+  p_i = \Pr(S \ge s_i) = 1 - G(s_i^-),
 $$
 where $s_i = -\log f(\bm{y}_i)$. We define anomalies as observations with $p_i < \alpha$, giving a false positive rate of $\alpha$ if all observations are from $F$. This is preferable to directly computing the probabilities from the tail of $F$, as it allows for anomalies to occur anywhere in the distribution of $F$, not just in its tails. For example, anomalies may lie between modes in a multimodal distribution, or in otherwise low-density regions of the distribution $F$. It is also preferable to a distance-based approach to anomaly detection [e.g., @hdoutliers], as it naturally handles skewed and heavy-tailed distributions.
 
 The surprisal approach converts the problem of working with $F$, a potentially multivariate distribution (or even one on a manifold or some non-Euclidean space), to working with a univariate distribution $G$ defined on $\mathbb{R}$. We can write
 $$
-G(s) = \Pr\{-\log f(\bm{Y})\le s\} = \Pr\{ f(\bm{Y})\ge e^{-s}\}.
+  G(s) = \Pr\{-\log f(\bm{Y}) \le s\} = \Pr\{ f(\bm{Y}) \ge e^{-s}\}.
 $$
-This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i< \alpha$ lies outside the $100(1-\alpha)$% highest density region of $F$.
+This makes clear that the surprisal probability is related to the highest density regions of the distribution [@HDR96]. In fact, every observation with $p_i < \alpha$ lies outside the $100(1 - \alpha)$% highest density region of $F$.
 
-If $F = N(\mu, \sigma^2)$, then $p_i = 2[1-\Phi(|y_i-\mu|/\sigma)]$, where $\Phi$ is the standard Normal distribution function. In this case, identifying anomalies as observations with $p_i < \alpha$ is equivalent to a z-score test with the threshold set to $\Phi^{-1}(1-\alpha/2)$. Hence, our approach can be seen as a generalization of anomaly detection methods based on z-scores including Grubbs' test [@Grubbs1950].
+If $F = N(\mu, \sigma^2)$, then $p_i = 2[1 - \Phi(|y_i - \mu|/\sigma)]$, where $\Phi$ is the standard Normal distribution function. In this case, identifying anomalies as observations with $p_i < \alpha$ is equivalent to a z-score test with the threshold set to $\Phi^{-1}(1 - \alpha/2)$. Hence, our approach can be seen as a generalization of anomaly detection methods based on z-scores including Grubbs' test [@Grubbs1950].
 
-It can also be seen as a generalization of other anomaly detection methods. For example, the Hampel identifier, due to a proposal of Frank Hampel [@Davies1993], is designed to identify anomalies in a time series based on whether an observation is very different from the neighboring observations. It denotes an observation as an anomaly if $|y_t-m_t|/a_t > \tau$, where
+It can also be seen as a generalization of other anomaly detection methods. For example, the Hampel identifier, due to a proposal of Frank Hampel [@Davies1993], is designed to identify anomalies in a time series based on whether an observation is very different from the neighboring observations. It denotes an observation as an anomaly if $|y_t - m_t|/a_t > \tau$, where
 \begin{align*}
-m_t &= \text{median}(y_{t-h}, \dots, y_{t+h}), \\
-\text{and}\qquad
-a_t &= \text{median}(|y_{t-h}-m_t|, \dots, |y_{t+h}- m_t|).
+  m_t & = \text{median}(y_{t-h}, \dots, y_{t+h}),                 \\
+  \text{and}\qquad
+  a_t & = \text{median}(|y_{t-h} - m_t|, \dots, |y_{t+h} - m_t|).
 \end{align*}
 The threshold $\tau$ is often set under the assumption of a Normal distribution. When we take a surprisal perspective, this is equivalent to setting
 $$
@@ -140,7 +141,7 @@ We will usually not know $F$, and so we need to estimate it from data or from th
 
 Our approach begins with an assumed $F$, which may be estimated from data, or obtained from theory. This distribution is used to compute the surprisal values $\{s_1,\dots,s_n\}$. Then, we estimate the tail probabilities $\{p_1,\dots,p_n\}$ from the surprisal values, using one of three approaches.
 
-(1) Using the assumed distribution $F$ to compute the tail probabilities, i.e., $p_i = \int I\{f(\bm{y})\le e^{-s_i}\} d\bm{y}$, where $I$ is the indicator function;
+(1) Using the assumed distribution $F$ to compute the tail probabilities, i.e., $p_i = \int I\{f(\bm{y}) \le e^{-s_i}\} d\bm{y}$, where $I$ is the indicator function;
 (2) Using the empirical distribution function of the observed surprisals $\{s_1,\dots,s_n\}$, so that $p_i$ is the proportion of surprisals at least as large as $s_i$;
 (3) Fitting a Generalized Pareto Distribution (GPD) to the largest surprisal values, and using this to estimate the tail probabilities.
 
@@ -150,25 +151,21 @@ In @sec-empirical, we develop the necessary theory to support the use of empiric
 
 # Empirical surprisal probabilities {#sec-empirical}
 
-Under approach (2) above, we estimate $p_i=\Pr(S \ge s_i)$ as the proportion of observed surprisals at least as large as $s_i$. Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1-\alpha)$\% highest density region computed using the quantile density approach of @HDR96.
+Under approach (2) above, we estimate $p_i = \Pr(S \ge s_i)$ as the proportion of observed surprisals at least as large as $s_i$. Using this approach, the anomaly boundary for a threshold of $\alpha$ corresponds to the $100(1 - \alpha)$\% highest density region computed using the quantile density approach of @HDR96.
 
 Let $F(\cdot)$ denote the true distribution function of $\bm{Y}$, and suppose we use $\widehat{F}$ to model $\bm{Y}$. The corresponding generalized density functions will be denoted by $f(\cdot)$ and $\widehat{f}(\cdot)$ respectively. For the empirical approach to be accurate, the ordering of large surprisal values under the fitted model should match that under the true distribution. A sufficient condition is then that the true and fitted surprisals are related by a strictly increasing transformation on the upper tail.
 
-Recall that the surprisal under the true distribution is defined as $S=-\log f(\bm{Y})$, and recall that $G(s)=\Pr(S\le s)$ denotes the CDF of $S$ at $s\in\mathbb{S}\subseteq\mathbb{R}$, where $\mathbb{S}$ denotes the support of the surprisals. Likewise, let $\widehat{S}=-\log \widehat{f}(\bm{Y})$ denote the surprisal under the fitted distribution, and let $\widehat{\mathbb{P}}_n(s):=n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i\le s]$ denote the empirical CDF of the fitted sample $\widehat{S}_1,\dots,\widehat{S}_n$. For the empirical estimator $\widehat{\mathbb{P}}_n(s)$ to provide an accurate estimate of the upper tail of $G(s)$ in any given sample, the following condition is sufficient.
+Recall that the surprisal under the true distribution is defined as $S = -\log f(\bm{Y})$, and recall that $G(s) = \Pr(S \le s)$ denotes the CDF of $S$ at $s \in \mathbb{S} \subseteq \mathbb{R}$, where $\mathbb{S}$ denotes the support of the surprisals. Likewise, let $\widehat{S} = -\log \widehat{f}(\bm{Y})$ denote the surprisal under the fitted distribution, and let $\widehat{\mathbb{P}}_n(s) := n^{-1}\sum_{i=1}^{n}1[\widehat{S}_i \le s]$ denote the empirical CDF of the fitted sample $\widehat{S}_1,\dots,\widehat{S}_n$. For the empirical estimator $\widehat{\mathbb{P}}_n(s)$ to provide an accurate estimate of the upper tail of $G(s)$ in any given sample, the following condition is sufficient.
 
 ::: {#def-empirical_pis}
-
-There exists an $s_\star\in\mathbb{R}$ and a function $h(\cdot)$, strictly increasing on $[s_\star, \infty)$, such that $S=h(\widehat{S})$ almost surely for all $\widehat{S} \ge s_\star$, and $S\le h(s_\star)$ for $\widehat{S}< s_\star$.
-
+There exists an $s_\star \in \mathbb{R}$ and a function $h(\cdot)$, strictly increasing on $[s_\star, \infty)$, such that $S = h(\widehat{S})$ almost surely for all $\widehat{S} \ge s_\star$, and $S \le h(s_\star)$ for $\widehat{S} < s_\star$.
 :::
 
 ::: {#lem-confident}
-
-Let $S_1,\dots, S_n$ be iid with distribution function $G$. If @def-empirical_pis is satisfied, then, for any $\alpha \in(0,1)$, and $\epsilon = \sqrt{\log(2/\alpha)/(2n)}$, with probability at least $1-\alpha$, for every $\widehat{S}_i\ge s_\star$
+Let $S_1,\dots, S_n$ be iid with distribution function $G$. If @def-empirical_pis is satisfied, then, for any $\alpha \in (0,1)$, and $\epsilon = \sqrt{\log(2/\alpha)/(2n)}$, with probability at least $1 - \alpha$, for every $\widehat{S}_i \ge s_\star$
 $$
-\widehat{\mathbb{P}}_n(\widehat{S}_i)-\epsilon\le G(S_i)\le \widehat{\mathbb{P}}_n(\widehat{S}_i)+\epsilon.
+  \widehat{\mathbb{P}}_n(\widehat{S}_i) - \epsilon \le G(S_i) \le \widehat{\mathbb{P}}_n(\widehat{S}_i) + \epsilon.
 $$
-
 :::
 
 @lem-confident implies that if the fitted distribution has tails that are similarly located to the actual data distribution, then the fitted empirical surprisal probabilities are very accurate measures of the true surprisal probability, $G(s)$. Critically, this does not require that the tails of the fitted distribution are the same as the actual data distribution, and only requires that -- beyond a threshold value $s_\star$ -- the two are related through a monotone transformation. That is, for this approach to be accurate, we must be confident that the fitted distribution has regions of low density in the same locations as the true data distribution.
@@ -181,45 +178,47 @@ Our third approach uses extreme value theory applied to the (univariate) surpris
 
 An important precursor to this work is @lookout who proposed estimating $F$ by a leave-one-out kernel density estimate, and then fitting a Generalized Pareto Distribution (GPD) to the most extreme surprisal values. The underlying idea is that even if $F$ is not particularly well-estimated, the tail of the surprisal distribution should still be well-approximated by a GPD. @lookout2 provides some theoretical justification for this approach in the context of kernel density estimation.
 
-Here we extend that idea to allow $F$ to be any continuous distribution, including conditional distributions; certain discrete distributions can be handled at the cost of additional technicalities, while others would not deliver surprisals with a continuous GPD limit. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[1-P(s_i \mid \hat\mu, \hat\sigma, \hat\xi)\right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
+Here we extend that idea to allow $F$ to be any continuous distribution, including conditional distributions; certain discrete distributions can be handled at the cost of additional technicalities, while others would not deliver surprisals with a continuous GPD limit. Specifically, we fit a GPD to the largest $\beta$ of $\{s_i\}_{i=1}^n$, obtaining estimates of the location, scale and shape parameters, $(\mu,\sigma,\xi)$. We calculate the probability of a surprisal at least as large as that of each observation, $p_i = \beta\left[ 1 - P(s_i \mid \hat\mu, \hat\sigma, \hat\xi) \right]$, where $P$ is the distribution function of the GPD. Observations not contained in the largest $\beta$ of $\{s_i\}_{i=1}^n$ are assigned $p_i = \beta$.
 
-To justify this approach, we seek conditions on the (possibly fitted) surprisal distribution $S := -\log p(\bm{Y})$, where $\bm{Y}\sim F$, and $p$ is some assumed density function that is possibly distinct from $f$, to ensure a Pickands–Balkema–de Haan theorem is satisfied. We formulate our results using moments of the surprisal $S=-\log p(Y)$, as well as additional regularity conditions. We believe this formulation is helpful as the moment behavior of $S$ can often be directly discerned at a glance and so does not require that the practitioner have previous knowledge of EVT or any knowledge of the domain of attraction to which $S$ belongs. For instance, if we know that $Y\sim N(0,1)$, then it is immediately obvious that $S=-\log f(Y)$ is chi-squared, and it is taught in early statistics classes that chi-squared random variables have an exponential moment.
+To justify this approach, we seek conditions on the (possibly fitted) surprisal distribution $S := -\log p(\bm{Y})$, where $\bm{Y} \sim F$, and $p$ is some assumed density function that is possibly distinct from $f$, to ensure a Pickands--Balkema--de Haan theorem is satisfied. We formulate our results using moments of the surprisal $S = -\log p(Y)$, as well as additional regularity conditions. We believe this formulation is helpful as the moment behavior of $S$ can often be directly discerned at a glance and so does not require that the practitioner have previous knowledge of EVT or any knowledge of the domain of attraction to which $S$ belongs. For instance, if we know that $Y \sim N(0,1)$, then it is immediately obvious that $S = -\log f(Y)$ is chi-squared, and it is taught in early statistics classes that chi-squared random variables have an exponential moment.
 
 To state our results, we thus maintain the following conditions.
 
 ::: {#def-bounded}
 #### Exponential Moment Existence
-The random variable $S\in\mathbb{R}$ is such that $\mu=\E[S]$ exists. For some parameters $\nu>0$ and $\sigma^2>0$, and any $\lambda\in\mathbb{R}$ such that $|\lambda|\le 1/\nu$, $\E[e^{\lambda(S-\mu)}]\le e^{\lambda^2\sigma^2/2}.$
+
+The random variable $S \in \mathbb{R}$ is such that $\mu = \E[S]$ exists. For some parameters $\nu > 0$ and $\sigma^2 > 0$, and any $\lambda \in \mathbb{R}$ such that $|\lambda| \le 1/\nu$, $\E[e^{\lambda(S-\mu)}] \le e^{\lambda^2\sigma^2/2}.$
 :::
 
 ::: {#def-poly}
 #### Polynomial Moment Existence
-For some $q>1$, $\E[|S-\mu|^{q}]<\infty$.
+
+For some $q > 1$, $\E[|S-\mu|^{q}] < \infty$.
 :::
 
-@def-bounded, or variations thereof, underlies much of modern statistical analysis and in plain language ensures that $S$ is a sub-exponential random variable. This condition is easy to check for many distributions, and is maintained for precisely this purpose. For example, if $Y\sim t_p$, $p\ge1$, then it is straightforward to show that $S=-\log f(Y)$ has a moment generating function, on a certain domain, which implies @def-bounded is satisfied: the quantities $\mu,\sigma^2$ and $\nu$ can be directly calculated from the MGF and are functions of the degrees of freedom parameter $p$.
+@def-bounded, or variations thereof, underlies much of modern statistical analysis and in plain language ensures that $S$ is a sub-exponential random variable. This condition is easy to check for many distributions, and is maintained for precisely this purpose. For example, if $Y \sim t_p$, $p \ge 1$, then it is straightforward to show that $S = -\log f(Y)$ has a moment generating function, on a certain domain, which implies @def-bounded is satisfied: the quantities $\mu,\sigma^2$ and $\nu$ can be directly calculated from the MGF and are functions of the degrees of freedom parameter $p$.
 
-@def-poly will be satisfied in cases where $S$ only admits a polynomial moment. For instance, if we assume that $Y$ has a standard Gaussian density, so that $S\propto c+Y^2$, but the actual distribution of $Y$ is student-t with $p$ degrees of freedom, then $S$ will satisfy @def-poly so long as $p>2$; i.e., so long as the observed data has at least a finite variance.
+@def-poly will be satisfied in cases where $S$ only admits a polynomial moment. For instance, if we assume that $Y$ has a standard Gaussian density, so that $S \propto c + Y^2$, but the actual distribution of $Y$ is student-t with $p$ degrees of freedom, then $S$ will satisfy @def-poly so long as $p > 2$; i.e., so long as the observed data has at least a finite variance.
 
 Define the GPD distribution function
 $$
-H_{\xi}(y)=\left\{\begin{array}{lll}
-1-(1+\xi y)^{-1 / \xi}, & \xi \neq 0, & 1+\xi y>0 \\
-1-e^{-y}, & \xi=0, &
-\end{array}\right.
+  H_{\xi}(y)=\left\{\begin{array}{lll}
+  1-(1+\xi y)^{-1 / \xi}, & \xi \neq 0, & 1+\xi y>0 \\
+  1-e^{-y}, & \xi=0, &
+  \end{array}\right.
 $$
 
 ::: {#thm-gpd}
-Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S =-\log p(\bm{Y})$, where $\bm{Y}\sim F$. Let the regularity conditions in @def-regular be satisfied. Then, there exists a scale function $\beta(u)>0$ such that
+Let $\bm{y}_1,\dots,\bm{y}_n$ be an iid sequence from $F$, and let $S = -\log p(\bm{Y})$, where $\bm{Y} \sim F$. Let the regularity conditions in @def-regular be satisfied. Then, there exists a scale function $\beta(u) > 0$ such that
 $$
-\lim_{u\uparrow \infty}\sup_{y\ge0} \left|\Pr\left(\frac{(S-\mu)-u}{\beta(u)}\le y\bigg{|}(S-\mu)>u\right)-H_\xi(y)\right|=0,
+  \lim_{u \uparrow \infty}\sup_{y \ge 0} \left| \Pr\left( \frac{(S - \mu) - u}{\beta(u)} \le y\bigg{|}(S - \mu) > u \right) - H_\xi(y) \right| = 0,
 $$
-with $\xi=0$ under @def-bounded or $0\le \xi\le1/q$ under @def-poly.
+with $\xi = 0$ under @def-bounded or $0 \le \xi \le 1/q$ under @def-poly.
 :::
 
-@thm-gpd shows that the conditional excess distribution function of the surprisal converges to the GPD where the value of $\xi$ is constrained by the number of finite moments which $S$ exhibits. If the surprisal distribution has at least an exponential tail and full support, then the conditional excess distribution function of the surprisal behaves like a shifted exponential distribution; if instead the surprisal only has a polynomial moment, when $\xi\ne0$ the conditional excess distribution function converges to the Pareto distribution. @thm-gpd then gives theoretical credence to our proposed POT approach: in large samples the conditional excess distribution function of the surprisal converges to the GPD, and using the fitted GPD as an approximation for the true surprisal probability should deliver a reasonably accurate approximation in large sample, under regularity conditions, and so long as we can accurately estimate the parameters of the Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
+@thm-gpd shows that the conditional excess distribution function of the surprisal converges to the GPD where the value of $\xi$ is constrained by the number of finite moments which $S$ exhibits. If the surprisal distribution has at least an exponential tail and full support, then the conditional excess distribution function of the surprisal behaves like a shifted exponential distribution; if instead the surprisal only has a polynomial moment, when $\xi \ne 0$ the conditional excess distribution function converges to the Pareto distribution. @thm-gpd then gives theoretical credence to our proposed POT approach: in large samples the conditional excess distribution function of the surprisal converges to the GPD, and using the fitted GPD as an approximation for the true surprisal probability should deliver a reasonably accurate approximation in large sample, under regularity conditions, and so long as we can accurately estimate the parameters of the Generalized Pareto Distribution [@coles2001introduction, Theorem 4.1].
 
-It is possible to link Assumptions [-@def-bounded] and [-@def-poly] to the domain of attraction conditions usually considered in extreme value theory. For simplicity, let us assume that range of $S$ is $\mathbb{R}$. Under technical conditions, @def-bounded then implies that the distribution of $S$, denoted by $G$ herein, is in the Gumbel domain of attraction, i.e., $H_0$. In contrast, under @def-poly, $G$ can be in either the Gumbel or Frechet domain of attraction: where $q$ denotes the number of assumed moments, we only have that $0\le \xi\le 1/q$ and so cannot exclude the Gumbel domain of attraction; if, however, we know that the $(q+1)$-th moment of $(S-\mu)_{+}$ is infinite, then under @def-poly we have that $G$ is in the Frechet domain of attraction and $0<1/(1+q)\le\xi\le1/q$.
+It is possible to link Assumptions [-@def-bounded] and [-@def-poly] to the domain of attraction conditions usually considered in extreme value theory. For simplicity, let us assume that range of $S$ is $\mathbb{R}$. Under technical conditions, @def-bounded then implies that the distribution of $S$, denoted by $G$ herein, is in the Gumbel domain of attraction, i.e., $H_0$. In contrast, under @def-poly, $G$ can be in either the Gumbel or Frechet domain of attraction: where $q$ denotes the number of assumed moments, we only have that $0 \le \xi \le 1/q$ and so cannot exclude the Gumbel domain of attraction; if, however, we know that the $(q + 1)$-th moment of $(S - \mu)_{+}$ is infinite, then under @def-poly we have that $G$ is in the Frechet domain of attraction and $0 < 1/(1 + q) \le \xi \le 1/q$.
 
 <!--
 Even if the assumed distribution $F$ is not correct, provided the tail of the surprisal distribution satisfies one of the two assumptions, we can still fit a GPD to the largest surprisal values, and use this to estimate the tail probabilities. Indeed, @thm-gpd helps clarify the consequences of mis-specifying the distribution used to compute surprisal values. If the data are modeled as light-tailed (i.e., sub-Gaussian) but in fact have a heavy tail (sub-exponential or polynomial), then the maximal surprisal can have a heavy tail; see, e.g., the earlier example where we assumed $Y\sim N(0,1)$, when in actuality $Y\sim t_\nu$. The converse, however, does not hold: if one assumes a heavy-tailed model (e.g., $t_2$) when the data are actually light-tailed (e.g., Gaussian), then the conditional excess distribution function of the surprisal remains consistent with the lighter tail. As the tail of the surprisal distribution becomes heavier, convergence slows, and more data is required to reliably detect surprisals. In effect, underestimating tail heaviness incurs a substantial penalty --- manifested as slow convergence of the GPD and, consequently, inaccurate anomaly detection --- whereas overestimating tail heaviness costs relatively little. This suggests that, in practice, it is safer to err on the side of assuming heavier tails.
@@ -227,23 +226,23 @@ Even if the assumed distribution $F$ is not correct, provided the tail of the su
 
 # Applicability for conditional distributions {#sec-conditional}
 
-The theoretical results in @lem-confident and @thm-gpd assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are agnostic as to the dimension of $\bm{Y}$; the resulting surprisal $S_i=-\log f(\bm{Y})$ is always univariate, and remains iid since any function of $\bm{Y}$ is also iid.
+The theoretical results in @lem-confident and @thm-gpd assume that the surprisal is based on iid data $\bm{Y}$ generated from some unknown distribution. In this way, these results are agnostic as to the dimension of $\bm{Y}$; the resulting surprisal $S_i = -\log f(\bm{Y})$ is always univariate, and remains iid since any function of $\bm{Y}$ is also iid.
 
-However, there are many modeling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, we can think of our observed data being the variables $\bm{Y}=(Z,\bm{X})$ where $Z$ is some outcome of interest and $\bm{X}$ are variables that are used to predict or explain $Z$. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z\mid \bm{X}=\bm{x})$, and the surprisal $S=-\log f_Z(Z\mid \bm{X}=\bm{x})$ can be thought of as being computed "conditional on a given $\bm{X}=\bm{x}$".
+However, there are many modeling situations, such as regression settings, where we are not necessarily interested in measuring the surprisal that results from the joint distribution of the data, but along a fixed vector of conditioning variables (e.g., age, or gender). In such cases, we can think of our observed data being the variables $\bm{Y} = (Z,\bm{X})$ where $Z$ is some outcome of interest and $\bm{X}$ are variables that are used to predict or explain $Z$. In such cases, we can directly apply the surprisal approach with a conditional model of the form $f_Z(z \mid \bm{X} = \bm{x})$, and the surprisal $S = -\log f_Z(Z \mid \bm{X} = \bm{x})$ can be thought of as being computed "conditional on a given $\bm{X} = \bm{x}$".
 
-For a fixed vector of the conditioning variables, it is not hard to see why our theoretical results will remain valid: by fixing $\bm{X}=\bm{x}$, since we observe iid $\bm{Y}=(Z_i,\bm{X}_i)$, the distribution of $Z\mid \bm{X}=\bm{x}$ is also iid conditional on $\bm{X}=\bm{x}$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed value of the covariates $\bm{x}$, then @lem-confident and @thm-gpd can be applied conditional on this fixed set of covariates.
+For a fixed vector of the conditioning variables, it is not hard to see why our theoretical results will remain valid: by fixing $\bm{X} = \bm{x}$, since we observe iid $\bm{Y} = (Z_i,\bm{X}_i)$, the distribution of $Z \mid \bm{X} = \bm{x}$ is also iid conditional on $\bm{X} = \bm{x}$, and the resulting theory applies. That is, for example, if we wish to calculate surprisals at a fixed value of the covariates $\bm{x}$, then @lem-confident and @thm-gpd can be applied conditional on this fixed set of covariates.
 
-However, it is important to realize that if we wish to calculate surprisals across both the outcomes and covariates (i.e., when allowing both $Z$ and $\bm{X}$ to vary), then what is a surprisal may change from instance to instance. To see why, consider the simple example where we wish to detect surprisals using a simple Gaussian regression model for $Z\mid X$, so that
+However, it is important to realize that if we wish to calculate surprisals across both the outcomes and covariates (i.e., when allowing both $Z$ and $\bm{X}$ to vary), then what is a surprisal may change from instance to instance. To see why, consider the simple example where we wish to detect surprisals using a simple Gaussian regression model for $Z \mid X$, so that
 $$
-S_i=-\log f_Z(Z_i\mid X_i)\propto (Z_i-\beta_0-\beta_1 X_i)^2.
+  S_i = -\log f_Z(Z_i \mid X_i) \propto (Z_i - \beta_0 - \beta_1 X_i)^2.
 $$
-Now, $S_i$ can be large for two distinct and interrelated reasons: either because $Z$ itself is large,  relative to the observed values of $\beta_0+\beta_1 X$, or because $X$ is atypical so that $Z-\beta_0-\beta_1 X$ is large.
+Now, $S_i$ can be large for two distinct and interrelated reasons: either because $Z$ itself is large, relative to the observed values of $\beta_0 + \beta_1 X$, or because $X$ is atypical so that $Z - \beta_0 - \beta_1 X$ is large.
 
 That is, in the general case, where we are searching for surprisals over the conditional model without $\bm{X}$ being fixed, the behavior of $S_i$ is determined by that of the joint distribution:
 $$
-\Pr(S_i>s) = \int \mathbbm{1}(-\log f_Z(z \mid \bm{x}) > s) f_Z(z \mid \bm{x}) f_X(\bm{x})\,dz\,d\bm{x}.
+  \Pr(S_i > s) = \int \mathbbm{1}(-\log f_Z(z \mid \bm{x}) > s) f_Z(z \mid \bm{x}) f_X(\bm{x})\,dz\,d\bm{x}.
 $$
-This clarifies that extreme behavior in $S_i$ can result from extreme values of $Z$, $\bm{X}$, or simply values of $Z$ and $\bm{X}$ where $f_Z(Z\mid \bm{X})$ is very small. Critically, the latter can occur even when $Z$ and $\bm{X}$ take on values that are typical for their marginal distribution, but which are not well-captured by the assumed conditional model.
+This clarifies that extreme behavior in $S_i$ can result from extreme values of $Z$, $\bm{X}$, or simply values of $Z$ and $\bm{X}$ where $f_Z(Z \mid \bm{X})$ is very small. Critically, the latter can occur even when $Z$ and $\bm{X}$ take on values that are typical for their marginal distribution, but which are not well-captured by the assumed conditional model.
 
 # Experiments {#sec-experiments}
 
@@ -255,8 +254,10 @@ To study the effect of the assumed distribution, we compute the surprisal values
 
 ```{r}
 #| label: fig-expt1
-#| fig-cap: "Left: Observations are computed from a $N(0,1)$ distribution. Right: Observations are computed from a $t(4)$ distribution. Distribution indicates which distribution was used to compute the surprisal values. Estimate shows how the tail probabilities were computed. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values."
+#| fig-cap: >-
+#|   Left: Observations are computed from a $N(0,1)$ distribution. Right: Observations are computed from a $t(4)$ distribution. Distribution indicates which distribution was used to compute the surprisal values. Estimate shows how the tail probabilities were computed. This demonstrates that the surprisal probabilities computed using the empirical distribution or under the GPD are still relatively accurate, even when the wrong distribution is used to compute the surprisal values.
 #| fig-height: 4
+
 tar_read(fig_expt1)
 ```
 
@@ -268,12 +269,13 @@ The converse situation is shown in the right panel of @fig-expt1, where the data
 
 ## Bivariate gamma values
 
-The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $10,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is a loess smooth of the proportion of anomalies detected when $\alpha=0.01$ for different sample sizes, along with 95% confidence intervals. The false anomaly rate under the true distribution is, of course, 0.01.
+The quality of the approximation used depends on the amount of data available, so in this next experiment we compare the tail probabilities of the different approaches across sample sizes. Let $\bm{Y} = (Y_{i,1},Y_{i,2})'$ where $Y_{i,j}$ are independent Gamma(2,2) random variables. We generate $n$ observations from this bivariate distribution, and explore the quality of the probability estimates as $n$ increases from $100$ to $10,000$. The surprisal values are computed using the correct distribution, as well as the incorrect bivariate normal distribution with mean $(1,1)'$ and covariance matrix $0.5\bm{I}$. For each set of surprisal values, we estimate the tail probabilities in two ways: (a) using empirical tail probabilities; and (b) using a GPD fitted to the largest 10% of surprisal values. We repeat this experiment 1000 times for each sample size. The anomaly rate shown is a loess smooth of the proportion of anomalies detected when $\alpha = 0.01$ for different sample sizes, along with 95% confidence intervals. The false anomaly rate under the true distribution is, of course, 0.01.
 
 ```{r}
 #| label: fig-expt2
 #| fig-cap: "Estimated false anomaly rate under different approximations when $\\alpha = 0.01$."
 #| cache: true
+
 tar_read(fig_expt2)
 ```
 
@@ -295,23 +297,25 @@ French mortality rates, disaggregated by age (single years) and sex, are availab
 #| label: fig-fr_mortality_plot
 #| fig-height: 4
 #| fig-cap: !expr sprintf("French mortality rates by sex and age from %d to %d.  We use a log scale because the rates are vastly different for different age groups.", min(fr_mortality$Year), max(fr_mortality$Year))
+
 tar_read(fr_mortality_plot)
 ```
 
 ```{r}
 #| label: fig-hampel_fr
 #| fig-cap: Anomalies identified in the French mortality data by year and age. Wars and epidemics in French history are revealed.
+
 tar_read(fr_anomaly_plot)
 ```
 
-We compute the surprisals using the conditional distribution ([-@eq-hampel]), and then compute the surprisal probabilities under a GPD with $\alpha = 0.01$. With so many observations, there is a high likelihood of many false positives, so we only retain anomalies when at least three age groups are anomalous in the same year, and for the same sex. This results in  `r NROW(fr_anomalies)` anomalies out of `r NROW(fr_mortality)` observations. @fig-hampel_fr shows these anomalies, which coincide with various wars and epidemics that have occurred over French history:
+We compute the surprisals using the conditional distribution ([-@eq-hampel]), and then compute the surprisal probabilities under a GPD with $\alpha = 0.01$. With so many observations, there is a high likelihood of many false positives, so we only retain anomalies when at least three age groups are anomalous in the same year, and for the same sex. This results in `r NROW(fr_anomalies)` anomalies out of `r NROW(fr_mortality)` observations. @fig-hampel_fr shows these anomalies, which coincide with various wars and epidemics that have occurred over French history:
 
-* 1832, 1849: Cholera outbreaks
-* 1870: Franco--Prussian war
-* 1871: Repression of the ‘Commune de Paris’
-* 1914-1918: World War I
-* 1918: Spanish flu outbreak
-* 1940: World War II
+- 1832, 1849: Cholera outbreaks
+- 1870: Franco--Prussian war
+- 1871: Repression of the 'Commune de Paris'
+- 1914-1918: World War I
+- 1918: Spanish flu outbreak
+- 1940: World War II
 
 In addition, there appears to have been unusually high infant mortality in 1834, and unusually high elderly mortality in 1837. The causes of these is unknown.
 
@@ -329,19 +333,21 @@ Career batting data for all men and women to have played test cricket between 18
 
 ```{r}
 #| label: fig-notouts
-#| fig.cap: "Proportion of not outs for each batter as a function of the number of innings they played. The blue line and associated 95% confidence interval shows the probability of a batter not being dismissed as a function of the number of innings they have played."
+#| fig.cap: >-
+#|   Proportion of not outs for each batter as a function of the number of innings they played. The blue line and associated 95% confidence interval shows the probability of a batter not being dismissed as a function of the number of innings they have played.
 #| message: false
 #| code-fold: false
+
 tar_read(not_outs_plot)
 ```
 
 This suggests that we can construct a generalized additive model [@Wood2017gam] for the number of not outs for each batter as a function of the number of innings they played. It is natural to use a Binomial distribution with a logit link function:
 $$
-  \text{NotOuts} \mid \text{Innings} \sim \text{Binomial}(n=\text{Innings},~ p),
+  \text{NotOuts} \mid \text{Innings} \sim \text{Binomial}(n = \text{Innings},~ p),
 $$
 where $p$ denotes the probability of a batter not being dismissed in an innings,
 $$
-  \log(p / (1- p)) = g(\text{Innings}),
+  \log(p / (1 - p)) = g(\text{Innings}),
 $$
 and $g()$ is a smooth function to be estimated nonparametrically. The resulting estimate, obtained from the mgcv package with penalized regression splines [@mgcv], is shown in blue in @fig-notouts.
 
@@ -349,7 +355,7 @@ Now we can use the fitted model to compute the surprisals from the Binomial dist
 
 The most anomalous batters are all "tail-enders" (i.e., not skilled batters) who played for a long time (so they have many innings). Because they batted last, or nearly last, they are more likely to be not out at the end of the team's innings.
 
-The largest surprisal is for English batter Jimmy Anderson, who has had `r jma$NotOuts[1]` not outs in `r jma$Innings[1]` innings, which is much higher than the expected number of not outs of $`r jma$Innings[1]` \times `r sprintf("%.3f", jma$.fitted[1])` = `r sprintf("%.1f", jma$.fitted[1]*jma$Innings[1])`$. This anomaly is also seen in @fig-notouts, as being somewhat unusual for that part of the data. Although Jimmy Anderson was not a great batter, he was good at defense, and was able to bat for a long time without being dismissed, leaving the other batter time to score runs.
+The largest surprisal is for English batter Jimmy Anderson, who has had `r jma$NotOuts[1]` not outs in `r jma$Innings[1]` innings, which is much higher than the expected number of not outs of $`r jma$Innings[1]` \times `r sprintf("%.3f", jma$.fitted[1])` = `r sprintf("%.1f", jma$.fitted[1]\*jma$Innings[1])`$. This anomaly is also seen in @fig-notouts, as being somewhat unusual for that part of the data. Although Jimmy Anderson was not a great batter, he was good at defense, and was able to bat for a long time without being dismissed, leaving the other batter time to score runs.
 
 We have identified an anomaly that is not anomalous in the proportion of not-outs, or in the number of innings, and the difference between the actual proportion and the predicted proportion is not anomalous either compared to some of the other values. However, because we have used a statistical model, we have been able to account for the particular features of this data set, such as the discrete nature of the data, and the changing variance, to identify an observation that is anomalous in the context of the model.
 
@@ -373,7 +379,7 @@ Our methods are implemented in the `weird` R package [@Rweird], which provides a
 
 ## Software and reproducibility {.unnumbered}
 
-All results presented here can be reproduced using the data and code available at <https://github.com/robjhyndman/Surprisal_Theory>. The analysis was conducted using R version 4.5.2 [@R], with the following R packages: weird [@Rweird], tsibble [@Rtsibble], targets [@targets;@targetspaper], ggplot2 [@ggplot2;@ggplotbook], and other tidyverse [@tidyverse] packages.
+All results presented here can be reproduced using the data and code available at <https://github.com/robjhyndman/Surprisal_Theory>. The analysis was conducted using R version 4.6.1 [@R], with the following R packages: weird [@Rweird], tsibble [@Rtsibble], targets [@targets;@targetspaper], ggplot2 [@ggplot2;@ggplotbook], and other tidyverse [@tidyverse] packages.
 
 ## Funding {.unnumbered}
 
@@ -381,8 +387,7 @@ Both authors are funded by the Australian Research Council through Discovery Pro
 
 ## References {.unnumbered}
 
-:::{#refs}
-
+::: {#refs}
 :::
 
 {{< pagebreak >}}
@@ -421,32 +426,33 @@ Before proving the main result, we state and prove two key Lemmas.
 
 ## Lemmas
 
-In this section, let $X=S-\mu$, and let $\mathcal{X}=\text{supp}(X)$. In this appendix, redefine $G$ as the distribution function of $X$, define $\bar{G}=1-G$. Define the sequence $b_n$ by the relation $\bar{G}(b_n)= 1/n$, for all $n$ large enough, and let $a_n=1/\{n\cdot g(b_n)\}>0$, where $g$ denotes the density of $G$. Define $M_n=\max\{S_1-\mu,\dots,S_n-\mu\}$. We maintain the following regularity conditions on $X$.
+In this section, let $X = S - \mu$, and let $\mathcal{X} = \text{supp}(X)$. In this appendix, redefine $G$ as the distribution function of $X$, define $\bar{G} = 1 - G$. Define the sequence $b_n$ by the relation $\bar{G}(b_n) = 1/n$, for all $n$ large enough, and let $a_n = 1/\{n \cdot g(b_n)\} > 0$, where $g$ denotes the density of $G$. Define $M_n = \max\{S_1 - \mu,\dots,S_n - \mu\}$. We maintain the following regularity conditions on $X$.
 
 ::: {#def-regular}
 #### Regularity Condition
-(i) For some $t_0<x_+:=\sup\{x\in\mathcal{X}:G(x)<1\}=\infty$, $G$ is absolutely continuous on $(t_0,x_+)$ with a strictly positive and continuously differentiable density $g$. (ii) $\bar{G}(t)\rightarrow0$ as $t\rightarrow x_+$. (iii) The reciprocal hazard function $r(t)=\bar{G}(t)/g(t)$ satisfies
-$$
-\lim_{t\uparrow x_+} \frac{d}{dt }r(t)=\xi\in\mathbb{R}.
-$$
+
+(i) For some $t_0 < x_+ := \sup\{x \in \mathcal{X}:G(x) < 1\} = \infty$, $G$ is absolutely continuous on $(t_0,x_+)$ with a strictly positive and continuously differentiable density $g$. (ii) $\bar{G}(t) \rightarrow 0$ as $t \rightarrow x_+$. (iii) The reciprocal hazard function $r(t) = \bar{G}(t)/g(t)$ satisfies
+    $$
+      \lim_{t \uparrow x_+} \frac{d}{dt}r(t) = \xi \in \mathbb{R}.
+    $$
 :::
 
 Define
 $$
-G_\xi(x):=\begin{cases}
-    \exp\{-(1+\xi x)^{-1/\xi}\},\quad\xi\ne0,\quad1+\xi x>0,\\
-    \exp\{-e^{-x}\},\quad\xi=0
-\end{cases}.
+  G_\xi(x) := \begin{cases}
+                \exp\{-(1 + \xi x)^{-1/\xi}\},\quad\xi \ne 0,\quad1 + \xi x > 0, \\
+                \exp\{-e^{-x}\},\quad\xi = 0
+              \end{cases}.
 $$
 
 ::: {#lem-GEVconv}
-Let @def-regular be satisfied. If @def-bounded is satisfied then, for every $x\in\mathbb{R}$,
+Let @def-regular be satisfied. If @def-bounded is satisfied then, for every $x \in \mathbb{R}$,
 $$
-\Pr\left(\frac{M_n-b_n}{a_n}\le x\right)\longrightarrow G_0(x).
+  \Pr\left( \frac{M_n - b_n}{a_n} \le x \right) \longrightarrow G_0(x).
 $$
 If instead @def-poly is satisfied, then
 $$
-\Pr\left(\frac{M_n-b_n}{a_n}\le x\right)\longrightarrow G_\xi(x),\quad 0\le\xi\le 1/q.
+  \Pr\left( \frac{M_n - b_n}{a_n} \le x \right) \longrightarrow G_\xi(x), \quad 0 \le \xi \le 1/q.
 $$
 :::
 
@@ -583,14 +589,11 @@ $$
   =G_\xi(x).
 $$
 
-If $\xi=0$, this proves the first part of the result for every $x\in\mathbb R$. If $\xi>0$ and $x\le-1/\xi$, then for every $z>-1/\xi$, monotonicity gives
+If $\xi = 0$, this proves the first part of the result for every $x \in \mathbb R$. If $\xi > 0$ and $x \le -1/\xi$, then for every $z > -1/\xi$, monotonicity gives
 $$
-  0\le
-  \limsup_{n\to\infty}
-    \Pr\left(\frac{M_n-b_n}{a_n}\le x\right)
-  \le G_\xi(z).
+  0 \le \limsup_{n \to \infty} \Pr\left( \frac{M_n - b_n}{a_n} \le x \right) \le G_\xi(z).
 $$
-Letting $z\downarrow-1/\xi$ makes the right-hand side tend to zero. Thus the result also holds at and below the lower support boundary.
+Letting $z \downarrow -1/\xi$ makes the right-hand side tend to zero. Thus the result also holds at and below the lower support boundary.
 
 **Step 4: Moment Implications.**
 For every $q>0$, Tonelli's theorem gives the tail-integral identity
@@ -657,20 +660,23 @@ Under @def-poly, if $\xi>0$, equation \eqref{eq:moment-index} requires $q\le1/\x
 Let $p_*:=\sup\{q>0:\E\max(X,0)^q<\infty\}$. Equation \eqref{eq:gumbel-moments} gives $p_*=\infty$ when $\xi=0$, whereas \eqref{eq:moment-index} gives $p_*=1/\xi>0$ when $\xi>0$, regardless of the finiteness of the boundary moment. Thus a finite moment index satisfies $\xi=1/p_*$.
 :::
 
-Recall, for $y\ge0$,
+Recall, for $y \ge 0$,
 $$
-H_{\xi}(y):= \begin{cases}1-(1+\xi y)^{-1 / \xi}, & \xi \neq 0, \quad 1+\xi y>0 \\ 1-e^{-y}, & \xi=0,\end{cases}
+  H_{\xi}(y) := \begin{cases}
+                  1 - (1 + \xi y)^{-1 / \xi}, & \xi \neq 0, \quad 1 + \xi y > 0 \\
+                  1 - e^{-y},                 & \xi = 0,
+                \end{cases}
 $$
-and $H_{\xi}(y)=1$ for $y \geq-1 / \xi$ when $\xi<0$. Recall that $X=S-\mu$. @thm-gpd in the main text follows from the following Lemma.
+and $H_{\xi}(y) = 1$ for $y \geq -1 / \xi$ when $\xi < 0$. Recall that $X = S - \mu$. @thm-gpd in the main text follows from the following Lemma.
 
 ::: {#lem-GPDconv}
 Let @def-regular be satisfied. If @def-bounded is satisfied, then
 $$
-\Pr\left(\frac{X-b_n}{a_n}>y\big{|}X>b_n\right)\longrightarrow e^{-y}.
+  \Pr\left( \frac{X - b_n}{a_n} > y\big{|}X > b_n \right) \longrightarrow e^{-y}.
 $$
 If @def-poly is satisfied, then
 $$
-\Pr\left(\frac{X-b_n}{a_n}>y\big{|}X>b_n\right)\longrightarrow (1+\xi y)^{-1/\xi},\quad (1+\xi y)>0.
+  \Pr\left( \frac{X - b_n}{a_n} > y\big{|}X > b_n \right) \longrightarrow (1 + \xi y)^{-1/\xi},\quad (1 + \xi y) > 0.
 $$
 :::
 
@@ -728,11 +734,11 @@ Given the above convergence, a point-wise version of the stated result now follo
 
 The above convergence can be extended to uniform convergence directly. Define,
 $$
-K_u(y)=\operatorname{Pr}\left(\left.\frac{X-u}{\beta(u)} \leq y \right\rvert\, X>u\right) .
+  K_u(y) = \operatorname{Pr}\left( \left. \frac{X - u}{\beta(u)} \leq y \right\rvert\, X > u \right) .
 $$
-Clearly, the earlier argument implies, for every $y\ge0$, $K_u(y) \longrightarrow H_{\xi}(y)$. However, $K_u$ and $H_\xi$ are distribution functions and $H_{\xi}$ is continuous and proper, we have
+Clearly, the earlier argument implies, for every $y \ge 0$, $K_u(y) \longrightarrow H_{\xi}(y)$. However, $K_u$ and $H_\xi$ are distribution functions and $H_{\xi}$ is continuous and proper, we have
 $$
-\sup _{y \geq 0}\left|K_u(y)-H_{\xi}(y)\right| \longrightarrow 0
+  \sup_{y \geq 0}\left| K_u(y) - H_{\xi}(y) \right| \longrightarrow 0
 $$
 as claimed.
 :::
